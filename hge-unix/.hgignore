@@ -1,0 +1,7 @@
+syntax: glob
+*.o
+*~
+.*swp
+build
+mingw32-build
+*kdev4*
