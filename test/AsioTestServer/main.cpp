@@ -13,31 +13,47 @@ int main()
     {
         boost::asio::io_service io_service;
         tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 14882));
-
-        //for client:
-        tcp::socket socket(io_service);
-        tcp::endpoint client;
         boost::system::error_code error;
 
-        acceptor.accept(socket, client, error);
+        std::vector<tcp::socket> clientSockets;
+        const int clientsNeeded = 2;
 
-        boost::asio::streambuf buffer;
-        boost::system::error_code err;
-        read_until(socket, buffer, "\0", err);
-
-        std::istream str(&buffer);
-        std::string result;
-
-        while(!str.eof())
+        for(int clientId = 0; clientId < clientsNeeded; ++clientId)
         {
-            str >> result;
-            std::cout << result << std::endl;
+            //get client
+            tcp::socket socket(io_service);
+
+            acceptor.accept(socket, error);
+
+            //read it's name
+            boost::asio::streambuf buffer;
+            read_until(socket, buffer, "\n", error);
+
+            std::istream is(&buffer);
+            std::string clientName;
+            std::getline(is, clientName, '\n');
+
+            //send it's id
+            std::string clientIdStr = std::to_string(clientId) + "\n";
+            socket.send(boost::asio::buffer(clientIdStr));
+
+            std::cout << "Client connected:" << std::endl
+                      << " Name: " << clientName << std::endl
+                      << " IP: " << socket.remote_endpoint().address() << std::endl
+                      << " ID: " << clientId << std::endl << std::endl;
+
+            clientSockets.emplace_back(std::move(socket));
         }
 
-        socket.shutdown(boost::asio::ip::tcp::socket::shutdown_receive);
-        socket.close();
+        //have fun
+        //...
 
-        io_service.run();
+        //free clients
+        for(auto &socket: clientSockets)
+        {
+            socket.shutdown(boost::asio::ip::tcp::socket::shutdown_receive);
+            socket.close();
+        }
     }
     catch (std::exception& e)
     {

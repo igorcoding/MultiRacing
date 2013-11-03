@@ -3,6 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+QMAKE_CXXFLAGS += -std=c++11
+
 SOURCES += main.cpp
 
 INCLUDEPATH += C:/Projects/Qt/boost_1_54_0

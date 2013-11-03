@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp
+QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH += C:\Projects\Qt\boost_1_54_0\boost
 INCLUDEPATH += C:/Projects/Qt/boost_1_54_0
