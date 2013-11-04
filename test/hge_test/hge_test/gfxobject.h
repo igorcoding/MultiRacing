@@ -22,7 +22,7 @@ namespace NeonHockey
         GfxObject(const SpriteInfo& spriteInfo);
 
     private:
-        SpriteInfo _spriteInfo;
+        const SpriteInfo& _spriteInfo;
     };
 
 }

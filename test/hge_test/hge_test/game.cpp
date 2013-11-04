@@ -1,4 +1,5 @@
 #include "game.h"
+#include "textureinfo.h"
 
 namespace NeonHockey
 {
@@ -49,7 +50,8 @@ namespace NeonHockey
 
     Game::~Game()
     {
-        endGame();
+        if (_initialized)
+            endGame();
     }
 
     void Game::initializeGame(Game* game)
@@ -102,12 +104,13 @@ namespace NeonHockey
         int texture1_id = 1;
         int texture2_id = 1;
 
+        //const SpriteInfo& tex1 = gfx_textures[texture1_id];
         Player p1("Player 1", BoardSide::TOP, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
         Player p2("Player 2", BoardSide::BOTTOM, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
 
-        _puck = std::unique_ptr<Puck>(new Puck(gfx_textures[0]));
-        _players.push_back(std::move(p1));
-        _players.push_back(std::move(p2));
+        _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[0])));
+        _players.emplace_back(std::move(p1));
+        _players.emplace_back(std::move(p2));
 
         _resources.addTexture(GfxType::PUCK, game->_puck->spriteInfo().texturePath());
         _resources.addTexture(GfxType::PADDLE1, game->_players[0].paddle()->spriteInfo().texturePath());
@@ -144,10 +147,12 @@ namespace NeonHockey
 
 
         auto puckSprite = _resources.getSprite(GfxType::PUCK);
-        auto paddleSprite = _resources.getSprite(GfxType::PADDLE1);
+        auto paddleSprite1 = _resources.getSprite(GfxType::PADDLE1);
+        auto paddleSprite2 = _resources.getSprite(GfxType::PADDLE2);
 
         puckSprite->Render(100.0, 100.0);
-        paddleSprite->Render(200.0, 200.0);
+        paddleSprite1->Render(200.0, 200.0);
+        paddleSprite2->Render(300.0, 300.0);
 
         _hge->Gfx_EndScene();
         return false;

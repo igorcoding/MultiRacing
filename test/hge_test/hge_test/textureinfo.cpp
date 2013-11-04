@@ -30,7 +30,7 @@ namespace NeonHockey
         return _height;
     }
 
-    std::string SpriteInfo::texturePath() const
+    const std::string& SpriteInfo::texturePath() const
     {
         return _texturePath;
     }

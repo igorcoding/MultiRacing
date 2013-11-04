@@ -12,7 +12,7 @@ namespace NeonHockey
           _spriteInfo(textureInfo)
     { }
 
-    const SpriteInfo &GfxObject::spriteInfo() const
+    const SpriteInfo& GfxObject::spriteInfo() const
     {
         return _spriteInfo;
     }
