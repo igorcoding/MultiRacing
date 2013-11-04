@@ -2,7 +2,8 @@
 
 namespace NeonHockey
 {
-    Paddle::Paddle()
+    Paddle::Paddle(const TextureInfo &textureInfo)
+        : GfxObject(textureInfo)
     {
     }
 }

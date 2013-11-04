@@ -27,8 +27,9 @@ namespace NeonHockey
 
         void InitHge(HGE *hge);
         void FreeResources();
+        void FreeResource(GfxType::GfxObjectType gfxType);
         void AddTexture(GfxType::GfxObjectType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
-        void AddSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
+        hgeSprite* AddSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
 
         HTEXTURE GetTexture(GfxType::GfxObjectType gfxType);
         hgeSprite* GetSprite(GfxType::GfxObjectType gfxType);

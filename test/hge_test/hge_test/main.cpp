@@ -1,4 +1,5 @@
 #include "unix_platform.h"
+#include "main.h"
 
 #include <vector>
 #include <ctime>
@@ -9,22 +10,25 @@
 #include <hgecolor.h>
 
 #include "puck.h"
+#include "paddle.h"
 #include "resourcemanager.h"
 
 
 #define SCREEN_WIDTH  800
 #define SCREEN_HEIGHT 600
+#define MIDDLE_LINE ((SCREEN_HEIGHT) / 2)
 
 using namespace NeonHockey;
 
 HGE* hge = nullptr;
 ResourceManager resources;
-
+std::vector<Paddle> paddles;
+//paddles.push_back(Paddle(new TextureInfo(0, 0, 64, 64, "resources/zazaka.png")));
 
 
 bool FrameFunc()
 {
-    float dt = hge->Timer_GetDelta();
+    //float dt = hge->Timer_GetDelta();
 
     return false;
 }
@@ -32,11 +36,23 @@ bool FrameFunc()
 
 bool RenderFunc()
 {
+    const float screen_width = SCREEN_WIDTH;
+    const float screen_height = SCREEN_HEIGHT;
+    const float middle_line = MIDDLE_LINE;
+    const float paddle_padding = 50.0f;
+
     hge->Gfx_BeginScene();
     hge->Gfx_Clear(0);
 
+    hge->Gfx_RenderLine(0, middle_line, screen_width - 1, middle_line);
+    Section top(0, middle_line, screen_width-1, 0);
+    Section bottom(0, screen_height-1, screen_width, middle_line);
+
     auto puckSprite = resources.GetSprite(GfxType::PUCK);
-    puckSprite->Render(100.0f, 100.0f);
+    auto paddleSprite = resources.GetSprite(GfxType::PADDLE);
+
+    puckSprite->Render(screen_width/2 - 1, middle_line);
+    paddleSprite->Render(bottom.x_rt/2, screen_height - paddle_padding);
 
     hge->Gfx_EndScene();
     return false;
@@ -69,16 +85,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         try
         {
             resources.AddTexture(GfxType::PUCK, "resources/particles.png");
-            resources.AddSprite(GfxType::PUCK, 96, 64, 32, 32);
+            resources.AddTexture(GfxType::PADDLE, "resources/zazaka.png");
+
+            resources.AddSprite(GfxType::PUCK, 96, 64, 32, 32)->SetHotSpot(16,16);
+            resources.AddSprite(GfxType::PADDLE, 0, 0, 64, 64)->SetHotSpot(32,32);
+
 
             hge->System_Start();
+
+
+            resources.FreeResources();
+            hge->System_Shutdown();
+            hge->Release();
         }
         catch(std::exception& e)
         {
 #ifdef PLATFORM_UNIX
-            fprintf(stderr, "Error: ");
-            fprintf(stderr, e.what());
-            fprintf(stderr, "\n");
+            fprintf(stderr, "Error: %s\n", e.what());
 #else
             MessageBox(NULL, e.what(), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif
@@ -86,11 +109,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             hge->System_Shutdown();
             hge->Release();
         }
+
+
     }
-
-
-    resources.FreeResources();
-    hge->System_Shutdown();
-    hge->Release();
     return 0;
 }

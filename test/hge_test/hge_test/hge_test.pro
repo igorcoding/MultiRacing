@@ -9,14 +9,18 @@ HEADERS += puck.h \
     player.h \
     main.h \
     resourcemanager.h \
-    unix_platform.h
+    unix_platform.h \
+    textureinfo.h \
+    game.h
 
 SOURCES += main.cpp \
            puck.cpp \
     paddle.cpp \
     gfxobject.cpp \
     player.cpp \
-    resourcemanager.cpp
+    resourcemanager.cpp \
+    textureinfo.cpp \
+    game.cpp
 
 QMAKE_CXXFLAGS += -std=c++11
 

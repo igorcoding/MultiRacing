@@ -1,6 +1,9 @@
 #ifndef GFXOBJECT_H
 #define GFXOBJECT_H
 
+#include "unix_platform.h"
+#include "textureinfo.h"
+
 namespace NeonHockey
 {
     struct GfxObject
@@ -13,15 +16,11 @@ namespace NeonHockey
         float speed;
         float accel;
 
-        float width() const;
-        float height() const;
-
     protected:
-        GfxObject(float width, float height);
+        GfxObject(const TextureInfo& textureInfo);
 
     private:
-        float _width;
-        float _height;
+        TextureInfo _textureInfo;
     };
 
 }
