@@ -119,10 +119,6 @@ int main(int argc, char *argv[])
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
 {
-    Puck puck1;
-    puck1.x(12.0);
-    auto x = puck1.x();
-
     hge = hgeCreate(HGE_VERSION);
 
     // Set desired system states and initialize HGE
