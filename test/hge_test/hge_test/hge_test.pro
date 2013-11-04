@@ -3,10 +3,20 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-HEADERS += puck.h
+HEADERS += puck.h \
+    paddle.h \
+    gfxobject.h \
+    player.h \
+    main.h \
+    resourcemanager.h \
+    unix_platform.h
 
 SOURCES += main.cpp \
-           puck.cpp
+           puck.cpp \
+    paddle.cpp \
+    gfxobject.cpp \
+    player.cpp \
+    resourcemanager.cpp
 
 QMAKE_CXXFLAGS += -std=c++11
 
