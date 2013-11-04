@@ -1,0 +1,11 @@
+client -> server
+    1 clientName\n
+    2 coordX coordY\n //бита (без коррекции)
+
+server -> client
+    1 clientId\n
+    2 \n //gameStarted
+    3 clientId coordX coordY\n //бита (с учётом коллизий)
+    4 coordX coordY\n //шайба
+    5\n //gameOver
+    6 clientId scoreValue\n
