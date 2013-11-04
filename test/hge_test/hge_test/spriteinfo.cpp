@@ -1,4 +1,4 @@
-#include "textureinfo.h"
+#include "spriteinfo.h"
 
 namespace NeonHockey
 {

@@ -1,5 +1,4 @@
 #include "game.h"
-#include "textureinfo.h"
 
 namespace NeonHockey
 {

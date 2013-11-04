@@ -10,8 +10,8 @@ HEADERS += puck.h \
     main.h \
     resourcemanager.h \
     unix_platform.h \
-    textureinfo.h \
-    game.h
+    game.h \
+    spriteinfo.h
 
 SOURCES += main.cpp \
            puck.cpp \
@@ -19,8 +19,8 @@ SOURCES += main.cpp \
     gfxobject.cpp \
     player.cpp \
     resourcemanager.cpp \
-    textureinfo.cpp \
-    game.cpp
+    game.cpp \
+    spriteinfo.cpp
 
 QMAKE_CXXFLAGS += -std=c++11
 
