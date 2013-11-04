@@ -3,11 +3,13 @@
 
 #include "unix_platform.h"
 
-#include <vector>
-#include <map>
-
 #include <hge.h>
 #include <hgesprite.h>
+
+#include <map>
+#include <string>
+
+
 
 namespace NeonHockey
 {
@@ -15,7 +17,8 @@ namespace NeonHockey
     {
         enum GfxObjectType {
             PUCK,
-            PADDLE
+            PADDLE1,
+            PADDLE2
         };
     }
 
@@ -25,14 +28,15 @@ namespace NeonHockey
         ResourceManager(HGE* hge = nullptr);
         ~ResourceManager();
 
-        void InitHge(HGE *hge);
-        void FreeResources();
-        void FreeResource(GfxType::GfxObjectType gfxType);
-        void AddTexture(GfxType::GfxObjectType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
-        hgeSprite* AddSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
+        void initHge(HGE *hge);
+        void freeResources();
+        void freeResource(GfxType::GfxObjectType gfxType);
+        void addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size = 0, bool bMipmap = false);
+        void addTexture(GfxType::GfxObjectType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
+        hgeSprite* addSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
 
-        HTEXTURE GetTexture(GfxType::GfxObjectType gfxType);
-        hgeSprite* GetSprite(GfxType::GfxObjectType gfxType);
+        HTEXTURE getTexture(GfxType::GfxObjectType gfxType);
+        hgeSprite* getSprite(GfxType::GfxObjectType gfxType);
 
     private:
         HGE* _hge;

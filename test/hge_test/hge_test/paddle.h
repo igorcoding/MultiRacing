@@ -8,7 +8,7 @@ namespace NeonHockey
     class Paddle : public GfxObject
     {
     public:
-        Paddle(const TextureInfo& textureInfo);
+        Paddle(const SpriteInfo& spriteInfo);
     };
 }
 

@@ -16,11 +16,13 @@ namespace NeonHockey
         float speed;
         float accel;
 
+        const SpriteInfo& spriteInfo() const;
+
     protected:
-        GfxObject(const TextureInfo& textureInfo);
+        GfxObject(const SpriteInfo& spriteInfo);
 
     private:
-        TextureInfo _textureInfo;
+        SpriteInfo _spriteInfo;
     };
 
 }

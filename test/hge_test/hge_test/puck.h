@@ -9,7 +9,7 @@ namespace NeonHockey
     class Puck : public GfxObject
     {
     public:
-        Puck(const TextureInfo& textureInfo);
+        Puck(const SpriteInfo& spriteInfo);
 
     private:
         Player* _hitter;

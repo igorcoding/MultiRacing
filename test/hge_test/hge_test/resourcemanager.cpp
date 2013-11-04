@@ -10,15 +10,15 @@ namespace NeonHockey
     ResourceManager::~ResourceManager()
     {
         if (!_clear)
-            FreeResources();
+            freeResources();
     }
 
-    void ResourceManager::InitHge(HGE* hge)
+    void ResourceManager::initHge(HGE* hge)
     {
         _hge = hge;
     }
 
-    void ResourceManager::FreeResources()
+    void ResourceManager::freeResources()
     {
         for (auto it = _sprites.begin(); it != _sprites.end(); ++it)
             delete it->second;
@@ -29,7 +29,7 @@ namespace NeonHockey
         _clear = true;
     }
 
-    void ResourceManager::FreeResource(GfxType::GfxObjectType gfxType)
+    void ResourceManager::freeResource(GfxType::GfxObjectType gfxType)
     {
         auto foundTexture = _textures.find(gfxType);
         if (foundTexture != _textures.end())            // if there is a texture under gfxType
@@ -45,19 +45,24 @@ namespace NeonHockey
         }
     }
 
-    void ResourceManager::AddTexture(GfxType::GfxObjectType gfxType, const char *filename, DWORD size, bool bMipmap)
+    void ResourceManager::addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size, bool bMipmap)
+    {
+        addTexture(gfxType, filename.c_str(), size, bMipmap);
+    }
+
+    void ResourceManager::addTexture(GfxType::GfxObjectType gfxType, const char *filename, DWORD size, bool bMipmap)
     {
         HTEXTURE texture = _hge->Texture_Load(filename, size, bMipmap);
         if (!texture)
             throw std::exception();  // TODO: not sure if we need to clean up all the resources here
 
-        FreeResource(gfxType); // delete resource if it is already initialized
+        freeResource(gfxType); // delete resource if it is already initialized
         _textures[gfxType] = texture;
         if (_clear)
             _clear = false;
     }
 
-    hgeSprite* ResourceManager::AddSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h)
+    hgeSprite* ResourceManager::addSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h)
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
@@ -69,7 +74,7 @@ namespace NeonHockey
         return _sprites[gfxType];
     }
 
-    HTEXTURE ResourceManager::GetTexture(GfxType::GfxObjectType gfxType)
+    HTEXTURE ResourceManager::getTexture(GfxType::GfxObjectType gfxType)
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
@@ -77,7 +82,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    hgeSprite* ResourceManager::GetSprite(GfxType::GfxObjectType gfxType)
+    hgeSprite* ResourceManager::getSprite(GfxType::GfxObjectType gfxType)
     {
         auto foundKey = _sprites.find(gfxType);
         if (foundKey == _sprites.end())
