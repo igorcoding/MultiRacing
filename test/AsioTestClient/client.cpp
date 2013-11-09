@@ -49,6 +49,8 @@ void Client::connect(std::string ip, int port)
 
             if(messageType == ServerMessageType::GameStarted)
             {
+                _gameStarted = true;
+
                 std::cout << "Game stared!" << std::endl;
 
                 //start listener thread
@@ -74,23 +76,45 @@ void Client::connect(std::string ip, int port)
     }
 }
 
+void Client::sendPaddleCoords(int x, int y)
+{
+    _cachedCoords.x = x;
+    _cachedCoords.y = y;
+    _cachedCoords.isReady = true;
+}
+
+void Client::getEnemyPaddleCoords(int &x, int &y)
+{
+    x = _cachedEnemyCoords.x;
+    y = _cachedEnemyCoords.y;
+}
+
+bool Client::isGameStarted() const
+{
+    return _gameStarted;
+}
+
 Client::Client()
     : _socket(_service)
 {
 
 }
 
-void Client::sendCoords(int x, int y)
+void Client::sendCoords()
 {
     _mutex.lock();
 
-    _socket.send(boost::asio::buffer(
-                  std::to_string(ClientMessageType::PaddlePos) + " " +
-                  std::to_string(x) + " " +
-                  std::to_string(y) + "\n"));
+    if(_cachedCoords.isReady)
+    {
+        _socket.send(boost::asio::buffer(
+                      std::to_string(ClientMessageType::PaddlePos) + " " +
+                      std::to_string(_cachedCoords.x) + " " +
+                      std::to_string(_cachedCoords.y) + "\n"));
 
-    std::cout << "Coords sent" << std::endl;
+        _cachedCoords.isReady = false;
 
+        std::cout << "Coords sent" << std::endl;
+    }
 
     _mutex.unlock();
 }
@@ -98,12 +122,16 @@ void Client::sendCoords(int x, int y)
 
 void Client::inputThreadProc()
 {
-    int x = 0, y = 0;
-
-    while(!std::cin.eof())
+    while(!_shouldStop)
     {
-        std::cin >> x >> y;
-        sendCoords(x, y);
+        if(_cachedCoords.isReady)
+        {
+            sendCoords();
+            _cachedCoords.isReady = false;
+        }
+
+        //relax CPU for a bit
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
@@ -132,6 +160,11 @@ void Client::listenerThreadProc()
 
             _mutex.lock();
             //update view
+
+            _cachedEnemyCoords.x = coordX;
+            _cachedEnemyCoords.y = coordY;
+            _cachedEnemyCoords.isReady = true;
+
             std::cout << "Coords recieved: " << coordX << " " << coordY << std::endl;
             _mutex.unlock();
 
@@ -143,6 +176,6 @@ void Client::listenerThreadProc()
             break;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

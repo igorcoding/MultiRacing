@@ -5,15 +5,6 @@
 #include <vector>
 #include <memory>
 
-namespace ClientMessageType
-{
-    enum { Error, Auth, PaddlePos };
-}
-
-namespace ServerMessageType
-{
-    enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, GameOver, Score };
-}
 
 struct Client
 {
@@ -40,6 +31,9 @@ private:
     Server();
     Server(const Server& root) = delete;
     Server& operator=(const Server&) = delete;
+
+    struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, GameOver, Score }; };
 
     boost::asio::io_service io_service;
     std::vector<Client> clients;

@@ -30,7 +30,7 @@ void Logic::start()
         _shouldStop = frameFunc();
 
         _mutex.unlock();
-        std::this_thread::sleep_for(std::chrono::seconds(_framePeriod));
+        std::this_thread::sleep_for(std::chrono::milliseconds(_framePeriod));
     }
     while(!_shouldStop);
 }

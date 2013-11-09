@@ -90,7 +90,7 @@ void Server::start()
                         [this, &client](){ listenerThread(client); });
         }
 
-        std::cout << "Game started!" << endl;
+        std::cout << "Game started!" << std::endl;
 
         //start logic thread
         std::thread logicThread(std::bind(&Logic::start,
