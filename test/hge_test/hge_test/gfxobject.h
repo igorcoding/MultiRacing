@@ -2,7 +2,7 @@
 #define GFXOBJECT_H
 
 #include "unix_platform.h"
-#include "textureinfo.h"
+#include "spriteinfo.h"
 
 namespace NeonHockey
 {
@@ -16,11 +16,13 @@ namespace NeonHockey
         float speed;
         float accel;
 
+        const SpriteInfo& spriteInfo() const;
+
     protected:
-        GfxObject(const TextureInfo& textureInfo);
+        GfxObject(const SpriteInfo& spriteInfo);
 
     private:
-        TextureInfo _textureInfo;
+        const SpriteInfo& _spriteInfo;
     };
 
 }

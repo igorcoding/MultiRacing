@@ -5,15 +5,15 @@
 
 namespace NeonHockey
 {
-    class TextureInfo
+    class SpriteInfo
     {
     public:
-        TextureInfo(float xTexturePos, float yTexturePos, float width, float height, const std::string& texturePath);
+        SpriteInfo(float xTexturePos, float yTexturePos, float width, float height, const std::string& texturePath);
         float xTexturePos() const;
         float yTexturePos() const;
         float width() const;
         float height() const;
-        std::string texturePath() const;
+        const std::string& texturePath() const;
 
     private:
         float _xTexturePos;

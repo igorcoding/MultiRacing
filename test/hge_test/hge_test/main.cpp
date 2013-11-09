@@ -1,4 +1,21 @@
-#include "unix_platform.h"
+#include "game.h"
+#include <iostream>
+
+int main()
+{
+    using namespace NeonHockey;
+    try
+    {
+        Game& game = Game::getInstance();
+        game.start();
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+/*#include "unix_platform.h"
 #include "main.h"
 
 #include <vector>
@@ -48,8 +65,8 @@ bool RenderFunc()
     Section top(0, middle_line, screen_width-1, 0);
     Section bottom(0, screen_height-1, screen_width, middle_line);
 
-    auto puckSprite = resources.GetSprite(GfxType::PUCK);
-    auto paddleSprite = resources.GetSprite(GfxType::PADDLE);
+    auto puckSprite = resources.getSprite(GfxType::PUCK);
+    auto paddleSprite = resources.getSprite(GfxType::PADDLE1);
 
     puckSprite->Render(screen_width/2 - 1, middle_line);
     paddleSprite->Render(bottom.x_rt/2, screen_height - paddle_padding);
@@ -65,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
 {
     hge = hgeCreate(HGE_VERSION);
-    resources.InitHge(hge);
+    resources.initHge(hge);
 
     // Set desired system states and initialize HGE
     hge->System_SetState(HGE_LOGFILE, "hge_test.log");
@@ -84,17 +101,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         // Load textures
         try
         {
-            resources.AddTexture(GfxType::PUCK, "resources/particles.png");
-            resources.AddTexture(GfxType::PADDLE, "resources/zazaka.png");
+            resources.addTexture(GfxType::PUCK, "resources/particles.png");
+            resources.addTexture(GfxType::PADDLE1, "resources/zazaka.png");
 
-            resources.AddSprite(GfxType::PUCK, 96, 64, 32, 32)->SetHotSpot(16,16);
-            resources.AddSprite(GfxType::PADDLE, 0, 0, 64, 64)->SetHotSpot(32,32);
+            resources.addSprite(GfxType::PUCK, 96, 64, 32, 32)->SetHotSpot(16,16);
+            resources.addSprite(GfxType::PADDLE1, 0, 0, 64, 64)->SetHotSpot(32,32);
 
 
             hge->System_Start();
 
 
-            resources.FreeResources();
+            resources.freeResources();
             hge->System_Shutdown();
             hge->Release();
         }
@@ -105,7 +122,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
             MessageBox(NULL, e.what(), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif
-            resources.FreeResources();
+            resources.freeResources();
             hge->System_Shutdown();
             hge->Release();
         }
@@ -114,3 +131,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
     return 0;
 }
+*/
