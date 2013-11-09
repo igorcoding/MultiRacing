@@ -40,9 +40,9 @@ bool Logic::frameFunc()
     //being called each 1/framePeriod time
 
     //send changes to all clients
-    Server::getInstance().sendData();
+    //Server::getInstance().sendData();
 
-    return true;
+    return false;
 }
 
 bool Logic::shouldStop() const
