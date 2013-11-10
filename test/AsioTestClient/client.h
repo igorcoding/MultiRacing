@@ -22,7 +22,13 @@ public:
     //immediately returns cached coords
     void getEnemyPaddleCoords(int &x, int &y);
 
+    //returns true after GameStarted message from server
     bool isGameStarted() const;
+
+    //gets client id (0 or 1, or -1 if id isn't assigned yet)
+    int id() const;
+
+    bool isConnected() const;
 
 private:
     Client();
@@ -50,6 +56,8 @@ private:
     std::mutex _mutex;
     boost::asio::ip::tcp::socket _socket;
 
+    int _id = -1;
+    bool _connected = false;
     bool _shouldStop = false;
     bool _gameStarted = false;
 };

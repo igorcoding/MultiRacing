@@ -1,3 +1,4 @@
+#include <lexical_cast.hpp>
 #include "client.h"
 
 Client &Client::getInstance()
@@ -17,6 +18,7 @@ void Client::connect(std::string ip, int port)
         _socket.open(ip::tcp::v4());
         _socket.connect(ep);
 
+        _connected = true;
         std::cout << "Connected to: " << ep.address() << ":" << ep.port() << std::endl;
 
         _socket.write_some(buffer(std::to_string(ClientMessageType::Auth) + " Vasja\n"));
@@ -34,12 +36,14 @@ void Client::connect(std::string ip, int port)
 
         if(messageType == ServerMessageType::ClientId)
         {
-            std::string clientId;
+            std::string clientId; //TODO: заменил на число
             is >> clientId;
 
             is.ignore(); //skip \n
 
             std::cout << "Client id: " << clientId << std::endl;
+
+            _id = boost::lexical_cast<int>(clientId);
 
             //wait for GameStarted message
             read_until(_socket, buffer, "\n");
@@ -92,6 +96,16 @@ void Client::getEnemyPaddleCoords(int &x, int &y)
 bool Client::isGameStarted() const
 {
     return _gameStarted;
+}
+
+int Client::id() const
+{
+    return _id;
+}
+
+bool Client::isConnected() const
+{
+    return _connected;
 }
 
 Client::Client()
