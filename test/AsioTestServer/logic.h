@@ -7,9 +7,8 @@ class Logic
 public:
     static Logic &getInstance();
 
-    void processCoords(int clientId, int coordX, int coordY);
+    void setCoords(int clientId, int coordX, int coordY);
     void start();
-    bool frameFunc();
 
     bool shouldStop() const;
 
@@ -17,6 +16,8 @@ private:
     Logic();
     Logic(const Logic& root) = delete;
     Logic& operator=(const Logic&) = delete;
+
+    bool frameFunc(double dt);
 
     int _framePeriod = 1;
     std::mutex _mutex;

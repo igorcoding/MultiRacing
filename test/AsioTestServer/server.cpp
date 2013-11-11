@@ -152,7 +152,7 @@ void Server::listenerThread(Client &client)
                           << "x: " << coordX << " y: " << coordY << std::endl;
 
                 //does nothing for now
-                Logic::getInstance().processCoords(client.id, coordX, coordY);
+                Logic::getInstance().setCoords(client.id, coordX, coordY);
                 sendCoords(!client.id, coordX, coordY);
 
                 break;
