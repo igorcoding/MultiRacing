@@ -1,17 +1,22 @@
-Date: Wed Nov 13 17:00:34 2013
+   They are responsible for the Windows version, not this build.
 
-Application: Neon Hockey v0.1
-
-OS: Unix
 -------------------------------------------------------------------
+
+-------------------------------------------------------------------
+HGE Started...
        hge-unix can be found at http://icculus.org/hge-unix/
   Please don't bother Relish Games about the Unix version of HGE.
+hge-unix version: 1.81
    They are responsible for the Windows version, not this build.
 -------------------------------------------------------------------
 
 HGE Started...
 hge-unix version: 1.81
-Date: Wed Nov 13 17:00:34 2013
+Date: Wed Nov 13 17:16:09 2013
+
+Application: Neon Hockey v0.1
+OS: Unix
+Date: Wed Nov 13 17:16:09 2013
 
 Application: Neon Hockey v0.1
 OS: Unix
@@ -30,6 +35,8 @@ OpenGL: Using GL_ARB_vertex_buffer_object
 Mode: 800 x 600
 
 OpenGL: loading entry points and examining extensions...
+Init done.
+
 GL_RENDERER: Mesa DRI Intel(R) Ivybridge Mobile 
 GL_VENDOR: Intel Open Source Technology Center
 GL_VERSION: 3.0 Mesa 9.1.7
@@ -41,8 +48,9 @@ Mode: 800 x 600
 
 Init done.
 
-Init done.
 
+Finishing..
+The End.
 
 Finishing..
 The End.

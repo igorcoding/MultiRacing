@@ -10,9 +10,13 @@ int main()
     try
     {
         //start connection
-        std::thread clientThread([]
+        std::string ip = "";
+        std::cout << "Enter IP address: ";
+        std::cin >> ip;
+        std::thread clientThread([&ip]
         {
-            Client::getInstance().connect("172.16.55.161", 14882);
+            //"172.16.55.161"
+            Client::getInstance().connect(ip, 14882);
         });
 
         //wait for second client
