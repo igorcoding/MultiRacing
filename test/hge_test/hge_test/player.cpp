@@ -10,6 +10,21 @@ namespace NeonHockey
     {
     }
 
+    const std::string &Player::getName() const
+    {
+        return _name;
+    }
+
+    BoardSide::BoardSide Player::getSide() const
+    {
+        return _side;
+    }
+
+    int Player::getPoints() const
+    {
+        return _points;
+    }
+
     Paddle* Player::paddle() const
     {
         return _paddle.get();

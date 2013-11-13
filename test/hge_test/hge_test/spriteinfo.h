@@ -15,7 +15,7 @@ namespace NeonHockey
         float height() const;
         const std::string& texturePath() const;
 
-    private:
+    public:
         float _xTexturePos;
         float _yTexturePos;
         float _width;

@@ -12,8 +12,8 @@ namespace NeonHockey
     {
         enum BoardSide
         {
-            TOP,
-            BOTTOM
+            LEFT,
+            RIGHT
         };
     }
 
@@ -23,6 +23,9 @@ namespace NeonHockey
     public:
         Player(const std::string &name, BoardSide::BoardSide boardSide, int points, Paddle_ptr paddle);
 
+        const std::string& getName() const;
+        BoardSide::BoardSide getSide() const;
+        int getPoints() const;
         Paddle* paddle() const;
 
 
