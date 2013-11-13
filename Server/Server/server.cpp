@@ -98,13 +98,30 @@ void Server::start()
 
         logicThread.join();
 
-        //send GameOver to all clients
-        for(auto &client: clients)
+        switch(Logic::getInstance().reason())
         {
-            client.socket.send(
-                        boost::asio::buffer(
-                            std::to_string(ServerMessageType::GameOver) + "\n"));
+        case Logic::StopReason::ClientDisconnected:
+        {
+            std::cout << "Client disconnected!" << std::endl;
+            break;
         }
+        case Logic::StopReason::GameOver:
+        {
+            //send GameOver to all clients
+            for(auto &client: clients)
+            {
+                client.socket.send(
+                            boost::asio::buffer(
+                                std::to_string(ServerMessageType::GameOver) + "\n"));
+                break;
+            }
+        }
+        case Logic::StopReason::ServerStopped:
+        {
+            break;
+        }
+        }
+
 
         //wait
         for(auto &client: clients)
@@ -117,7 +134,7 @@ void Server::start()
             client.socket.close();
         }
     }
-    catch(std::exception& e)
+    catch(boost::system::system_error& e)
     {
         std::cerr << e.what() << std::endl;
     }
@@ -167,6 +184,7 @@ void Server::listenerThread(Client &client)
     catch(std::exception &e)
     {
         std::cerr << e.what() << std::endl;
+        Logic::getInstance().stop(Logic::StopReason::ClientDisconnected);
     }
 }
 

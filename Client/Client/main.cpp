@@ -1,32 +1,46 @@
-#include "game.h"
-#include "client.h"
 #include <iostream>
 #include <thread>
-
+#include <string>
+#include "game.h"
+#include "client.h"
 
 int main()
 {
     using namespace NeonHockey;
-    std::cout << sizeof(float);
+
     try
     {
         //start connection
-        std::string ip = "";
+        std::string ip;
+
         std::cout << "Enter IP address: ";
         std::cin >> ip;
-        std::thread clientThread([&ip]
+        std::thread clientThread([ip]
         {
-            //"172.16.55.161"
-            Client::getInstance().connect(ip, 14882);
+            constexpr int port = 14882;
+
+            srand(time(nullptr));
+            std::string playerName = "Vasja" + std::to_string(rand());
+
+            if(!Client::getInstance().connect(ip, port, playerName))
+                std::cerr << "Unable to connect to: " << ip << ":" << port << std::endl;
         });
 
         //wait for second client
-        while(!Client::getInstance().isGameStarted()) {};
+        while(!Client::getInstance().isGameStarted())
+        {
+            if(Client::getInstance().shouldStop())
+            {
+                clientThread.join(); //wait for it to die
+                return 1;
+            }
+        };
 
 
         Game& game = Game::getInstance();
         game.start();
 
+        Client::getInstance().stop();
 
         clientThread.join();
     }

@@ -42,6 +42,12 @@ void Logic::start()
     while(!_shouldStop);
 }
 
+void Logic::stop(Logic::StopReason reason)
+{
+    _reason = reason;
+    _shouldStop = true;
+}
+
 bool Logic::frameFunc(double dt)
 {
     //being called each dt seconds
@@ -55,4 +61,9 @@ bool Logic::frameFunc(double dt)
 bool Logic::shouldStop() const
 {
     return _shouldStop;
+}
+
+Logic::StopReason Logic::reason() const
+{
+    return _reason;
 }

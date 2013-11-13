@@ -14,7 +14,7 @@ public:
     static Client& getInstance();
 
     //connects to the server
-    void connect(std::string ip, int port);
+    bool connect(std::string ip, int port, std::string playerName);
 
     //sets Data's values and isReady flag
     void sendPaddleCoords(float x, float y);
@@ -29,6 +29,11 @@ public:
     int id() const;
 
     bool isConnected() const;
+
+    //if any errors occured
+    bool shouldStop() const;
+
+    void stop();
 
 private:
     Client();

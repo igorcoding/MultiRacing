@@ -16,7 +16,7 @@ namespace NeonHockey
 
     HGE* Game::_hge = nullptr;
     std::vector<Player> Game::_players;
-    Game::Puck_ptr Game::_puck;
+    Game::Puck_ptr Game::_puck = nullptr;
     ResourceManager Game::_resources;
 
 
@@ -87,10 +87,10 @@ namespace NeonHockey
 
     void Game::initializeGameStates(Game* game)
     {
-        game->_hge->System_SetState(HGE_LOGFILE, Game::game_log.c_str());
+        game->_hge->System_SetState(HGE_LOGFILE, "I tut hui");
         game->_hge->System_SetState(HGE_FRAMEFUNC, Game::frameFunc);
         game->_hge->System_SetState(HGE_RENDERFUNC, Game::renderFunc);
-        game->_hge->System_SetState(HGE_TITLE, Game::game_title.c_str());
+        game->_hge->System_SetState(HGE_TITLE, "Hui");
         game->_hge->System_SetState(HGE_USESOUND, false);
         game->_hge->System_SetState(HGE_WINDOWED, true);
         game->_hge->System_SetState(HGE_HIDEMOUSE, false);
@@ -205,6 +205,9 @@ namespace NeonHockey
 
         Client::getInstance().getEnemyPaddleCoords(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
 
+        //some kind of error occured?
+        if(Client::getInstance().shouldStop())
+            return true;
 
         return false;
     }

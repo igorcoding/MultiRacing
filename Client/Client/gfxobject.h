@@ -1,7 +1,6 @@
 #ifndef GFXOBJECT_H
 #define GFXOBJECT_H
 
-#include "unix_platform.h"
 #include "spriteinfo.h"
 
 namespace NeonHockey

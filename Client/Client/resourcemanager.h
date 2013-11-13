@@ -1,8 +1,6 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include "unix_platform.h"
-
 #include <hge.h>
 #include <hgesprite.h>
 

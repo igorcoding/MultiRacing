@@ -7,10 +7,15 @@ class Logic
 public:
     static Logic &getInstance();
 
+    enum class StopReason { ClientDisconnected, GameOver, ServerStopped };
+
     void setCoords(int clientId, int coordX, int coordY);
     void start();
 
+    void stop(StopReason reason);
+
     bool shouldStop() const;
+    StopReason reason() const;
 
 private:
     Logic();
@@ -22,6 +27,7 @@ private:
     int _framePeriod = 1;
     std::mutex _mutex;
     bool _shouldStop = false;
+    StopReason _reason;
 };
 
 #endif // LOGIC_H

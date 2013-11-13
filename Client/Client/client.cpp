@@ -7,7 +7,7 @@ Client &Client::getInstance()
     return inst;
 }
 
-void Client::connect(std::string ip, int port)
+bool Client::connect(std::string ip, int port, std::string playerName)
 {
     using namespace boost::asio;
 
@@ -21,7 +21,8 @@ void Client::connect(std::string ip, int port)
         _connected = true;
         std::cout << "Connected to: " << ep.address() << ":" << ep.port() << std::endl;
 
-        _socket.write_some(buffer(std::to_string(ClientMessageType::Auth) + " Vasja\n"));
+        _socket.write_some(buffer(std::to_string(ClientMessageType::Auth) + " "
+                                  + playerName + "\n"));
 
         boost::asio::streambuf buffer;
         boost::system::error_code err;
@@ -70,14 +71,17 @@ void Client::connect(std::string ip, int port)
         _socket.shutdown(ip::tcp::socket::shutdown_receive);
         _socket.close();
     }
-    catch(std::exception &ex)
+    catch(boost::system::system_error& e)
     {
-        std::cout << ex.what() << std::endl;
+        _socket.close();
+
+        std::cerr << e.what() << std::endl;
+        _shouldStop = true;
+
+        return false;
     }
-    catch(...)
-    {
-        std::cout << "Unexpected error" << std::endl;
-    }
+
+    return true;
 }
 
 void Client::sendPaddleCoords(float x, float y)
@@ -108,6 +112,16 @@ bool Client::isConnected() const
     return _connected;
 }
 
+bool Client::shouldStop() const
+{
+    return _shouldStop;
+}
+
+void Client::stop()
+{
+    _shouldStop = true;
+}
+
 Client::Client()
     : _socket(_service)
 {
@@ -120,14 +134,21 @@ void Client::sendCoords()
 
     if(_cachedCoords.isReady)
     {
-        _socket.send(boost::asio::buffer(
-                      std::to_string(ClientMessageType::PaddlePos) + " " +
-                      std::to_string(_cachedCoords.x) + " " +
-                      std::to_string(_cachedCoords.y) + "\n"));
+        try
+        {
+            _socket.send(boost::asio::buffer(
+                          std::to_string(ClientMessageType::PaddlePos) + " " +
+                          std::to_string(_cachedCoords.x) + " " +
+                          std::to_string(_cachedCoords.y) + "\n"));
 
-        _cachedCoords.isReady = false;
-
-        std::cout << "Coords sent" << std::endl;
+            _cachedCoords.isReady = false;
+            std::cout << "Coords sent" << std::endl;
+        }
+        catch(boost::system::system_error& e)
+        {
+            std::cerr << e.what() << std::endl;
+            _shouldStop = true;
+        }
     }
 
     _mutex.unlock();
@@ -157,7 +178,15 @@ void Client::listenerThreadProc()
 
     while(!_shouldStop)
     {
-        read_until(_socket, buffer, "\n");
+        try
+        {
+            read_until(_socket, buffer, "\n");
+        }
+        catch(boost::system::system_error& e)
+        {
+            std::cerr << e.what() << std::endl;
+            _shouldStop = true;
+        }
 
         int messageType = 0;
         is >> messageType;

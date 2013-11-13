@@ -14,8 +14,8 @@ HEADERS += \
     server.h \
     logic.h
 
-QMAKE_CXXFLAGS += -pthread -std=c++11
-QMAKE_LFLAGS += -pthread -std=c++11
+QMAKE_CXXFLAGS += -pthread -std=c++1y
+QMAKE_LFLAGS += -pthread -std=c++1y
 
 unix {
     LIBS += -L/usr/local/lib \
