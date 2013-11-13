@@ -9,7 +9,7 @@ namespace NeonHockey
 
     const std::string Game::game_title = "Neon Hockey v0.1";
     const std::string Game::game_log = "neonhockey.log";
-    const int Game::screen_width = 800; //REVIEW: давай ориентировать на 16:9, например на ноутбучные 1366x768
+    const int Game::screen_width = 800;
     const int Game::screen_height = 600;
     std::vector<SpriteInfo> Game::gfx_textures;
 
