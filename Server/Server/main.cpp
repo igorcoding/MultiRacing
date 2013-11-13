@@ -1,10 +1,12 @@
 #include <iostream>
-
-using namespace std;
+#include <locale>
+#include "server.h"
 
 int main()
 {
-    cout << "Hello World!" << endl;
-    return 0;
+    std::setlocale(LC_ALL, "Russian");
+
+    Server::getInstance().start();
 }
+
 

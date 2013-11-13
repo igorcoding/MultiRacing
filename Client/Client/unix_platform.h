@@ -1,0 +1,6 @@
+#ifndef UNIX_PLATFORM_H
+#define UNIX_PLATFORM_H
+
+#define PLATFORM_UNIX 1
+
+#endif // UNIX_PLATFORM_H
