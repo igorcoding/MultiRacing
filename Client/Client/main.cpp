@@ -7,6 +7,7 @@
 int main()
 {
     using namespace NeonHockey;
+    std::cout << sizeof(float);
     try
     {
         //start connection
