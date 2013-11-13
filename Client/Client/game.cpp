@@ -81,8 +81,8 @@ namespace NeonHockey
 
     void Game::setGfxResources()
     {
-        Game::gfx_textures.emplace_back(SpriteInfo(96, 64, 32, 32, "resources/particles.png"));
-        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "resources/zazaka.png"));
+        Game::gfx_textures.emplace_back(SpriteInfo(96, 64, 32, 32, "../resources/particles.png"));
+        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/zazaka.png"));
     }
 
     void Game::initializeGameStates(Game* game)
@@ -198,14 +198,13 @@ namespace NeonHockey
             {
                 currentPlayer.paddle()->x = mouse_x;
                 currentPlayer.paddle()->y = mouse_y;
-
-
+                Client::getInstance().sendPaddleCoords(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
             }
 
         }
 
         Client::getInstance().getEnemyPaddleCoords(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
-        Client::getInstance().sendPaddleCoords(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+
 
         return false;
     }

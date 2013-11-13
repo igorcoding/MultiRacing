@@ -1,0 +1,6 @@
+Client/build-Client-Desktop_Qt_5_1_1_GCC_64bit-Debug/
+Client/Client/*.pro.user
+
+Server/build-Server-Desktop_Qt_5_1_1_GCC_64bit-Debug/
+Server/Server/*.pro.user
+
