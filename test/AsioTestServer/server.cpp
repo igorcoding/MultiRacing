@@ -24,7 +24,6 @@ void Server::start()
     {
         using namespace boost::asio::ip;
 
-        boost::asio::io_service io_service;
         tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), _port));
         boost::system::error_code error;
 
@@ -77,6 +76,8 @@ void Server::start()
             }
         }
 
+        acceptor.close();
+
         //let's begin our game
         for(auto &client: clients)
         {
@@ -85,8 +86,11 @@ void Server::start()
                             std::to_string(ServerMessageType::GameStarted) + "\n"));
 
             //start listener thread
-            client.thread = std::thread(listenerThread, std::ref(client));
+            client.thread = std::thread(
+                        [this, &client](){ listenerThread(client); });
         }
+
+        std::cout << "Game started!" << std::endl;
 
         //start logic thread
         std::thread logicThread(std::bind(&Logic::start,
@@ -136,7 +140,7 @@ void Server::listenerThread(Client &client)
             //падает тут при чтении данных от второго клиента
             switch(messageType)
             {
-            case ClientMessageType::Coord:
+            case ClientMessageType::PaddlePos:
             {
                 int coordX = 0;
                 int coordY = 0;
@@ -144,11 +148,12 @@ void Server::listenerThread(Client &client)
                 is >> coordX >> coordY;
                 is.ignore(); //skip \n
 
-                std::cout << "Coord recieved from client: " << client.id << std::endl
+                std::cout << "Coords recieved from client: " << client.id << std::endl
                           << "x: " << coordX << " y: " << coordY << std::endl;
 
                 //does nothing for now
-                Logic::getInstance().processCoords(client.id, coordX, coordY);
+                Logic::getInstance().setCoords(client.id, coordX, coordY);
+                sendCoords(!client.id, coordX, coordY);
 
                 break;
             }
@@ -165,14 +170,10 @@ void Server::listenerThread(Client &client)
     }
 }
 
-void Server::sendData()
+void Server::sendCoords(int clientId, int x, int y)
 {
-    //update data on all clients
-    for(auto &client: clients)
-    {
-        client.socket.send(
-                    boost::asio::buffer(
-                        std::to_string(ServerMessageType::PuckPos) + " 10 20\n"));
-
-    }
+    clients[clientId].socket.send(boost::asio::buffer(
+                  std::to_string(ServerMessageType::PaddlePos) + " " +
+                  std::to_string(x) + " " +
+                  std::to_string(y) + "\n"));
 }

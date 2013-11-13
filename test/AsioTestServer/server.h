@@ -5,15 +5,6 @@
 #include <vector>
 #include <memory>
 
-namespace ClientMessageType
-{
-    enum { Error, Auth, Coord };
-}
-
-namespace ServerMessageType
-{
-    enum { Error, ClientId, GameStarted, BeaterPos, PuckPos, GameOver, Score };
-}
 
 struct Client
 {
@@ -32,15 +23,19 @@ public:
     static Server& getInstance();
 
     void start();
-    static void listenerThread(Client &client);
+    void listenerThread(Client &client);
 
-    void sendData();
+    void sendCoords(int clientId, int x, int y);
 
 private:
     Server();
     Server(const Server& root) = delete;
     Server& operator=(const Server&) = delete;
 
+    struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, GameOver, Score }; };
+
+    boost::asio::io_service io_service;
     std::vector<Client> clients;
     const int _port = 14882;
 };
