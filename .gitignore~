@@ -1,0 +1,10 @@
+Client/build-Client-Desktop_Qt_5_1_1_GCC_64bit-Debug/
+<<<<<<< HEAD
+Client/Client/*.pro.user
+
+Server/build-Server-Desktop_Qt_5_1_1_GCC_64bit-Debug/
+Server/Server/*.pro.user
+
+=======
+Server/build-Server-Desktop_Qt_5_1_1_GCC_64bit-Debug/
+>>>>>>> 74dfa790f846408381b5b76699468667c2a691e2
