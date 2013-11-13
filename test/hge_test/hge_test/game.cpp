@@ -104,8 +104,8 @@ namespace NeonHockey
         int texture1_id = 1;
         int texture2_id = 1;
 
-        Player p1("Player 1", BoardSide::RIGHT, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
-        Player p2("Player 2", BoardSide::LEFT, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
+        Player p1("Player 1", BoardSide::LEFT, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
+        Player p2("Player 2", BoardSide::RIGHT, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
 
         _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[0])));
         _players.emplace_back(std::move(p1));
@@ -158,24 +158,25 @@ namespace NeonHockey
 
         if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
         {
+            Player& currentPlayer = _players[0];
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
-            bool inplace = false;
+            bool inplace = true;
             switch (_players[0].getSide())
             {
             case BoardSide::LEFT:
-                if (mouse_x <= screen_width / 2)
-                    inplace = true;
+                if (!(mouse_x <= screen_width / 2 - currentPlayer.paddle()->spriteInfo().width() / 2))
+                    inplace = false;
                 break;
             case BoardSide::RIGHT:
-                if (mouse_x >= screen_width / 2)
-                    inplace = true;
+                if (!(mouse_x >= screen_width / 2 + currentPlayer.paddle()->spriteInfo().width() / 2))
+                    inplace = false;
                 break;
             }
 
             if (inplace)
             {
-                _players[0].paddle()->x = mouse_x;
-                _players[0].paddle()->y = mouse_y;
+                currentPlayer.paddle()->x = mouse_x;
+                currentPlayer.paddle()->y = mouse_y;
             }
 
         }
