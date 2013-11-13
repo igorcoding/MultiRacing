@@ -1,28 +1,19 @@
-
-
--------------------------------------------------------------------
-       hge-unix can be found at http://icculus.org/hge-unix/
--------------------------------------------------------------------
-  Please don't bother Relish Games about the Unix version of HGE.
-   They are responsible for the Windows version, not this build.
-       hge-unix can be found at http://icculus.org/hge-unix/
--------------------------------------------------------------------
-  Please don't bother Relish Games about the Unix version of HGE.
-
-   They are responsible for the Windows version, not this build.
-HGE Started...
--------------------------------------------------------------------
-hge-unix version: 1.81
-
-HGE Started...
-hge-unix version: 1.81
-Date: Wed Nov 13 16:40:36 2013
-
-Date: Wed Nov 13 16:40:36 2013
+Date: Wed Nov 13 17:00:34 2013
 
 Application: Neon Hockey v0.1
-Application: Neon Hockey v0.1
+
 OS: Unix
+-------------------------------------------------------------------
+       hge-unix can be found at http://icculus.org/hge-unix/
+  Please don't bother Relish Games about the Unix version of HGE.
+   They are responsible for the Windows version, not this build.
+-------------------------------------------------------------------
+
+HGE Started...
+hge-unix version: 1.81
+Date: Wed Nov 13 17:00:34 2013
+
+Application: Neon Hockey v0.1
 OS: Unix
 Screen: 1366x768
 
@@ -52,9 +43,6 @@ Init done.
 
 Init done.
 
-
-Finishing..
-The End.
 
 Finishing..
 The End.

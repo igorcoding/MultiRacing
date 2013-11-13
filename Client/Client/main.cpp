@@ -12,7 +12,7 @@ int main()
         //start connection
         std::thread clientThread([]
         {
-            Client::getInstance().connect("127.0.0.1", 14882);
+            Client::getInstance().connect("172.16.55.161", 14882);
         });
 
         //wait for second client

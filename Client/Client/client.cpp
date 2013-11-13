@@ -80,14 +80,14 @@ void Client::connect(std::string ip, int port)
     }
 }
 
-void Client::sendPaddleCoords(int x, int y)
+void Client::sendPaddleCoords(float x, float y)
 {
     _cachedCoords.x = x;
     _cachedCoords.y = y;
     _cachedCoords.isReady = true;
 }
 
-void Client::getEnemyPaddleCoords(int &x, int &y)
+void Client::getEnemyPaddleCoords(float &x, float &y)
 {
     x = _cachedEnemyCoords.x;
     y = _cachedEnemyCoords.y;

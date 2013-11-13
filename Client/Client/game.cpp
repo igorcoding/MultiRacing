@@ -102,14 +102,16 @@ namespace NeonHockey
     void Game::initializeGameResources(Game* game)
     {
         int id = Client::getInstance().id();
-        BoardSide::BoardSide side;
+        BoardSide::BoardSide side1, side2;
         switch (id)
         {
         case 0:
-            side = BoardSide::LEFT;
+            side1 = BoardSide::LEFT;
+            side2 = BoardSide::RIGHT;
             break;
         case 1:
-            side = BoardSide::RIGHT;
+            side1 = BoardSide::RIGHT;
+            side2 = BoardSide::LEFT;
             break;
         default:
             throw std::exception();
@@ -119,8 +121,8 @@ namespace NeonHockey
         int texture1_id = 1;
         int texture2_id = 1;
 
-        Player p1("Player 1", side, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
-        Player p2("Player 2", side, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
+        Player p1("Player 1", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
+        Player p2("Player 2", side2, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
 
         _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[0])));
         _players.emplace_back(std::move(p1));
@@ -168,12 +170,16 @@ namespace NeonHockey
     {
         auto dt = _hge->Timer_GetDelta();
 
+
+        Player& currentPlayer = _players[0];
+        Player& enemyPlayer = _players[1];
+
         float mouse_x = 0;
         float mouse_y = 0;
 
         if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
         {
-            Player& currentPlayer = _players[0];
+
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
             bool inplace = true;
             switch (_players[0].getSide())
@@ -192,11 +198,14 @@ namespace NeonHockey
             {
                 currentPlayer.paddle()->x = mouse_x;
                 currentPlayer.paddle()->y = mouse_y;
+
+
             }
 
         }
 
-
+        Client::getInstance().getEnemyPaddleCoords(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
+        Client::getInstance().sendPaddleCoords(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         return false;
     }

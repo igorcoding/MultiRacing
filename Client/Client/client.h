@@ -17,10 +17,10 @@ public:
     void connect(std::string ip, int port);
 
     //sets Data's values and isReady flag
-    void sendPaddleCoords(int x, int y);
+    void sendPaddleCoords(float x, float y);
 
     //immediately returns cached coords
-    void getEnemyPaddleCoords(int &x, int &y);
+    void getEnemyPaddleCoords(float &x, float &y);
 
     //returns true after GameStarted message from server
     bool isGameStarted() const;
