@@ -3,9 +3,13 @@ Client/build-Client-Desktop_Qt_5_1_1_GCC_64bit-Release/
 Client/Client/*.pro.user
 Client/build-Client-Desktop_Qt_5_1_1_MinGW_32bit-Debug/
 Client/build-Client-Desktop_Qt_5_1_1_MinGW_32bit-Release/
+Client/build-Client-Desktop-Debug
+Client/build-Client-Desktop-Release
+
 
 Server/build-Server-Desktop_Qt_5_1_1_GCC_64bit-Debug/
 Server/Server/*.pro.user
 Server/build-Server-Desktop_Qt_5_1_1_MinGW_32bit-Release/
 Server/build-Server-Desktop_Qt_5_1_1_MinGW_32bit-Release/
-
+Server/build-Server-Desktop-Debug
+Server/build-Server-Desktop-Release

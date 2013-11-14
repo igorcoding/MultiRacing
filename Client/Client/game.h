@@ -19,6 +19,10 @@ namespace NeonHockey
         //static Game& getInstance();
         static void start();
         static void endGame();
+
+        static int screenWidth();
+        static int screenHeight();
+
         ~Game();
 
 

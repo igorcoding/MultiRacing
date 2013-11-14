@@ -51,6 +51,16 @@ namespace NeonHockey
         _initialized = false;
     }
 
+    int Game::screenWidth()
+    {
+        return screen_width;
+    }
+
+    int Game::screenHeight()
+    {
+        return screen_height;
+    }
+
     Game::~Game()
     {
         if (_initialized)
