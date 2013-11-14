@@ -169,7 +169,7 @@ void Server::listenerThread(Client &client)
                           << "x: " << coordX << " y: " << coordY << std::endl;
 
                 //does nothing for now
-                Logic::getInstance().setCoords(client.id, coordX, coordY);
+                Logic::getInstance().setPos(client.id, coordX, coordY);
                 sendCoords(!client.id, coordX, coordY);
 
                 break;
@@ -192,6 +192,15 @@ void Server::sendCoords(int clientId, int x, int y)
 {
     clients[clientId].socket.send(boost::asio::buffer(
                   std::to_string(ServerMessageType::PaddlePos) + " " +
-                  std::to_string(x) + " " +
-                  std::to_string(y) + "\n"));
+                  std::to_string(x) + " " + std::to_string(y) + "\n"));
+}
+
+void Server::sendPuckPos(int x, int y)
+{
+    for(auto &client: clients)
+    {
+        client.socket.send(boost::asio::buffer(
+                      std::to_string(ServerMessageType::PuckPos) + " " +
+                      std::to_string(x) + " " + std::to_string(y) + "\n"));
+    }
 }

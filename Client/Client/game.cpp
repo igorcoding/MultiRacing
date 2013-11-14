@@ -176,12 +176,9 @@ namespace NeonHockey
 
     }
 
-
-
     bool Game::frameFunc()
     {
         auto dt = _hge->Timer_GetDelta();
-
 
         Player& currentPlayer = _players[0];
         Player& enemyPlayer = _players[1];
@@ -210,12 +207,15 @@ namespace NeonHockey
             {
                 currentPlayer.paddle()->x = mouse_x;
                 currentPlayer.paddle()->y = mouse_y;
-                Client::getInstance().sendPaddleCoords(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
             }
 
         }
 
-        Client::getInstance().getEnemyPaddleCoords(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
+        //updae coords from server
+        Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
+
+        Client::getInstance().getPuckPos(_puck->x, _puck->y);
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())

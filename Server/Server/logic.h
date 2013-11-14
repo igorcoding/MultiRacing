@@ -9,8 +9,9 @@ public:
 
     enum class StopReason { ClientDisconnected, GameOver, ServerStopped };
 
-    void setCoords(int clientId, int coordX, int coordY);
     void start();
+
+    void setPos(int clientId, int x, int y);
 
     void stop(StopReason reason);
 

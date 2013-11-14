@@ -17,10 +17,12 @@ public:
     bool connect(std::string ip, int port, std::string playerName);
 
     //sets Data's values and isReady flag
-    void sendPaddleCoords(float x, float y);
+    void sendPaddlePos(float x, float y);
 
     //immediately returns cached coords
-    void getEnemyPaddleCoords(float &x, float &y);
+    void getEnemyPaddlePos(float &x, float &y) const;
+
+    void getPuckPos(float &x, float &y) const;
 
     //returns true after GameStarted message from server
     bool isGameStarted() const;
@@ -48,7 +50,10 @@ private:
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedCoords, _cachedEnemyCoords;
+    } _cachedPos, _cachedEnemyPos, _cachedPuckPos;
+
+    //_cachedPuckPos.isReady flag is not used anywhere
+
 
     //sends _data's values
     void sendCoords();

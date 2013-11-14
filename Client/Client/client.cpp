@@ -84,17 +84,23 @@ bool Client::connect(std::string ip, int port, std::string playerName)
     return true;
 }
 
-void Client::sendPaddleCoords(float x, float y)
+void Client::sendPaddlePos(float x, float y)
 {
-    _cachedCoords.x = x;
-    _cachedCoords.y = y;
-    _cachedCoords.isReady = true;
+    _cachedPos.x = x;
+    _cachedPos.y = y;
+    _cachedPos.isReady = true;
 }
 
-void Client::getEnemyPaddleCoords(float &x, float &y)
+void Client::getEnemyPaddlePos(float &x, float &y) const
 {
-    x = _cachedEnemyCoords.x;
-    y = _cachedEnemyCoords.y;
+    x = _cachedEnemyPos.x;
+    y = _cachedEnemyPos.y;
+}
+
+void Client::getPuckPos(float &x, float &y) const
+{
+    x = _cachedPuckPos.x;
+    y = _cachedPuckPos.y;
 }
 
 bool Client::isGameStarted() const
@@ -132,16 +138,16 @@ void Client::sendCoords()
 {
     _mutex.lock();
 
-    if(_cachedCoords.isReady)
+    if(_cachedPos.isReady)
     {
         try
         {
             _socket.send(boost::asio::buffer(
                           std::to_string(ClientMessageType::PaddlePos) + " " +
-                          std::to_string(_cachedCoords.x) + " " +
-                          std::to_string(_cachedCoords.y) + "\n"));
+                          std::to_string(_cachedPos.x) + " " +
+                          std::to_string(_cachedPos.y) + "\n"));
 
-            _cachedCoords.isReady = false;
+            _cachedPos.isReady = false;
             std::cout << "Coords sent" << std::endl;
         }
         catch(boost::system::system_error& e)
@@ -159,10 +165,10 @@ void Client::inputThreadProc()
 {
     while(!_shouldStop)
     {
-        if(_cachedCoords.isReady)
+        if(_cachedPos.isReady)
         {
             sendCoords();
-            _cachedCoords.isReady = false;
+            _cachedPos.isReady = false;
         }
 
         //relax CPU for a bit
@@ -204,11 +210,30 @@ void Client::listenerThreadProc()
             _mutex.lock();
             //update view
 
-            _cachedEnemyCoords.x = coordX;
-            _cachedEnemyCoords.y = coordY;
-            _cachedEnemyCoords.isReady = true;
+            _cachedEnemyPos.x = coordX;
+            _cachedEnemyPos.y = coordY;
+            _cachedEnemyPos.isReady = true;
 
             std::cout << "Coords recieved: " << coordX << " " << coordY << std::endl;
+            _mutex.unlock();
+
+            break;
+        }
+        case ServerMessageType::PuckPos:
+        {
+            int coordX = 0;
+            int coordY = 0;
+
+            is >> coordX >> coordY;
+            is.ignore(); //skip \n
+
+            _mutex.lock();
+
+            _cachedPuckPos.x = coordX;
+            _cachedPuckPos.y = coordY;
+
+            std::cout << "Puck pos received: " << coordX << " " << coordY << std::endl;
+
             _mutex.unlock();
 
             break;

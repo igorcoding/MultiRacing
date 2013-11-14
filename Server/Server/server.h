@@ -27,6 +27,8 @@ public:
 
     void sendCoords(int clientId, int x, int y);
 
+    void sendPuckPos(int x, int y);
+
 private:
     Server();
     Server(const Server& root) = delete;

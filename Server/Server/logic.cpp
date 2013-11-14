@@ -11,16 +11,6 @@ Logic& Logic::getInstance()
     return inst;
 }
 
-void Logic::setCoords(int clientId, int coordX, int coordY)
-{
-    _mutex.lock();
-
-    //save player's coords
-
-
-    _mutex.unlock();
-}
-
 void Logic::start()
 {
     using namespace std::chrono;
@@ -43,6 +33,11 @@ void Logic::start()
     while(!_shouldStop);
 }
 
+void Logic::setPos(int clientId, int x, int y)
+{
+    //save coords to underlying structures
+}
+
 void Logic::stop(Logic::StopReason reason)
 {
     _reason = reason;
@@ -54,7 +49,16 @@ bool Logic::frameFunc(double dt)
     //being called each dt seconds
 
     //send changes to all clients
-    //Server::getInstance().sendData();
+
+    //send only if coordinated got changed pls!
+
+    //testing
+    static int x = 0;
+    static int y = 200;
+
+    x = (x + 1)%800;
+
+    Server::getInstance().sendPuckPos(x, y);
 
     return false;
 }
