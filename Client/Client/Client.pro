@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     paddle.cpp \
     gfxobject.cpp \
     game.cpp \
-    client.cpp
+    client.cpp \
+    log.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -22,7 +23,8 @@ HEADERS += \
     main.h \
     gfxobject.h \
     game.h \
-    client.h
+    client.h \
+    log.h
 
 
 QMAKE_CXXFLAGS += -std=c++11
