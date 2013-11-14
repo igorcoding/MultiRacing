@@ -166,7 +166,7 @@ void Client::inputThreadProc()
         }
 
         //relax CPU for a bit
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
 }
 
@@ -219,6 +219,6 @@ void Client::listenerThreadProc()
             break;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
 }
