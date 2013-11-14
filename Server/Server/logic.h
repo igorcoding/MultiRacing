@@ -1,6 +1,7 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 #include <mutex>
+#include <chrono>
 
 class Logic
 {
@@ -25,7 +26,7 @@ private:
 
     bool frameFunc(double dt);
 
-    int _framePeriod = 5;
+    std::chrono::milliseconds _framePeriod = std::chrono::milliseconds(10);
     std::mutex _mutex;
     bool _shouldStop = false;
     StopReason _reason;

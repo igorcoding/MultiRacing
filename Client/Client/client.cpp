@@ -60,10 +60,10 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
                 //start listener thread
                 std::thread listenerThread(std::bind(&Client::listenerThreadProc, this));
-                std::thread inputThread(std::bind(&Client::inputThreadProc, this));
+                std::thread senderThread(std::bind(&Client::senderThreadProc, this));
 
                 listenerThread.join();
-                inputThread.join();
+                senderThread.join();
             }
         }
 
@@ -134,7 +134,7 @@ Client::Client()
 
 }
 
-void Client::sendCoords()
+void Client::sendPos()
 {
     _mutex.lock();
 
@@ -161,13 +161,13 @@ void Client::sendCoords()
 }
 
 
-void Client::inputThreadProc()
+void Client::senderThreadProc()
 {
     while(!_shouldStop)
     {
         if(_cachedPos.isReady)
         {
-            sendCoords();
+            sendPos();
             _cachedPos.isReady = false;
         }
 

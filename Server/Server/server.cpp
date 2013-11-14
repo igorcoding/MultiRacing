@@ -87,7 +87,7 @@ void Server::start()
 
             //start listener thread
             client.thread = std::thread(
-                        [this, &client](){ listenerThread(client); });
+                        [this, &client](){ listenerThreadProc(client); });
         }
 
         std::cout << "Game started!" << std::endl;
@@ -95,6 +95,13 @@ void Server::start()
         //start logic thread
         std::thread logicThread(std::bind(&Logic::start,
                                           std::ref(Logic::getInstance())));
+
+
+        std::thread senderThread(std::bind(&Server::senderThreadProc,
+                                          std::ref(Server::getInstance())));
+
+
+        senderThread.join();
 
         logicThread.join();
 
@@ -140,7 +147,18 @@ void Server::start()
     }
 }
 
-void Server::listenerThread(Client &client)
+void Server::setPuckPos(int x, int y)
+{
+    if(x != _cachedPuckPos.x || y != _cachedPuckPos.y)
+    {
+        _cachedPuckPos.x = x;
+        _cachedPuckPos.y = y;
+
+        _cachedPuckPos.isReady = true;
+    }
+}
+
+void Server::listenerThreadProc(Client &client)
 {
     boost::asio::streambuf buffer;
     std::istream is(&buffer);
@@ -188,6 +206,21 @@ void Server::listenerThread(Client &client)
     }
 }
 
+void Server::senderThreadProc()
+{
+    while(!Logic::getInstance().shouldStop())
+    {
+        if(_cachedPuckPos.isReady)
+        {
+            sendPuckPos();
+            _cachedPuckPos.isReady = false;
+        }
+
+        //relax CPU for a bit
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
+    }
+}
+
 void Server::sendCoords(int clientId, int x, int y)
 {
     clients[clientId].socket.send(boost::asio::buffer(
@@ -195,12 +228,13 @@ void Server::sendCoords(int clientId, int x, int y)
                   std::to_string(x) + " " + std::to_string(y) + "\n"));
 }
 
-void Server::sendPuckPos(int x, int y)
+void Server::sendPuckPos()
 {
     for(auto &client: clients)
     {
         client.socket.send(boost::asio::buffer(
                       std::to_string(ServerMessageType::PuckPos) + " " +
-                      std::to_string(x) + " " + std::to_string(y) + "\n"));
+                      std::to_string(_cachedPuckPos.x) + " " +
+                      std::to_string(_cachedPuckPos.y) + "\n"));
     }
 }

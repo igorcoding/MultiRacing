@@ -28,7 +28,7 @@ void Logic::start()
 
         _mutex.unlock();
 
-        std::this_thread::sleep_for(std::chrono::microseconds(_framePeriod));
+        std::this_thread::sleep_for(_framePeriod);
     }
     while(!_shouldStop);
 }
@@ -50,15 +50,13 @@ bool Logic::frameFunc(double dt)
 
     //send changes to all clients
 
-    //send only if coordinated got changed pls!
-
     //testing
     static int x = 0;
     static int y = 200;
 
     x = (x + 5)%800;
 
-    Server::getInstance().sendPuckPos(x, y);
+    Server::getInstance().setPuckPos(x, y);
 
     return false;
 }

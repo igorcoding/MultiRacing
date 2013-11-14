@@ -56,9 +56,9 @@ private:
 
 
     //sends _data's values
-    void sendCoords();
+    void sendPos();
 
-    void inputThreadProc();
+    void senderThreadProc();
     void listenerThreadProc();
 
     boost::asio::io_service _service;
