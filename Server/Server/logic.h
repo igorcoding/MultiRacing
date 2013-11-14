@@ -25,7 +25,7 @@ private:
 
     bool frameFunc(double dt);
 
-    int _framePeriod = 1;
+    int _framePeriod = 5;
     std::mutex _mutex;
     bool _shouldStop = false;
     StopReason _reason;

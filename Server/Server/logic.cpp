@@ -56,7 +56,7 @@ bool Logic::frameFunc(double dt)
     static int x = 0;
     static int y = 200;
 
-    x = (x + 1)%800;
+    x = (x + 5)%800;
 
     Server::getInstance().sendPuckPos(x, y);
 
