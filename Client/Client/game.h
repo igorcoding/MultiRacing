@@ -16,9 +16,9 @@ namespace NeonHockey
     {
         using Puck_ptr = std::unique_ptr<Puck>;
     public:
-        static Game& getInstance();
-        void start();
-        void endGame();
+        //static Game& getInstance();
+        static void start();
+        static void endGame();
         ~Game();
 
 
@@ -28,7 +28,7 @@ namespace NeonHockey
         static std::vector<Player> _players;
         static Puck_ptr _puck;
         static ResourceManager _resources;
-        bool _initialized;
+        static bool _initialized;
 
         static const std::string game_title;
         static const std::string game_log;
@@ -40,10 +40,10 @@ namespace NeonHockey
         Game(const Game&);
         Game& operator =(const Game&);
 
-        static void initializeGame(Game* game);
+        static void initializeGame();
         static void setGfxResources();
-        static void initializeGameStates(Game* game);
-        static void initializeGameResources(Game* game);
+        static void initializeGameStates();
+        static void initializeGameResources();
         static bool frameFunc();
         static bool renderFunc();
 

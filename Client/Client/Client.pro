@@ -25,10 +25,10 @@ HEADERS += \
     client.h
 
 
-QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -std=c++11
 
 unix {
-    DEFINES += PLATFROM_UNIX
+    DEFINES += PLATFORM_UNIX
 
     INCLUDEPATH += /usr/local/include/hge-unix/include \
 		   /usr/include/SDL

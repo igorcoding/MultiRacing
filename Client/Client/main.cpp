@@ -37,8 +37,8 @@ int main()
         };
 
 
-        Game& game = Game::getInstance();
-        game.start();
+        //Game& game = Game::getInstance();
+        Game::start();
 
         Client::getInstance().stop();
 
