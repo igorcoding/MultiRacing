@@ -10,20 +10,46 @@ int main()
 
     try
     {
-        //start connection
-        std::string ip;
-
-        std::cout << "Enter IP address: ";
-        std::cin >> ip;
-        std::thread clientThread([ip]
+        std::thread clientThread([]
         {
-            constexpr int port = 14882;
+            //start connection
+            std::string ip;
+            bool connected = false;
 
-            srand(time(nullptr));
-            std::string playerName = "Vasja" + std::to_string(rand());
+            do
+            {
+                std::cout << "Enter IP address: ";
+                std::cin >> ip;
 
-            if(!Client::getInstance().connect(ip, port, playerName))
-                std::cerr << "Unable to connect to: " << ip << ":" << port << std::endl;
+                constexpr int port = 14882;
+
+                srand(time(nullptr));
+                std::string playerName = "Vasja" + std::to_string(rand());
+
+                int retriesCount = 0;
+
+                do
+                {
+                    connected = Client::getInstance()
+                            .connect(ip, port, playerName);
+
+                    if(!connected)
+                    {
+                        std::cerr << "Unable to connect to: "
+                                  << ip << ":" << port
+                                  << " (retry: " << retriesCount + 1 << ")"
+                                  << std::endl << std::endl;
+
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        retriesCount++;
+                    }
+                }
+                while(!connected && retriesCount < 3);
+
+                if(!connected)
+                    std::cerr << "Please, re-enter ip address" << std::endl << std::endl;
+            }
+            while(!connected);
         });
 
         //wait for second client
@@ -32,6 +58,8 @@ int main()
             if(Client::getInstance().shouldStop())
             {
                 clientThread.join(); //wait for it to die
+
+
                 return 1;
             }
         };
