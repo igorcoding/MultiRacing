@@ -68,13 +68,13 @@ bool Logic::frameFunc(double dt)
     //send changes to all clients
 
     //testing
-    static int x = 0;
+    /*static int x = 0;
     static int y = 200;
 
     x = (x + 5)%800;
 
     Server::getInstance().setPuckPos(x, y);
-
+*/
     return false;
 }
 

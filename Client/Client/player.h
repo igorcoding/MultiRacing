@@ -21,6 +21,7 @@ namespace NeonHockey
     {
         using Paddle_ptr = std::unique_ptr<Paddle>;
     public:
+        Player();
         Player(const std::string &name, BoardSide::BoardSide boardSide, int points, Paddle_ptr paddle);
 
         const std::string& getName() const;

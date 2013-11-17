@@ -33,6 +33,7 @@ namespace NeonHockey
         static Puck_ptr _puck;
         static ResourceManager _resources;
         static bool _initialized;
+        static int _currentPlayerId;
 
         static const std::string game_title;
         static const std::string game_log;

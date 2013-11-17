@@ -15,8 +15,8 @@ namespace NeonHockey
     {
         enum GfxObjectType {
             PUCK,
-            PADDLE0,
-            PADDLE1
+            PADDLE_CURRENT,
+            PADDLE_ENEMY
         };
     }
 

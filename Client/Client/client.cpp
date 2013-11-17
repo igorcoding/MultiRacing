@@ -55,13 +55,13 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
                 if(_id == 0) //coords order
                 {
-                    is >> _cachedPos.x >> _cachedPuckPos.y;
+                    is >> _cachedPos.x >> _cachedPos.y;
                     is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
                 }
                 else
                 {
                     is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
-                    is >> _cachedPos.x >> _cachedPuckPos.y;
+                    is >> _cachedPos.x >> _cachedPos.y;
                 }
 
                 is.ignore(); //skip \n

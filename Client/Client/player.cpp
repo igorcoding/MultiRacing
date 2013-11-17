@@ -2,6 +2,14 @@
 
 namespace NeonHockey
 {
+    Player::Player()
+        : _name(),
+          _points(-1),
+          _paddle(nullptr)
+    {
+
+    }
+
     Player::Player(const std::string& name, BoardSide::BoardSide boardSide, int points, Paddle_ptr paddle)
         : _name(name),
           _side(boardSide),

@@ -20,6 +20,8 @@ int main()
             {
                 std::cout << "Enter IP address: ";
                 std::cin >> ip;
+                if (ip == "0")
+                    ip = "127.0.0.1";
 
                 constexpr int port = 14882;
 
