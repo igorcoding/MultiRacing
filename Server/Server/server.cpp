@@ -79,11 +79,23 @@ void Server::start()
         acceptor.close();
 
         //let's begin our game
+
+        Logic &logic = Logic::getInstance();
+
         for(auto &client: clients)
         {
+            _cachedPuckPos.x = logic.puck().x;
+            _cachedPuckPos.y = logic.puck().y;
+
             client.socket.send(
                         boost::asio::buffer(
-                            std::to_string(ServerMessageType::GameStarted) + "\n"));
+                            std::to_string(ServerMessageType::GameStarted) + " " +
+                            std::to_string(_cachedPuckPos.x) + " " +
+                            std::to_string(_cachedPuckPos.y) + " " +
+                            std::to_string(logic.player(0).x) + " " +
+                            std::to_string(logic.player(0).y) + " " +
+                            std::to_string(logic.player(1).x) + " " +
+                            std::to_string(logic.player(1).y) + "\n";
 
             //start listener thread
             client.thread = std::thread(

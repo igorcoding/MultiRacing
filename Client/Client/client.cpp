@@ -37,14 +37,11 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
         if(messageType == ServerMessageType::ClientId)
         {
-            std::string clientId; //TODO: заменил на число
-            is >> clientId;
+            is >> _id;
 
             is.ignore(); //skip \n
 
-            std::cout << "Client id: " << clientId << std::endl;
-
-            _id = boost::lexical_cast<int>(clientId);
+            std::cout << "Client id: " << _id << std::endl;
 
             //wait for GameStarted message
             read_until(_socket, buffer, "\n");
@@ -54,6 +51,21 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
             if(messageType == ServerMessageType::GameStarted)
             {
+                is >> _cachedPuckPos.x >> _cachedPuckPos.y;
+
+                if(_id == 0) //coords order
+                {
+                    is >> _cachedPos.x >> _cachedPuckPos.y;
+                    is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+                }
+                else
+                {
+                    is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+                    is >> _cachedPos.x >> _cachedPuckPos.y;
+                }
+
+                is.ignore(); //skip \n
+
                 _gameStarted = true;
 
                 std::cout << "Game stared!" << std::endl;
