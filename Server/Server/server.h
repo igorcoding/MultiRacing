@@ -54,7 +54,7 @@ private:
     std::vector<Client> clients;
     const int _port = 14882;
 
-    std::chrono::microseconds _senderPeriod = std::chrono::milliseconds(10);
+    std::chrono::microseconds _senderPeriod = std::chrono::milliseconds(30);
     std::chrono::microseconds _listenerPeriod = std::chrono::microseconds(1);
 };
 
