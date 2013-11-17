@@ -98,9 +98,12 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
 void Client::sendPaddlePos(float x, float y)
 {
-    _cachedPos.x = x;
-    _cachedPos.y = y;
-    _cachedPos.isReady = true;
+    if(x != _cachedPos.x || y != _cachedPos.y)
+    {
+        _cachedPos.x = x;
+        _cachedPos.y = y;
+        _cachedPos.isReady = true;
+    }
 }
 
 void Client::getEnemyPaddlePos(float &x, float &y) const
