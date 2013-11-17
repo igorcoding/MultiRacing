@@ -22,6 +22,9 @@ public:
     //immediately returns cached coords
     void getEnemyPaddlePos(float &x, float &y) const;
 
+    //get self coords
+    void getPaddlePos(float &x, float &y) const;
+
     void getPuckPos(float &x, float &y) const;
 
     //returns true after GameStarted message from server
