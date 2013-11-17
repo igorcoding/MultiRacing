@@ -5,14 +5,20 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     server.cpp \
-    logic.cpp
+    logic.cpp \
+    player.cpp \
+    puck.cpp \
+    gameobject.cpp
 
 OTHER_FILES += \
     protocol.txt
 
 HEADERS += \
     server.h \
-    logic.h
+    logic.h \
+    player.h \
+    puck.h \
+    gameobject.h
 
 QMAKE_CXXFLAGS += -pthread -std=c++1y
 QMAKE_LFLAGS += -pthread -std=c++1y

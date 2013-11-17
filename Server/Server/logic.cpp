@@ -2,12 +2,17 @@
 #include "server.h"
 
 Logic::Logic()
+    : _initialized(false)
 {
+    _players.emplace_back(std::move(Player(0)));
+    _players.emplace_back(std::move(Player(1)));
 }
 
 Logic& Logic::getInstance()
 {
     static Logic inst;
+    if (!inst._initialized)
+        inst.setInitialCoords();
     return inst;
 }
 
@@ -36,6 +41,18 @@ void Logic::start()
 void Logic::setPos(int clientId, int x, int y)
 {
     //save coords to underlying structures
+    _players[clientId].x = x;
+    _players[clientId].y = y;
+}
+
+const Player& Logic::player(int id)
+{
+    return _players[id];
+}
+
+const Puck& Logic::puck()
+{
+    return _puck;
 }
 
 void Logic::stop(Logic::StopReason reason)
@@ -59,6 +76,20 @@ bool Logic::frameFunc(double dt)
     Server::getInstance().setPuckPos(x, y);
 
     return false;
+}
+
+void Logic::setInitialCoords()
+{
+    // initial rendering values
+    const float x_offset = 50.0f;
+    _puck.x = defaultScreenWidth / 2;
+    _puck.y = defaultScreenHeight / 2;
+    for (size_t i = 0; i < _players.size(); ++i)
+    {
+        _players[i].x = fabs((int) _players[i].side * defaultScreenWidth - x_offset);
+        _players[i].y = defaultScreenHeight / 2;
+    }
+    _initialized = true;
 }
 
 bool Logic::shouldStop() const
