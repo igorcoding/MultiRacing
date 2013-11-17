@@ -95,7 +95,7 @@ void Server::start()
                             std::to_string(logic.player(0).x) + " " +
                             std::to_string(logic.player(0).y) + " " +
                             std::to_string(logic.player(1).x) + " " +
-                            std::to_string(logic.player(1).y) + "\n";
+                            std::to_string(logic.player(1).y) + "\n"));
 
             //start listener thread
             client.thread = std::thread(
