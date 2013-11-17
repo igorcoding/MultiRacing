@@ -195,8 +195,10 @@ void Server::listenerThreadProc(Client &client)
                 is >> coordX >> coordY;
                 is.ignore(); //skip \n
 
+#ifdef _DEBUG
                 std::cout << "Coords recieved from client: " << client.id << std::endl
                           << "x: " << coordX << " y: " << coordY << std::endl;
+#endif
 
                 //does nothing for now
                 Logic::getInstance().setPos(client.id, coordX, coordY);

@@ -169,7 +169,11 @@ void Client::sendPos()
                           std::to_string(_cachedPos.y) + "\n"));
 
             _cachedPos.isReady = false;
+
+#ifdef _DEBUG
             std::cout << "Coords sent" << std::endl;
+#endif
+
         }
         catch(boost::system::system_error& e)
         {
@@ -235,7 +239,10 @@ void Client::listenerThreadProc()
             _cachedEnemyPos.y = coordY;
             _cachedEnemyPos.isReady = true;
 
+#ifdef _DEBUG
             std::cout << "Coords recieved: " << coordX << " " << coordY << std::endl;
+#endif
+
             _mutex.unlock();
 
             break;
@@ -253,7 +260,9 @@ void Client::listenerThreadProc()
             _cachedPuckPos.x = coordX;
             _cachedPuckPos.y = coordY;
 
+#ifdef _DEBUG
             std::cout << "Puck pos received: " << coordX << " " << coordY << std::endl;
+#endif
 
             _mutex.unlock();
 
