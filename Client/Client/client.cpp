@@ -109,6 +109,12 @@ void Client::getEnemyPaddlePos(float &x, float &y) const
     y = _cachedEnemyPos.y;
 }
 
+void Client::getPaddlePos(float &x, float &y) const
+{
+    x = _cachedPos.x;
+    y = _cachedPos.y;
+}
+
 void Client::getPuckPos(float &x, float &y) const
 {
     x = _cachedPuckPos.x;
