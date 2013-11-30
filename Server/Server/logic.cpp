@@ -29,7 +29,14 @@ void Logic::start()
         std::chrono::duration<double> dt = system_clock::now() - lastTime;
         lastTime = system_clock::now();
 
-        _shouldStop = frameFunc(dt.count());
+        try
+        {
+            _shouldStop = frameFunc(dt.count());
+        }
+        catch(std::exception &e)
+        {
+            stop(StopReason::LogicException);
+        }
 
         _mutex.unlock();
 

@@ -12,7 +12,7 @@ class Logic
 public:
     static Logic &getInstance();
 
-    enum class StopReason { ClientDisconnected, GameOver, ServerStopped };
+    enum class StopReason { ClientDisconnected, GameOver, ServerStopped, LogicException };
 
     void start();
 

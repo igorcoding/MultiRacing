@@ -226,7 +226,15 @@ void Server::senderThreadProc()
     {
         if(_cachedPuckPos.isReady)
         {
-            sendPuckPos();
+            try
+            {
+                sendPuckPos();
+            }
+            catch(std::exception &e)
+            {
+                logic.stop(Logic::StopReason::ClientDisconnected);
+            }
+
             _cachedPuckPos.isReady = false;
         }
 
