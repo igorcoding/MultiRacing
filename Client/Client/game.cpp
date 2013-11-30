@@ -13,6 +13,8 @@ namespace NeonHockey
     const std::string Game::game_log = "neonhockey.log";
     const int Game::screen_width = 800;
     const int Game::screen_height = 600;
+    const int Game::border_width = 32;
+    const int Game::gap_width = 200;
     std::vector<SpriteInfo> Game::gfx_textures;
 
     HGE* Game::_hge = nullptr;
@@ -40,6 +42,7 @@ namespace NeonHockey
 
             endGame();
         }
+        
     }
 
     void Game::endGame()
@@ -94,8 +97,10 @@ namespace NeonHockey
 
     void Game::setGfxResources()
     {
-        Game::gfx_textures.emplace_back(SpriteInfo(96, 64, 32, 32, "../resources/particles.png"));
-        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/zazaka.png"));
+        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 800, 600, "../resources/Field.png"));
+        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Puck.png"));
+        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Paddle.png"));
+
     }
 
     void Game::initializeGameStates()
@@ -132,21 +137,28 @@ namespace NeonHockey
         }
 
         // retrieve players
-        int texture1_id = 1;
-        int texture2_id = 1;
+        int texture1_id = 2;
+        int texture2_id = 2;
 
         Player p1("Player 1", side0, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
         Player p2("Player 2", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
 
-        _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[0])));
+        _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[1])));
         //_players.emplace_back(std::move(p1));
         //_players.emplace_back(std::move(p2));
         _players[_currentPlayerId] = std::move(p1);
         _players[!_currentPlayerId] = std::move(p2);
 
+        _resources.addTexture(GfxType::BACKGROUND, gfx_textures[0].texturePath());
         _resources.addTexture(GfxType::PUCK, _puck->spriteInfo().texturePath());
         _resources.addTexture(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().texturePath());
         _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
+
+
+        _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0].xTexturePos(),
+                                                  gfx_textures[0].yTexturePos(),
+                                                  gfx_textures[0].width(),
+                                                  gfx_textures[0].height())->SetHotSpot(0, 0);
 
         _resources.addSprite(GfxType::PUCK, _puck->spriteInfo().xTexturePos(),
                                               _puck->spriteInfo().yTexturePos(),
@@ -196,9 +208,30 @@ namespace NeonHockey
 
         if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
         {
-
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
             bool inplace = true;
+
+            auto x_max = screenWidth() - border_width - currentPlayer.paddle()->spriteInfo().width() / 2;
+            auto x_min = border_width + currentPlayer.paddle()->spriteInfo().width() / 2;
+            auto y_max = screenHeight() - border_width - currentPlayer.paddle()->spriteInfo().height() / 2;
+            auto y_min = border_width + currentPlayer.paddle()->spriteInfo().height() / 2;
+
+            if (mouse_x > x_max || mouse_x < x_min || mouse_y > y_max || mouse_y < y_min)
+            {
+                inplace = false;
+            }
+
+            if (mouse_y > (screenHeight() - gap_width) / 2 + currentPlayer.paddle()->spriteInfo().height() / 2 &&
+                    mouse_y < (screenHeight() + gap_width) / 2 - currentPlayer.paddle()->spriteInfo().height() / 2)
+            {
+                inplace = true;
+                if (mouse_x > screenWidth() - currentPlayer.paddle()->spriteInfo().width() ||
+                        mouse_x < currentPlayer.paddle()->spriteInfo().width())
+                    inplace = false;
+            }
+            
+
+
             switch (_players[_currentPlayerId].getSide())
             {
             case BoardSide::LEFT:
@@ -215,10 +248,11 @@ namespace NeonHockey
             {
                 currentPlayer.paddle()->x = mouse_x;
                 currentPlayer.paddle()->y = mouse_y;
-                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+                //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
             }
 
         }
+        Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         //updae coords from server
         Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
@@ -237,10 +271,12 @@ namespace NeonHockey
         _hge->Gfx_BeginScene();
         _hge->Gfx_Clear(0);
 
+        auto bgSprite = _resources.getSprite(GfxType::BACKGROUND);
         auto puckSprite = _resources.getSprite(GfxType::PUCK);
         auto paddleSprite0 = _resources.getSprite(GfxType::PADDLE_CURRENT);
         auto paddleSprite1 = _resources.getSprite(GfxType::PADDLE_ENEMY);
 
+        bgSprite->Render(0, 0);
         puckSprite->Render(_puck->x, _puck->y);
         paddleSprite0->Render(_players[0].paddle()->x, _players[0].paddle()->y);
         paddleSprite1->Render(_players[1].paddle()->x, _players[1].paddle()->y);

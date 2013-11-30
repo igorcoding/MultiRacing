@@ -39,6 +39,8 @@ namespace NeonHockey
         static const std::string game_log;
         static const int screen_width;
         static const int screen_height;
+        static const int border_width;
+        static const int gap_width;
         static std::vector<SpriteInfo> gfx_textures;
 
         Game();

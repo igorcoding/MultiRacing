@@ -26,6 +26,11 @@ QMAKE_LFLAGS += -pthread -std=c++1y
 unix {
     LIBS += -L/usr/local/lib \
             -lboost_system \
+            /usr/local/include/hge-unix/src/core/libhge.so \
+            /usr/local/include/hge-unix/src/core/libhge_helpers.so \
+
+    INCLUDEPATH += /usr/local/include/hge-unix/include \
+                   /usr/include/SDL
 
 }
 
