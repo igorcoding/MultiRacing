@@ -1,7 +1,7 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <hgevector.h> //REVIEW: ты шо? hge? на сервере? -_- нет.
+//#include <hgevector.h> //REVIEW: ты шо? hge? на сервере? -_- нет.
 
 class GameObject
 {
@@ -10,8 +10,8 @@ public:
 
     int x;
     int y;
-    hgeVector dir;
-    hgeVector speed;
+    //hgeVector dir;
+    //hgeVector speed;
     float dx;
     float dy;
     float vx;

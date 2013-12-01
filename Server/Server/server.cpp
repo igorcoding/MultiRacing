@@ -232,7 +232,7 @@ void Server::senderThreadProc()
             }
             catch(std::exception &e)
             {
-                logic.stop(Logic::StopReason::ClientDisconnected);
+                Logic::getInstance().stop(Logic::StopReason::ClientDisconnected);
             }
 
             _cachedPuckPos.isReady = false;
