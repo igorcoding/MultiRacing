@@ -48,7 +48,6 @@ void Logic::start()
 void Logic::setPos(int clientId, int x, int y)
 {
     Player& p = _players[clientId];
-    p.setOldPos(p.getPos());
     p.setPos(x, y);
 }
 
@@ -69,18 +68,6 @@ void Logic::stop(Logic::StopReason reason)
 }
 
 
-boost::numeric::ublas::vector<float> normalize(const boost::numeric::ublas::vector<float>& vec)
-{
-    boost::numeric::ublas::vector<float> newVec(vec.size());
-    auto length = boost::numeric::ublas::norm_2(vec);
-    if (length != 0)
-    {
-        for (auto i = 0; i < vec.size(); ++i)
-            newVec[i] = vec[i] / length;
-    }
-    return newVec;
-}
-
 bool Logic::frameFunc(double dt)
 {
     for (auto& p : _players)
@@ -92,34 +79,35 @@ bool Logic::frameFunc(double dt)
     Player& firstPlayer = _players[0];
     Player& secondPlayer = _players[1];
 
-    bool collided_first = distance(firstPlayer.getPos().x,
-                                   firstPlayer.getPos().y,
-                                   _puck.getPos().x,
-                                   _puck.getPos().y) < firstPlayer.radius + _puck.radius;
-    bool collided_second = distance(secondPlayer.getPos().x,
-                                    secondPlayer.getPos().y,
-                                    _puck.getPos().x,
-                                    _puck.getPos().y) < secondPlayer.radius + _puck.radius;
+    float d1 = distance(firstPlayer.getPos().x(),
+                        firstPlayer.getPos().y(),
+                        _puck.getPos().x(),
+                        _puck.getPos().y());
+    float d2 = distance(secondPlayer.getPos().x(),
+                        secondPlayer.getPos().y(),
+                        _puck.getPos().x(),
+                        _puck.getPos().y());
+    bool collided_first = d1 < firstPlayer.radius + _puck.radius;
+    bool collided_second = d2 < secondPlayer.radius + _puck.radius;
 
     if (collided_first)
     {
         std::cout << "collided first\n";
-        handleCollision(firstPlayer, dt);
+        handleCollision(firstPlayer, d1, dt);
     }
     if (collided_second)
     {
         std::cout << "collided second\n";
-        handleCollision(secondPlayer, dt);
+        handleCollision(secondPlayer, d2, dt);
     }
 
-    using namespace boost::numeric;
 
-    float speed = 10.0f;
-    auto normz = normalize(_puck.getSpeedVector());
-    ublas::vector<float> newPuckPos = _puck.getPosVector() + normz;
-    ublas::vector<float> newPuckSpeed = _puck.getSpeedVector(); //+ _puck.getAccelVector();
-    _puck.setPos(newPuckPos[0], newPuckPos[1]);
-    _puck.setSpeed(newPuckSpeed[0], newPuckSpeed[1]);
+    float speed = 1.0f;
+    auto newPuckPos = _puck.getPos() + speed * math::normalize(_puck.getSpeed());
+    auto newPuckSpeed = _puck.getSpeed(); //+ _puck.getAccelVector();
+    _puck.setPos(newPuckPos);
+    _puck.setSpeed(newPuckSpeed);
+
 
 
 /*
@@ -152,7 +140,7 @@ bool Logic::frameFunc(double dt)
     }
 */
 
-    Server::getInstance().setPuckPos(_puck.getPos().x, _puck.getPos().y);
+    Server::getInstance().setPuckPos(_puck.getPos().x(), _puck.getPos().y());
 
     return false;
 }
@@ -184,7 +172,7 @@ float Logic::distance(int x1, int y1, int x2, int y2)
     return std::sqrt(dx * dx + dy * dy);
 }
 
-void Logic::handleCollision(Player& p, double dt)
+void Logic::handleCollision(Player& p, float d, double dt)
 {
     // разнести объекты
 
@@ -213,6 +201,12 @@ void Logic::handleCollision(Player& p, double dt)
     if (p.y > _puck.y)
         _puck.dy -= speed*dt;
 */
+
+    //float delta = _puck.radius + p.radius - d + 5;
+    //boost::numeric::ublas::vector<float> newPos = delta * normalize(_puck.getPosVector() - p.getPosVector());
+    //newPos += _puck.getPosVector();
+    //_puck.setPos(newPos[0], newPos[1]);
+
 
     _puck.setSpeed(p.getSpeed());
     Server::getInstance().setCollisionPos(_puck.x, _puck.y);

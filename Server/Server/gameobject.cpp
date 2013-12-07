@@ -1,34 +1,36 @@
 #include "gameobject.h"
 
 GameObject::GameObject(float _x, float _y, int _radius)
-    : oldPos(2),
-      pos(2),
-      speed(2),
-      accel(2),
+    : oldPos(_x, _y),
+      pos(_x, _y),
+      speed(),
+      accel(),
       radius(_radius)
 {
-    oldPos[0] = pos[0] = _x;
-    oldPos[1] = pos[1] = _y;
-    speed[0] = speed[1] = 0;
-    accel[0] = accel[1] = 0;
+
 }
 
 void GameObject::setOldPos(float x, float y)
 {
-    oldPos[0] = x;
-    oldPos[1] = y;
+    oldPos.x(x);
+    oldPos.y(y);
 }
 
 void GameObject::setPos(float x, float y)
 {
-    pos[0] = this->x = x;
-    pos[1] = this->y = y;
+    setOldPos(pos);
+
+    pos.x(x);
+    pos.y(y);
+
+    this->x = x;
+    this->y = y;
 }
 
 void GameObject::setSpeed(float x, float y)
 {
-    speed[0] = this->vx = x;
-    speed[1] = this->vy = y;
+    speed.x(x);
+    speed.y(y);
 
     const float friction = 2.0f;
     setAccel(-x / friction, -y / friction);
@@ -36,79 +38,62 @@ void GameObject::setSpeed(float x, float y)
 
 void GameObject::setAccel(float x, float y)
 {
-    accel[0] = this->ax = x;
-    accel[1] = this->ay = y;
+    accel.x(x);
+    accel.y(y);
 }
 
-void GameObject::setOldPos(Coords coords)
+void GameObject::setOldPos(const math::Vector2D& vec)
 {
-    setOldPos(coords.x, coords.y);
+    setOldPos(vec.x(), vec.y());
 }
 
-void GameObject::setPos(Coords coords)
+void GameObject::setPos(const math::Vector2D& vec)
 {
-    setPos(coords.x, coords.y);
+    setPos(vec.x(), vec.y());
 }
 
-void GameObject::setSpeed(Coords coords)
+void GameObject::setSpeed(const math::Vector2D& vec)
 {
-    setSpeed(coords.x, coords.y);
+    setSpeed(vec.x(), vec.y());
 }
 
-
-void GameObject::setAccel(Coords coords)
+void GameObject::setAccel(const math::Vector2D& vec)
 {
-    setAccel(coords.x, coords.y);
+    setAccel(vec.x(), vec.y());
 }
 
-Coords GameObject::getOldPos() const
-{
-    return Coords(oldPos[0], oldPos[1]);
-}
 
-Coords GameObject::getPos() const
-{
-    return Coords(pos[0], pos[1]);
-}
-
-Coords GameObject::getSpeed() const
-{
-    return Coords(speed[0], speed[1]);
-}
-
-Coords GameObject::getAccel() const
-{
-    return Coords(accel[0], accel[1]);
-}
-
-boost::numeric::ublas::vector<float> GameObject::getOldPosVector() const
+math::Vector2D GameObject::getOldPos() const
 {
     return oldPos;
 }
 
-boost::numeric::ublas::vector<float> GameObject::getPosVector() const
+math::Vector2D GameObject::getPos() const
 {
     return pos;
 }
 
-boost::numeric::ublas::vector<float> GameObject::getSpeedVector() const
+math::Vector2D GameObject::getSpeed() const
 {
     return speed;
 }
 
-boost::numeric::ublas::vector<float> GameObject::getAccelVector() const
+math::Vector2D GameObject::getAccel() const
 {
     return accel;
 }
 
+
+
+
 float GameObject::dx() const
 {
-    return getPos().x - getOldPos().x;
+    return getPos().x() - getOldPos().x();
 }
 
 float GameObject::dy() const
 {
-    return getPos().y - getOldPos().y;
+    return getPos().y() - getOldPos().y();
 }
 
 
