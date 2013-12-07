@@ -268,10 +268,7 @@ namespace NeonHockey
         int x = 0;
         int y = 0;
         if(Client::getInstance().getCollision(x, y))
-        {
-            HEFFECT collisionSnd = _resources.getSound(SoundType::COLLISION);
-            //_hge->Effect_Play(collisionSnd); //TODO: replace with Effect_PlayEx()
-        }
+            playSound(SoundType::COLLISION, x);
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
@@ -299,5 +296,11 @@ namespace NeonHockey
         return false;
     }
 
+    void Game::playSound(SoundType::SoundObjectType type, int at)
+    {
+        HEFFECT snd = _resources.getSound(type);
 
+        //converts at to [-100, 100] range
+        _hge->Effect_PlayEx(snd, 100, at * 200 /screen_width - 100);
+    }
 }

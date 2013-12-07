@@ -126,10 +126,15 @@ void Client::getPuckPos(float &x, float &y) const
 
 bool Client::getCollision(int &x, int &y)
 {
-    x = _cachedCollisionPos.x;
-    y = _cachedCollisionPos.y;
+    if(_cachedCollisionPos.isReady)
+    {
+        x = _cachedCollisionPos.x;
+        y = _cachedCollisionPos.y;
 
-    _cachedCollisionPos.isReady = false;
+        _cachedCollisionPos.isReady = false;
+    }
+    else
+        return false;
 }
 
 bool Client::isGameStarted() const
