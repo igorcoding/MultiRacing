@@ -27,6 +27,12 @@ public:
 
     void getPuckPos(float &x, float &y) const;
 
+    //test if collision occured,
+    //if it is => sets x and y to it's coords
+    //and resets internal flag, so next time it will not return true
+    //(until new collision will be occured)
+    bool getCollision(int &x, int &y);
+
     //returns true after GameStarted message from server
     bool isGameStarted() const;
 
@@ -47,13 +53,13 @@ private:
 
 
     struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
-    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, GameOver, Score }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, GameOver, Score }; };
 
     struct Data
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPos, _cachedEnemyPos, _cachedPuckPos;
+    } _cachedPos, _cachedEnemyPos, _cachedPuckPos, _cachedCollisionPos;
 
     //_cachedPuckPos.isReady flag is not used anywhere
 

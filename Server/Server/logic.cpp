@@ -229,7 +229,7 @@ void Logic::handleCollision(Player& p, double dt)
     if (p.y > _puck.y)
         _puck.dy -= speed*dt;
 
-
+    Server::getInstance().setCollisionPos(_puck.x, _puck.y);
 }
 
 bool Logic::shouldStop() const

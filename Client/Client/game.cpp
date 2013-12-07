@@ -259,6 +259,14 @@ namespace NeonHockey
 
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
 
+        //sounds system
+
+        //test for collisions
+        int x = 0;
+        int y = 0;
+        if(Client::getInstance().getCollision(x, y))
+        { /* play sound */ }
+
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
             return true;

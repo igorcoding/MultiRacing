@@ -96,7 +96,7 @@ bool Client::connect(std::string ip, int port, std::string playerName)
     return true;
 }
 
-void Client::sendPaddlePos(float x, float y)
+void Client::sendPaddlePos(float x, float y) //REVIEW: -_-
 {
     //if(x != _cachedPos.x || y != _cachedPos.y)
     //{
@@ -122,6 +122,14 @@ void Client::getPuckPos(float &x, float &y) const
 {
     x = _cachedPuckPos.x;
     y = _cachedPuckPos.y;
+}
+
+bool Client::getCollision(int &x, int &y)
+{
+    x = _cachedCollisionPos.x;
+    y = _cachedCollisionPos.y;
+
+    _cachedCollisionPos.isReady = false;
 }
 
 bool Client::isGameStarted() const
@@ -262,6 +270,28 @@ void Client::listenerThreadProc()
 
 #ifdef _DEBUG
             std::cout << "Puck pos received: " << coordX << " " << coordY << std::endl;
+#endif
+
+            _mutex.unlock();
+
+            break;
+        }
+        case ServerMessageType::Collision:
+        {
+            int coordX = 0;
+            int coordY = 0;
+
+            is >> coordX >> coordY;
+            is.ignore(); //skip \n
+
+            _mutex.lock();
+
+            _cachedCollisionPos.x = coordX;
+            _cachedCollisionPos.y = coordY;
+            _cachedCollisionPos.isReady = true;
+
+#ifdef _DEBUG
+            std::cout << "Collision received: " << coordX << " " << coordY << std::endl;
 #endif
 
             _mutex.unlock();

@@ -25,6 +25,7 @@ public:
     void start();
 
     void setPuckPos(int x, int y);
+    void setCollisionPos(int x, int y);
 
 private:
     Server();
@@ -35,7 +36,7 @@ private:
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPuckPos;
+    } _cachedPuckPos, _cachedCollisionPos;
 
     void listenerThreadProc(Client &client);
 
@@ -45,10 +46,11 @@ private:
     void sendCoords(int clientId, int x, int y);
 
     void sendPuckPos();
+    void sendCollisionPos();
 
 
     struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
-    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, GameOver, Score }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, GameOver, Score }; };
 
     boost::asio::io_service io_service;
     std::vector<Client> clients;

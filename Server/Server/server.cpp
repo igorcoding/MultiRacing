@@ -170,6 +170,14 @@ void Server::setPuckPos(int x, int y)
     }
 }
 
+void Server::setCollisionPos(int x, int y)
+{
+    _cachedCollisionPos.x = x;
+    _cachedCollisionPos.y = y;
+
+    _cachedCollisionPos.isReady = true;
+}
+
 void Server::listenerThreadProc(Client &client)
 {
     boost::asio::streambuf buffer;
@@ -224,18 +232,23 @@ void Server::senderThreadProc()
 {
     while(!Logic::getInstance().shouldStop())
     {
-        if(_cachedPuckPos.isReady)
+        try
         {
-            try
+            if(_cachedPuckPos.isReady)
             {
                 sendPuckPos();
-            }
-            catch(std::exception &e)
-            {
-                Logic::getInstance().stop(Logic::StopReason::ClientDisconnected);
+               _cachedPuckPos.isReady = false;
             }
 
-            _cachedPuckPos.isReady = false;
+            if(_cachedCollisionPos.isReady)
+            {
+                sendCollisionPos();
+                _cachedCollisionPos.isReady = false;
+            }
+        }
+        catch(std::exception &e)
+        {
+            Logic::getInstance().stop(Logic::StopReason::ClientDisconnected);
         }
 
         //relax CPU for a bit
@@ -258,5 +271,16 @@ void Server::sendPuckPos()
                       std::to_string(ServerMessageType::PuckPos) + " " +
                       std::to_string(_cachedPuckPos.x) + " " +
                       std::to_string(_cachedPuckPos.y) + "\n"));
+    }
+}
+
+void Server::sendCollisionPos()
+{
+    for(auto &client: clients)
+    {
+        client.socket.send(boost::asio::buffer(
+                      std::to_string(ServerMessageType::Collision) + " " +
+                      std::to_string(_cachedCollisionPos.x) + " " +
+                      std::to_string(_cachedCollisionPos.y) + "\n"));
     }
 }
