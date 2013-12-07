@@ -103,8 +103,9 @@ bool Logic::frameFunc(double dt)
 
 
     float speed = 1.0f;
+    float friction = 0.992f;
     auto newPuckPos = _puck.getPos() + speed * math::normalize(_puck.getSpeed());
-    auto newPuckSpeed = _puck.getSpeed(); //+ _puck.getAccelVector();
+    auto newPuckSpeed =  friction * _puck.getSpeed();
     _puck.setPos(newPuckPos);
     _puck.setSpeed(newPuckSpeed);
 
