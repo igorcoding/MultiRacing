@@ -36,7 +36,7 @@ private:
     bool frameFunc(double dt);
     void setInitialCoords();
     float distance(int x1, int y1, int x2, int y2);
-    void handleCollision(Player& p, double dt);
+    void handleCollision(Player& p, float d, double dt);
 
     std::vector<Player> _players;
     Puck _puck;

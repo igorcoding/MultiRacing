@@ -1,27 +1,18 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <boost/numeric/ublas/vector.hpp>
+#include "vector2d.h"
 
-struct Coords
-{
-    float x;
-    float y;
-    Coords(float x, float y)
-        : x(x),
-          y(y)
-    { }
-};
 
 class GameObject
 {
 public:
     GameObject(float _x, float _y, int _radius);
 
-    boost::numeric::ublas::vector<float> oldPos;
-    boost::numeric::ublas::vector<float> pos;
-    boost::numeric::ublas::vector<float> speed;
-    boost::numeric::ublas::vector<float> accel;
+    math::Vector2D oldPos;
+    math::Vector2D pos;
+    math::Vector2D speed;
+    math::Vector2D accel;
     int radius;
 
     void setOldPos(float x, float y);
@@ -29,20 +20,15 @@ public:
     void setSpeed(float x, float y);
     void setAccel(float x, float y);
 
-    void setOldPos(Coords coords);
-    void setPos(Coords coords);
-    void setSpeed(Coords coords);
-    void setAccel(Coords coords);
+    void setOldPos(const math::Vector2D& vec);
+    void setPos(const math::Vector2D& vec);
+    void setSpeed(const math::Vector2D& vec);
+    void setAccel(const math::Vector2D& vec);
 
-    Coords getOldPos() const;
-    Coords getPos() const;
-    Coords getSpeed() const;
-    Coords getAccel() const;
-
-    boost::numeric::ublas::vector<float> getOldPosVector() const;
-    boost::numeric::ublas::vector<float> getPosVector() const;
-    boost::numeric::ublas::vector<float> getSpeedVector() const;
-    boost::numeric::ublas::vector<float> getAccelVector() const;
+    math::Vector2D getOldPos() const;
+    math::Vector2D getPos() const;
+    math::Vector2D getSpeed() const;
+    math::Vector2D getAccel() const;
 
 
     float dx() const;
