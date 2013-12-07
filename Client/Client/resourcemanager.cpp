@@ -24,8 +24,13 @@ namespace NeonHockey
             delete it->second;
         for (auto it = _textures.begin(); it != _textures.end(); ++it)
             _hge->Texture_Free(it->second);
+
+        for(auto &s: _sounds)
+            _hge->Effect_Free(s.second);
+
         _sprites.clear();
         _textures.clear();
+        _sounds.clear();
         _clear = true;
     }
 
@@ -42,6 +47,16 @@ namespace NeonHockey
             }
             _hge->Texture_Free(foundTexture->second);   // delete texture
             _textures.erase(foundTexture);
+        }
+    }
+
+    void ResourceManager::freeResource(SoundType::SoundObjectType sndType)
+    {
+        auto foundEffect = _sounds.find(sndType);
+        if (foundEffect != _sounds.end())
+        {
+            _hge->Effect_Free(foundEffect->second);
+            _sounds.erase(foundEffect);
         }
     }
 
@@ -74,6 +89,18 @@ namespace NeonHockey
         return _sprites[gfxType];
     }
 
+    void ResourceManager::addSound(SoundType::SoundObjectType sndType, std::string filename)
+    {
+        HEFFECT effect = _hge->Effect_Load(filename.c_str());
+        if (!effect)
+            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+
+        freeResource(sndType); // delete resource if it is already initialized
+        _sounds[sndType] = effect;
+        if (_clear)
+            _clear = false;
+    }
+
     HTEXTURE ResourceManager::getTexture(GfxType::GfxObjectType gfxType)
     {
         auto foundKey = _textures.find(gfxType);
@@ -87,7 +114,14 @@ namespace NeonHockey
         auto foundKey = _sprites.find(gfxType);
         if (foundKey == _sprites.end())
             throw std::exception();  // TODO: not sure if we need to clean up all the resources here
-        return foundKey->second;
+        return foundKey->second;     //REVIEW: типизировать исключения и/или передавать строку
     }
 
+    HEFFECT ResourceManager::getSound(SoundType::SoundObjectType sndType)
+    {
+        auto foundKey = _sounds.find(sndType);
+        if (foundKey == _sounds.end())
+            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+        return foundKey->second;
+    }
 }

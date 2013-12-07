@@ -109,7 +109,7 @@ namespace NeonHockey
         _hge->System_SetState(HGE_FRAMEFUNC, Game::frameFunc);
         _hge->System_SetState(HGE_RENDERFUNC, Game::renderFunc);
         _hge->System_SetState(HGE_TITLE, Game::game_title.c_str());
-        _hge->System_SetState(HGE_USESOUND, false);
+        _hge->System_SetState(HGE_USESOUND, true);
         _hge->System_SetState(HGE_WINDOWED, true);
         _hge->System_SetState(HGE_HIDEMOUSE, false);
         _hge->System_SetState(HGE_SCREENWIDTH, Game::screen_width);
@@ -117,7 +117,7 @@ namespace NeonHockey
         _hge->System_SetState(HGE_SCREENBPP, 32);
     }
 
-    void Game::initializeGameResources()
+    void Game::initializeGameResources() //REVIEW: add try/catch block over all loadings
     {
         _currentPlayerId = Client::getInstance().id();
         //int id = 0;
@@ -155,6 +155,7 @@ namespace NeonHockey
         _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
 
 
+        //REVIEW: addSprite should get SpriteInfo as second parameter. maybe?
         _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0].xTexturePos(),
                                                   gfx_textures[0].yTexturePos(),
                                                   gfx_textures[0].width(),
@@ -177,6 +178,8 @@ namespace NeonHockey
                                                  _players[!_currentPlayerId].paddle()->spriteInfo().width(),
                                                  _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                           _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
+
+        _resources.addSound(SoundType::COLLISION, "../resources/hit.wav");
 
 
         Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
@@ -265,7 +268,10 @@ namespace NeonHockey
         int x = 0;
         int y = 0;
         if(Client::getInstance().getCollision(x, y))
-        { /* play sound */ }
+        {
+            HEFFECT collisionSnd = _resources.getSound(SoundType::COLLISION);
+            //_hge->Effect_Play(collisionSnd); //TODO: replace with Effect_PlayEx()
+        }
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
