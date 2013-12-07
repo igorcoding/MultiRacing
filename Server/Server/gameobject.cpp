@@ -32,8 +32,8 @@ void GameObject::setSpeed(float x, float y)
     speed.x(x);
     speed.y(y);
 
-    const float friction = 2.0f;
-    setAccel(-x / friction, -y / friction);
+    //const float friction = 2.0f;
+    //setAccel(-x / friction, -y / friction);
 }
 
 void GameObject::setAccel(float x, float y)

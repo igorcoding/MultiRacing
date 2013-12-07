@@ -96,18 +96,12 @@ namespace math
 
     Vector2D operator* (float lhs, const Vector2D& rhs)
     {
-        Vector2D res(rhs);
-        res.x(lhs * res.x());
-        res.y(lhs * res.y());
-        return res;
+        return Vector2D(lhs * rhs.x(), lhs * rhs.y());
     }
 
     Vector2D operator* (const Vector2D& lhs, float rhs)
     {
-        Vector2D res(lhs);
-        res.x(rhs * res.x());
-        res.y(rhs * res.y());
-        return res;
+        return rhs * lhs;
     }
 
     bool operator== (const Vector2D& lhs, const Vector2D& rhs)
