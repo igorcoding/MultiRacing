@@ -54,7 +54,7 @@ namespace NeonHockey
         static bool frameFunc();
         static bool renderFunc();
 
-        static void playSound(SoundType::SoundObjectType type, int at = 0);
+        static void playSound(SoundType::SoundObjectType type, int at = 0, int volume);
 
     };
 
