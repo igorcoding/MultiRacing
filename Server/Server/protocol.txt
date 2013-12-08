@@ -7,5 +7,6 @@ server -> client
     2 \n //gameStarted
     3 coordX coordY\n //бита of the enemy
     4 coordX coordY\n //шайба
-    5\n //gameOver
-    6 clientId scoreValue\n
+    5 x volume //удар (позиция, сила)
+    6\n //gameOver
+    7 clientId scoreValue\n
