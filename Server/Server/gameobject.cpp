@@ -63,22 +63,22 @@ void GameObject::setAccel(const math::Vector2D& vec)
 }
 
 
-math::Vector2D GameObject::getOldPos() const
+math::Vector2D GameObject::getOldPos()
 {
     return oldPos;
 }
 
-math::Vector2D GameObject::getPos() const
+math::Vector2D GameObject::getPos()
 {
     return pos;
 }
 
-math::Vector2D GameObject::getSpeed() const
+math::Vector2D GameObject::getSpeed()
 {
     return speed;
 }
 
-math::Vector2D GameObject::getAccel() const
+math::Vector2D GameObject::getAccel()
 {
     return accel;
 }
@@ -86,12 +86,12 @@ math::Vector2D GameObject::getAccel() const
 
 
 
-float GameObject::dx() const
+float GameObject::dx()
 {
     return getPos().x() - getOldPos().x();
 }
 
-float GameObject::dy() const
+float GameObject::dy()
 {
     return getPos().y() - getOldPos().y();
 }

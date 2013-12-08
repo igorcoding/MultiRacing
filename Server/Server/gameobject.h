@@ -25,14 +25,14 @@ public:
     void setSpeed(const math::Vector2D& vec);
     void setAccel(const math::Vector2D& vec);
 
-    math::Vector2D getOldPos() const;
-    math::Vector2D getPos() const;
-    math::Vector2D getSpeed() const;
-    math::Vector2D getAccel() const;
+    math::Vector2D getOldPos();
+    math::Vector2D getPos();
+    math::Vector2D getSpeed();
+    math::Vector2D getAccel();
 
 
-    float dx() const;
-    float dy() const;
+    float dx();
+    float dy();
 
     int x;
     int y;

@@ -111,35 +111,29 @@ bool Logic::frameFunc(double dt)
 
 
 
-/*
-    const float friction = 0.5f;
-    _puck.dx *= friction;
-    _puck.dy *= friction;
-    _puck.x += _puck.dx;
-    _puck.y += _puck.dy;
-
     auto x_max = defaultScreenWidth - _puck.radius / 2;
     auto x_min = _puck.radius / 2;
     auto y_max = defaultScreenHeight - _puck.radius/ 2;
     auto y_min = _puck.radius / 2;
 
-    if (_puck.x > x_max) {
-        _puck.x = x_max - (_puck.x - x_max);
-        _puck.dx = -_puck.dx;
+
+    if (_puck.getPos().x() > x_max) {
+        _puck.getPos().x(x_max - (_puck.getPos().x() - x_max));
+        _puck.getSpeed().x(-_puck.getSpeed().x());
     }
-    if (_puck.x < x_min) {
-        _puck.x = x_min + x_min - _puck.x;
-        _puck.dx = -_puck.dx;
+    if (_puck.getPos().x() < x_min) {
+        _puck.getPos().x(x_min + x_min - _puck.getPos().x());
+        _puck.getSpeed().x(-_puck.getSpeed().x());
     }
-    if (_puck.y > y_max) {
-        _puck.y = y_max - (_puck.y - y_max);
-        _puck.dy = -_puck.dy;
+    if (_puck.getPos().y() > y_max) {
+        _puck.getPos().y(y_max - (_puck.getPos().y() - y_max));
+        _puck.getSpeed().y(-_puck.getSpeed().y());
     }
-    if (_puck.y < y_min) {
-        _puck.y = y_min + y_min - _puck.y;
-        _puck.dy = -_puck.dy;
+    if (_puck.getPos().y() < y_min) {
+        _puck.getPos().y(y_min + y_min - _puck.getPos().y());
+        _puck.getSpeed().y(-_puck.getSpeed().y());
     }
-*/
+
 
     Server::getInstance().setPuckPos(_puck.getPos().x(), _puck.getPos().y());
 

@@ -1,6 +1,7 @@
 #include "game.h"
 #include "client.h"
 #include <cmath>
+#include <cstdio>
 
 namespace NeonHockey
 {
@@ -179,8 +180,14 @@ namespace NeonHockey
                                                  _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                           _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
 
-        _resources.addSound(SoundType::COLLISION, "../resources/hit.wav");
-
+        try
+        {
+            _resources.addSound(SoundType::COLLISION, "../resources/hit");
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "sound not loaded\n";
+        }
 
         Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
         Client::getInstance().getEnemyPaddlePos(_players[!_currentPlayerId].paddle()->x, _players[!_currentPlayerId].paddle()->y);

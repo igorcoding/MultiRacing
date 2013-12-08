@@ -56,3 +56,5 @@ win32 {
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
 }
+
+OTHER_FILES +=
