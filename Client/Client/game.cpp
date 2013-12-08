@@ -119,67 +119,80 @@ namespace NeonHockey
 
     void Game::initializeGameResources() //REVIEW: add try/catch block over all loadings
     {
-        _currentPlayerId = Client::getInstance().id();
-        //int id = 0;
-        BoardSide::BoardSide side0, side1;
-        switch (_currentPlayerId)
+        try
         {
-        case 0:
-            side0 = BoardSide::LEFT;
-            side1 = BoardSide::RIGHT;
-            break;
-        case 1:
-            side0 = BoardSide::RIGHT;
-            side1 = BoardSide::LEFT;
-            break;
-        default:
-            throw std::exception();
+            _currentPlayerId = Client::getInstance().id();
+            //int id = 0;
+            BoardSide::BoardSide side0, side1;
+            switch (_currentPlayerId)
+            {
+            case 0:
+                side0 = BoardSide::LEFT;
+                side1 = BoardSide::RIGHT;
+                break;
+            case 1:
+                side0 = BoardSide::RIGHT;
+                side1 = BoardSide::LEFT;
+                break;
+            default:
+                throw std::exception();
+            }
+
+            // retrieve players
+            int texture1_id = 2;
+            int texture2_id = 2;
+
+            Player p1("Player 1", side0, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
+            Player p2("Player 2", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
+
+            _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[1])));
+            //_players.emplace_back(std::move(p1));
+            //_players.emplace_back(std::move(p2));
+            _players[_currentPlayerId] = std::move(p1);
+            _players[!_currentPlayerId] = std::move(p2);
+
+            _resources.addTexture(GfxType::BACKGROUND, gfx_textures[0].texturePath());
+            _resources.addTexture(GfxType::PUCK, _puck->spriteInfo().texturePath());
+            _resources.addTexture(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().texturePath());
+            _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
+
+
+            //REVIEW: addSprite should get SpriteInfo as second parameter. maybe?
+            _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0].xTexturePos(),
+                                                      gfx_textures[0].yTexturePos(),
+                                                      gfx_textures[0].width(),
+                                                      gfx_textures[0].height())->SetHotSpot(0, 0);
+
+            _resources.addSprite(GfxType::PUCK, _puck->spriteInfo().xTexturePos(),
+                                                  _puck->spriteInfo().yTexturePos(),
+                                                  _puck->spriteInfo().width(),
+                                                  _puck->spriteInfo().height())->SetHotSpot(_puck->spriteInfo().width() / 2,
+                                                                                                  _puck->spriteInfo().height() / 2);
+
+            _resources.addSprite(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
+                                                     _players[_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
+                                                     _players[_currentPlayerId].paddle()->spriteInfo().width(),
+                                                     _players[_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[_currentPlayerId].paddle()->spriteInfo().width() / 2,
+                                                                                                              _players[_currentPlayerId].paddle()->spriteInfo().height() / 2);
+
+            _resources.addSprite(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
+                                                     _players[!_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
+                                                     _players[!_currentPlayerId].paddle()->spriteInfo().width(),
+                                                     _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
+                                                                                                              _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
+
+            _resources.addSound(SoundType::COLLISION, "../resources/hit.wav");
+
+            _resources.addFont(FontType::SCORE, "../resources/Digital.fnt");
         }
+        catch(std::exception &e)
+        {
+            std::cerr << e.what();
+            std::cerr << "Check game.log for details" << std::endl;
 
-        // retrieve players
-        int texture1_id = 2;
-        int texture2_id = 2;
-
-        Player p1("Player 1", side0, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
-        Player p2("Player 2", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
-
-        _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[1])));
-        //_players.emplace_back(std::move(p1));
-        //_players.emplace_back(std::move(p2));
-        _players[_currentPlayerId] = std::move(p1);
-        _players[!_currentPlayerId] = std::move(p2);
-
-        _resources.addTexture(GfxType::BACKGROUND, gfx_textures[0].texturePath());
-        _resources.addTexture(GfxType::PUCK, _puck->spriteInfo().texturePath());
-        _resources.addTexture(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().texturePath());
-        _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
-
-
-        //REVIEW: addSprite should get SpriteInfo as second parameter. maybe?
-        _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0].xTexturePos(),
-                                                  gfx_textures[0].yTexturePos(),
-                                                  gfx_textures[0].width(),
-                                                  gfx_textures[0].height())->SetHotSpot(0, 0);
-
-        _resources.addSprite(GfxType::PUCK, _puck->spriteInfo().xTexturePos(),
-                                              _puck->spriteInfo().yTexturePos(),
-                                              _puck->spriteInfo().width(),
-                                              _puck->spriteInfo().height())->SetHotSpot(_puck->spriteInfo().width() / 2,
-                                                                                              _puck->spriteInfo().height() / 2);
-
-        _resources.addSprite(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
-                                                 _players[_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
-                                                 _players[_currentPlayerId].paddle()->spriteInfo().width(),
-                                                 _players[_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[_currentPlayerId].paddle()->spriteInfo().width() / 2,
-                                                                                                          _players[_currentPlayerId].paddle()->spriteInfo().height() / 2);
-
-        _resources.addSprite(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
-                                                 _players[!_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
-                                                 _players[!_currentPlayerId].paddle()->spriteInfo().width(),
-                                                 _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
-                                                                                                          _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
-
-        _resources.addSound(SoundType::COLLISION, "../resources/hit.wav");
+            Client::getInstance().stop();
+            //TODO: change state or close the game. maybe?
+        }
 
 
         Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
@@ -257,7 +270,7 @@ namespace NeonHockey
         }
         //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
-        //updae coords from server
+        //update coords from server
         Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
 
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
@@ -282,17 +295,38 @@ namespace NeonHockey
         _hge->Gfx_BeginScene();
         _hge->Gfx_Clear(0);
 
-        auto bgSprite = _resources.getSprite(GfxType::BACKGROUND);
-        auto puckSprite = _resources.getSprite(GfxType::PUCK);
-        auto paddleSprite0 = _resources.getSprite(GfxType::PADDLE_CURRENT);
-        auto paddleSprite1 = _resources.getSprite(GfxType::PADDLE_ENEMY);
+        try
+        {
+            auto bgSprite = _resources.getSprite(GfxType::BACKGROUND);
+            auto puckSprite = _resources.getSprite(GfxType::PUCK);
+            auto paddleSprite0 = _resources.getSprite(GfxType::PADDLE_CURRENT);
+            auto paddleSprite1 = _resources.getSprite(GfxType::PADDLE_ENEMY);
 
-        bgSprite->Render(0, 0);
-        puckSprite->Render(_puck->x, _puck->y);
-        paddleSprite0->Render(_players[0].paddle()->x, _players[0].paddle()->y);
-        paddleSprite1->Render(_players[1].paddle()->x, _players[1].paddle()->y);
+            bgSprite->Render(0, 0);
+            puckSprite->Render(_puck->x, _puck->y);
+            paddleSprite0->Render(_players[0].paddle()->x, _players[0].paddle()->y);
+            paddleSprite1->Render(_players[1].paddle()->x, _players[1].paddle()->y);
+
+            //render scores
+            hgeFont *fnt = _resources.getFont(FontType::SCORE);
+            fnt->SetColor(ARGB(100, 255, 100, 100));
+            int scoreLeft = _players[0].getPoints();
+            int scoreRight = _players[1].getPoints();
+
+            //TODO: font does load, but doesn't rendering at all
+            fnt->printf(0, 100, HGETEXT_LEFT, "%d : %d", scoreLeft, scoreRight);
+        }
+        catch(std::exception &e)
+        {
+            std::cerr << e.what();
+            std::cerr << "Check game.log for details" << std::endl;
+
+            Client::getInstance().stop();
+            //TODO: change state or close the game. maybe?
+        }
 
         _hge->Gfx_EndScene();
+
         return false;
     }
 

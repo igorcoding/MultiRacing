@@ -1,4 +1,5 @@
 #include "resourcemanager.h"
+#include "exceptions.h"
 
 namespace NeonHockey
 {
@@ -28,9 +29,13 @@ namespace NeonHockey
         for(auto &s: _sounds)
             _hge->Effect_Free(s.second);
 
+        for(auto &f: _fonts)
+            delete f.second;
+
         _sprites.clear();
         _textures.clear();
         _sounds.clear();
+        _fonts.clear();
         _clear = true;
     }
 
@@ -60,6 +65,16 @@ namespace NeonHockey
         }
     }
 
+    void ResourceManager::freeResource(FontType::FontObjectType fntType)
+    {
+        auto font = _fonts.find(fntType);
+        if (font != _fonts.end())
+        {
+            delete font->second;
+            _fonts.erase(font);
+        }
+    }
+
     void ResourceManager::addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size, bool bMipmap)
     {
         addTexture(gfxType, filename.c_str(), size, bMipmap);
@@ -69,7 +84,7 @@ namespace NeonHockey
     {
         HTEXTURE texture = _hge->Texture_Load(filename, size, bMipmap);
         if (!texture)
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+            throw ResourceException(_hge->System_GetErrorMessage());  // TODO: not sure if we need to clean up all the resources here
 
         freeResource(gfxType); // delete resource if it is already initialized
         _textures[gfxType] = texture;
@@ -81,7 +96,7 @@ namespace NeonHockey
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+            throw ResourceException(_hge->System_GetErrorMessage());  // TODO: not sure if we need to clean up all the resources here
 
         _sprites[gfxType] = new hgeSprite(foundKey->second, x, y, w, h);
         if (_clear)
@@ -93,10 +108,22 @@ namespace NeonHockey
     {
         HEFFECT effect = _hge->Effect_Load(filename.c_str());
         if (!effect)
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+            throw ResourceException(_hge->System_GetErrorMessage());
 
         freeResource(sndType); // delete resource if it is already initialized
         _sounds[sndType] = effect;
+        if (_clear)
+            _clear = false;
+    }
+
+    void ResourceManager::addFont(FontType::FontObjectType fntType, std::string filename, bool mipMap)
+    {
+        hgeFont *fnt = new hgeFont(filename.c_str(), mipMap);
+        if (!fnt) //TODO: это никогда не сработает, даже если загрузка не прошла
+            throw ResourceException(_hge->System_GetErrorMessage());
+
+        freeResource(fntType); // delete resource if it is already initialized
+        _fonts[fntType] = fnt;
         if (_clear)
             _clear = false;
     }
@@ -105,7 +132,7 @@ namespace NeonHockey
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+            throw ResourceException(_hge->System_GetErrorMessage());
         return foundKey->second;
     }
 
@@ -113,15 +140,23 @@ namespace NeonHockey
     {
         auto foundKey = _sprites.find(gfxType);
         if (foundKey == _sprites.end())
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
-        return foundKey->second;     //REVIEW: типизировать исключения и/или передавать строку
+            throw ResourceException(_hge->System_GetErrorMessage());
+        return foundKey->second;
     }
 
     HEFFECT ResourceManager::getSound(SoundType::SoundObjectType sndType)
     {
         auto foundKey = _sounds.find(sndType);
         if (foundKey == _sounds.end())
-            throw std::exception();  // TODO: not sure if we need to clean up all the resources here
+            throw ResourceException(_hge->System_GetErrorMessage());
+        return foundKey->second;
+    }
+
+    hgeFont* ResourceManager::getFont(FontType::FontObjectType fntType)
+    {
+        auto foundKey = _fonts.find(fntType);
+        if (foundKey == _fonts.end())
+            throw ResourceException(_hge->System_GetErrorMessage());
         return foundKey->second;
     }
 }

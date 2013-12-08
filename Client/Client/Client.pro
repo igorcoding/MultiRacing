@@ -24,7 +24,8 @@ HEADERS += \
     gfxobject.h \
     game.h \
     client.h \
-    log.h
+    log.h \
+    exceptions.h
 
 
 QMAKE_CXXFLAGS += -std=c++1y
