@@ -1,6 +1,7 @@
 #include "game.h"
 #include "client.h"
 #include <cmath>
+#include <cstdio>
 
 namespace NeonHockey
 {
@@ -181,7 +182,7 @@ namespace NeonHockey
                                                      _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                               _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
 
-            _resources.addSound(SoundType::COLLISION, "../resources/hit.wav");
+            _resources.addSound(SoundType::COLLISION, "../resources/hit");
 
             _resources.addFont(FontType::SCORE, "../resources/Digital.fnt");
         }
@@ -278,10 +279,10 @@ namespace NeonHockey
         //sounds system
 
         //test for collisions
-        int at = 0;
-        int volume = 0;
-        if(Client::getInstance().getCollision(at, volume))
-            playSound(SoundType::COLLISION, at, volume);
+        int x = 0;
+        int force = 0;
+        if(Client::getInstance().getCollision(x, force))
+            playSound(SoundType::COLLISION, x, force);
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())

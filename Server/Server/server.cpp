@@ -170,12 +170,12 @@ void Server::setPuckPos(int x, int y)
     }
 }
 
-void Server::setCollisionPos(int x, int y)
+void Server::setCollision(int x, int force)
 {
-    _cachedCollisionPos.x = x;
-    _cachedCollisionPos.y = y;
+    _cachedCollision.x = x;
+    _cachedCollision.y = force;
 
-    _cachedCollisionPos.isReady = true;
+    _cachedCollision.isReady = true;
 }
 
 void Server::listenerThreadProc(Client &client)
@@ -240,10 +240,10 @@ void Server::senderThreadProc()
                _cachedPuckPos.isReady = false;
             }
 
-            if(_cachedCollisionPos.isReady)
+            if(_cachedCollision.isReady)
             {
                 sendCollisionPos();
-                _cachedCollisionPos.isReady = false;
+                _cachedCollision.isReady = false;
             }
         }
         catch(std::exception &e)
@@ -280,7 +280,7 @@ void Server::sendCollisionPos()
     {
         client.socket.send(boost::asio::buffer(
                       std::to_string(ServerMessageType::Collision) + " " +
-                      std::to_string(_cachedCollisionPos.x) + " " +
-                      std::to_string(_cachedCollisionPos.y) + "\n"));
+                      std::to_string(_cachedCollision.x) + " " +
+                      std::to_string(_cachedCollision.y) + "\n"));
     }
 }
