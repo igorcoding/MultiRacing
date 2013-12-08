@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     logic.cpp \
     player.cpp \
     puck.cpp \
-    gameobject.cpp
+    gameobject.cpp \
+    vector2d.cpp
 
 OTHER_FILES += \
     protocol.txt
@@ -18,19 +19,15 @@ HEADERS += \
     logic.h \
     player.h \
     puck.h \
-    gameobject.h
+    gameobject.h \
+    vector2d.h
 
 QMAKE_CXXFLAGS += -pthread -std=c++1y
 QMAKE_LFLAGS += -pthread -std=c++1y
 
 unix {
     LIBS += -L/usr/local/lib \
-            -lboost_system \
-            /usr/local/include/hge-unix/src/core/libhge.so \
-            /usr/local/include/hge-unix/src/core/libhge_helpers.so \
-
-    INCLUDEPATH += /usr/local/include/hge-unix/include \
-                   /usr/include/SDL
+            -lboost_system
 
 }
 

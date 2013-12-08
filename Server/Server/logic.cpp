@@ -47,13 +47,8 @@ void Logic::start()
 
 void Logic::setPos(int clientId, int x, int y)
 {
-    //save coords to underlying structures
-    _players[clientId].dx = x - _players[clientId].x;
-    _players[clientId].dy = y - _players[clientId].y;
-    _players[clientId].x = x;
-    _players[clientId].y = y;
-
-
+    Player& p = _players[clientId];
+    p.setPos(x, y);
 }
 
 const Player& Logic::player(int id)
@@ -72,73 +67,51 @@ void Logic::stop(Logic::StopReason reason)
     _shouldStop = true;
 }
 
+
 bool Logic::frameFunc(double dt)
 {
-    //being called each dt seconds
-
-    //send changes to all clients
-
-    //testing
-    /*static int x = 0;
-    static int y = 200;
-
-    x = (x + 5)%800;
-
-    Server::getInstance().setPuckPos(x, y);
-*/
     for (auto& p : _players)
     {
-        p.vx = p.dx / dt;
-        p.vy = p.dy / dt;
+        p.setSpeed(p.dx() / dt, p.dy() / dt);
     }
-
-
-/*
-    // walls collisions
-    auto d = distance(_puck.x, _puck.y, _puck.x, 0);
-    if (d < _puck.radius || _puck.y < 0)
-    {
-        _puck.vy = -_puck.vy;
-        _puck.y += _puck.y >= 0 ? _puck.radius - d : _puck.radius + d;
-    }
-    d = distance(_puck.x, _puck.y, _puck.x, defaultScreenHeight);
-    if (d < _puck.radius || _puck.y >= defaultScreenHeight)
-    {
-        _puck.vy = -_puck.vy;
-        _puck.y -= _puck.y < defaultScreenHeight ? _puck.radius - d : _puck.radius + d;
-    }
-    d = distance(_puck.x, _puck.y, 0, _puck.y);
-    if (d < _puck.radius || _puck.x < 0)
-    {
-        _puck.vx = -_puck.vx;
-        _puck.x += _puck.x >= 0 ? _puck.radius - d : _puck.radius + d;
-    }
-    d = distance(_puck.x, _puck.y, defaultScreenWidth, _puck.y);
-    if (d < _puck.radius || _puck.x >= defaultScreenWidth)
-    {
-        _puck.vx = -_puck.vx;
-        _puck.x -= _puck.x < defaultScreenWidth ? _puck.radius - d : _puck.radius + d;
-    }
-    */
 
     //collisions with players
     Player& firstPlayer = _players[0];
     Player& secondPlayer = _players[1];
 
-    bool collided_first = distance(firstPlayer.x, firstPlayer.y, _puck.x, _puck.y) < firstPlayer.radius + _puck.radius;
-    bool collided_second = distance(secondPlayer.x, secondPlayer.y, _puck.x, _puck.y) < secondPlayer.radius + _puck.radius;
+    float d1 = distance(firstPlayer.getPos().x(),
+                        firstPlayer.getPos().y(),
+                        _puck.getPos().x(),
+                        _puck.getPos().y());
+    float d2 = distance(secondPlayer.getPos().x(),
+                        secondPlayer.getPos().y(),
+                        _puck.getPos().x(),
+                        _puck.getPos().y());
+    bool collided_first = d1 < firstPlayer.radius + _puck.radius;
+    bool collided_second = d2 < secondPlayer.radius + _puck.radius;
 
     if (collided_first)
     {
         std::cout << "collided first\n";
-        handleCollision(firstPlayer, dt);
+        handleCollision(firstPlayer, d1, dt);
     }
     if (collided_second)
     {
         std::cout << "collided second\n";
-        handleCollision(secondPlayer, dt);
+        handleCollision(secondPlayer, d2, dt);
     }
 
+
+    float speed = 1.0f;
+    float friction = 0.992f;
+    auto newPuckPos = _puck.getPos() + speed * math::normalize(_puck.getSpeed());
+    auto newPuckSpeed =  friction * _puck.getSpeed();
+    _puck.setPos(newPuckPos);
+    _puck.setSpeed(newPuckSpeed);
+
+
+
+/*
     const float friction = 0.5f;
     _puck.dx *= friction;
     _puck.dy *= friction;
@@ -166,17 +139,9 @@ bool Logic::frameFunc(double dt)
         _puck.y = y_min + y_min - _puck.y;
         _puck.dy = -_puck.dy;
     }
+*/
 
-
-
-
-    /*float a = -10;
-    _puck.x += _puck.vx * dt;
-    _puck.y += _puck.vy * dt;
-    _puck.vx += a * dt;
-    _puck.vy += a * dt;*/
-
-    Server::getInstance().setPuckPos(_puck.x, _puck.y);
+    Server::getInstance().setPuckPos(_puck.getPos().x(), _puck.getPos().y());
 
     return false;
 }
@@ -185,12 +150,18 @@ void Logic::setInitialCoords()
 {
     // initial rendering values
     const float x_offset = 80.0f;
-    _puck.x = defaultScreenWidth / 2 - 150;
-    _puck.y = defaultScreenHeight / 2;
+
+    auto puck_x = defaultScreenWidth / 2 - 150;
+    auto puck_y = defaultScreenHeight / 2;
+    _puck.setPos(puck_x, puck_y);
+    _puck.setOldPos(puck_x, puck_y);
+
     for (size_t i = 0; i < _players.size(); ++i)
     {
-        _players[i].x = fabs((int) _players[i].side * defaultScreenWidth - x_offset);
-        _players[i].y = defaultScreenHeight / 2;
+        auto player_x = fabs((int) _players[i].side * defaultScreenWidth - x_offset);
+        auto player_y = defaultScreenHeight / 2;
+        _players[i].setOldPos(player_x, player_y);
+        _players[i].setPos(player_x, player_y);
     }
     _initialized = true;
 }
@@ -202,7 +173,7 @@ float Logic::distance(int x1, int y1, int x2, int y2)
     return std::sqrt(dx * dx + dy * dy);
 }
 
-void Logic::handleCollision(Player& p, double dt)
+void Logic::handleCollision(Player& p, float d, double dt)
 {
     // разнести объекты
 
@@ -217,6 +188,8 @@ void Logic::handleCollision(Player& p, double dt)
     _puck.vx = puck_v * cos_gamma;
     _puck.vy = puck_v * sin_gamma;
 */
+
+    /*
     const float speed = 10.0f;
 
 
@@ -228,7 +201,15 @@ void Logic::handleCollision(Player& p, double dt)
         _puck.dy += speed*dt;
     if (p.y > _puck.y)
         _puck.dy -= speed*dt;
+*/
 
+    //float delta = _puck.radius + p.radius - d + 5;
+    //boost::numeric::ublas::vector<float> newPos = delta * normalize(_puck.getPosVector() - p.getPosVector());
+    //newPos += _puck.getPosVector();
+    //_puck.setPos(newPos[0], newPos[1]);
+
+
+    _puck.setSpeed(p.getSpeed());
     Server::getInstance().setCollisionPos(_puck.x, _puck.y);
 }
 
