@@ -136,6 +136,7 @@ void Server::start()
             }
         }
         case Logic::StopReason::ServerStopped:
+        case Logic::StopReason::LogicException:
         {
             break;
         }

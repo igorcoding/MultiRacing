@@ -28,7 +28,7 @@ HEADERS += \
     exceptions.h
 
 
-QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-local-typedefs
 
 unix {
     DEFINES += PLATFORM_UNIX

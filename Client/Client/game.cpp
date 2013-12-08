@@ -215,7 +215,7 @@ namespace NeonHockey
 
     bool Game::frameFunc()
     {
-        auto dt = _hge->Timer_GetDelta();
+        //auto dt = _hge->Timer_GetDelta();
 
         Player& currentPlayer = _players[_currentPlayerId];
         Player& enemyPlayer = _players[!_currentPlayerId];

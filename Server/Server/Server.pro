@@ -22,7 +22,7 @@ HEADERS += \
     gameobject.h \
     vector2d.h
 
-QMAKE_CXXFLAGS += -pthread -std=c++1y
+QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
 QMAKE_LFLAGS += -pthread -std=c++1y
 
 unix {
