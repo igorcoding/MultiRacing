@@ -210,7 +210,7 @@ void Logic::handleCollision(Player& p, float d, double dt)
 
 
     _puck.setSpeed(p.getSpeed());
-    Server::getInstance().setCollisionPos(_puck.x, _puck.y);
+    Server::getInstance().setCollision(_puck.x, 100); //at, volume
 }
 
 bool Logic::shouldStop() const

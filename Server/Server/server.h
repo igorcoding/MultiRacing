@@ -25,7 +25,7 @@ public:
     void start();
 
     void setPuckPos(int x, int y);
-    void setCollisionPos(int x, int y);
+    void setCollision(int x, int force);
 
 private:
     Server();
@@ -36,7 +36,7 @@ private:
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPuckPos, _cachedCollisionPos;
+    } _cachedPuckPos, _cachedCollision;
 
     void listenerThreadProc(Client &client);
 

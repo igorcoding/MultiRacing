@@ -170,12 +170,12 @@ void Server::setPuckPos(int x, int y)
     }
 }
 
-void Server::setCollisionPos(int x, int y)
+void Server::setCollision(int x, int force)
 {
-    _cachedCollisionPos.x = x;
-    _cachedCollisionPos.y = y;
+    _cachedCollision.x = x;
+    _cachedCollision.y = force;
 
-    _cachedCollisionPos.isReady = true;
+    _cachedCollision.isReady = true;
 }
 
 void Server::listenerThreadProc(Client &client)

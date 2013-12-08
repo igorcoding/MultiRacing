@@ -124,14 +124,14 @@ void Client::getPuckPos(float &x, float &y) const
     y = _cachedPuckPos.y;
 }
 
-bool Client::getCollision(int &x, int &y)
+bool Client::getCollision(int &x, int &force)
 {
-    if(_cachedCollisionPos.isReady)
+    if(_cachedCollision.isReady)
     {
-        x = _cachedCollisionPos.x;
-        y = _cachedCollisionPos.y;
+        x = _cachedCollision.x;
+        force = _cachedCollision.y;
 
-        _cachedCollisionPos.isReady = false;
+        _cachedCollision.isReady = false;
     }
     else
         return false;
@@ -291,9 +291,9 @@ void Client::listenerThreadProc()
 
             _mutex.lock();
 
-            _cachedCollisionPos.x = coordX;
-            _cachedCollisionPos.y = coordY;
-            _cachedCollisionPos.isReady = true;
+            _cachedCollision.x = coordX;
+            _cachedCollision.y = coordY;
+            _cachedCollision.isReady = true;
 
 #ifdef _DEBUG
             std::cout << "Collision received: " << coordX << " " << coordY << std::endl;
