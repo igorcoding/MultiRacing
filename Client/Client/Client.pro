@@ -16,7 +16,9 @@ SOURCES += main.cpp \
     ingamecontext.cpp \
     resourcesloader.cpp \
     menuitem.cpp \
-    menucontext.cpp
+    menucontext.cpp \
+    inputfield.cpp \
+    connectcontext.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -34,7 +36,9 @@ HEADERS += \
     ingamecontext.h \
     resourcesloader.h \
     menuitem.h \
-    menucontext.h
+    menucontext.h \
+    inputfield.h \
+    connectcontext.h
 
 
 QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-local-typedefs

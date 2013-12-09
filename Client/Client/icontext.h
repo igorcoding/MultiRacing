@@ -14,7 +14,8 @@ namespace NeonHockey
         ConnectionContext,
         InGameContext,
         GameFinishedContext,
-        GameErrorContext
+        GameErrorContext,
+        ConnectContext
     };
 
     struct IContextData
