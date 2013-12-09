@@ -16,7 +16,6 @@ namespace NeonHockey
     {
         using Puck_ptr = std::unique_ptr<Puck>;
     public:
-        //static Game& getInstance();
         static void start();
         static void endGame();
 

@@ -8,18 +8,26 @@
 namespace NeonHockey
 {
 
+    struct IContextData
+    {
+        int screenWidth;
+        int screenHeight;
+    };
+
     class IContext
     {
     public:
-        IContext(HGE* hge, ResourceManager* rm)
+        IContext(HGE* hge, ResourceManager* rm, IContextData* data)
             : _hge(hge),
-              _rm(rm)
+              _rm(rm),
+              _data(data)
         { }
         virtual void frameFunc() = 0;
         virtual void renderFunc() = 0;
-    private:
+    protected:
         HGE* _hge;
         ResourceManager* _rm;
+        IContextData* _data;
     };
 
 }
