@@ -182,7 +182,7 @@ namespace NeonHockey
                                                      _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                               _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
 
-            //_resources.addSound(SoundType::COLLISION, "../resources/hit");
+            _resources.addSound(SoundType::COLLISION, "../resources/hit.ogg");
             //_resources.addSound(SoundType::COLLISION, "/home/igor/Documents/projects/cpp/NeonHockey/Client/resources/hit.ogg");
 
             _resources.addFont(FontType::SCORE, "../resources/Digital.fnt");
@@ -282,8 +282,8 @@ namespace NeonHockey
         //test for collisions
         int x = 0;
         int force = 0;
-        //if(Client::getInstance().getCollision(x, force))
-        //    playSound(SoundType::COLLISION, x, force);
+        if(Client::getInstance().getCollision(x, force))
+            playSound(SoundType::COLLISION, x, force);
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
