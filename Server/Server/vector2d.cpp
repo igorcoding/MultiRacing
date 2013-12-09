@@ -114,5 +114,10 @@ namespace math
         return !(lhs == rhs);
     }
 
-
+    float distance(const Vector2D& lhs, const Vector2D& rhs)
+    {
+        auto dx = lhs.x() - rhs.x();
+        auto dy = lhs.y() - rhs.y();
+        return std::sqrt(dx * dx + dy * dy);
+    }
 }

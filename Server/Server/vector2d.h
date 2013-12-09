@@ -28,6 +28,7 @@ namespace math
 
     float dot(const Vector2D& lhs, const Vector2D& rhs);
     Vector2D normalize(const Vector2D& vec);
+    float distance(const Vector2D& lhs, const Vector2D& rhs);
 
     Vector2D operator+ (const Vector2D& lhs, const Vector2D& rhs);
     Vector2D operator- (const Vector2D& lhs, const Vector2D& rhs);

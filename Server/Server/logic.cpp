@@ -79,14 +79,8 @@ bool Logic::frameFunc(double dt)
     Player& firstPlayer = _players[0];
     Player& secondPlayer = _players[1];
 
-    float d1 = distance(firstPlayer.pos.x(),
-                        firstPlayer.pos.y(),
-                        _puck.pos.x(),
-                        _puck.pos.y());
-    float d2 = distance(secondPlayer.pos.x(),
-                        secondPlayer.pos.y(),
-                        _puck.pos.x(),
-                        _puck.pos.y());
+    float d1 = math::distance(firstPlayer.pos, _puck.pos);
+    float d2 = math::distance(secondPlayer.pos, _puck.pos);
     bool collided_first = d1 < firstPlayer.radius + _puck.radius;
     bool collided_second = d2 < secondPlayer.radius + _puck.radius;
 
@@ -102,15 +96,10 @@ bool Logic::frameFunc(double dt)
     }
 
 
-    //float speed = 3.0f;
     float friction = 1.0f;
-    auto newPuckPos = _puck.pos + _puck.speed;
-    //speed *= friction;
+    _puck.pos += _puck.speed;
     auto normalizedPuckSpeed = math::normalize(puck().speed);
-    auto newPuckSpeed =  _puck.speed + math::Vector2D(-friction * normalizedPuckSpeed.x(), -friction * normalizedPuckSpeed.y());
-    _puck.pos = newPuckPos;
-    _puck.speed = newPuckSpeed;
-
+    _puck.speed += math::Vector2D(-friction * normalizedPuckSpeed.x(), -friction * normalizedPuckSpeed.y());
 
 
     int lr_border = 40;
@@ -168,17 +157,8 @@ void Logic::setInitialCoords()
     _initialized = true;
 }
 
-float Logic::distance(int x1, int y1, int x2, int y2)
-{
-    auto dx = x1 - x2;
-    auto dy = y1 - y2;
-    return std::sqrt(dx * dx + dy * dy);
-}
-
 void Logic::handleCollision(Player& p, float d, double dt)
 {
-    // разнести объекты
-
     /*int k = 3; // M/m
     auto p_v_sqr = p.vx * p.vx + p.vy + p.vy;
     auto old_puck_v_sqr = _puck.vx * _puck.vx + _puck.vy + _puck.vy;
@@ -191,29 +171,9 @@ void Logic::handleCollision(Player& p, float d, double dt)
     _puck.vy = puck_v * sin_gamma;
 */
 
-    /*
-    const float speed = 10.0f;
-
-
-    if (p.x < _puck.x)
-        _puck.dx += speed*dt;
-    if (p.x > _puck.x)
-        _puck.dx -= speed*dt;
-    if (p.y < _puck.y)
-        _puck.dy += speed*dt;
-    if (p.y > _puck.y)
-        _puck.dy -= speed*dt;
-*/
-
-    //float delta = _puck.radius + p.radius - d + 5;
-    //boost::numeric::ublas::vector<float> newPos = delta * normalize(_puck.getPosVector() - p.getPosVector());
-    //newPos += _puck.getPosVector();
-    //_puck.setPos(newPos[0], newPos[1]);
-
     float delta = _puck.radius + p.radius - d;
     auto moving = delta * math::normalize(p.speed);
     _puck.pos += moving;
-
 
     auto speedLimit = 100.0;
     _puck.speed = (1.0/80.0) * p.speed;
