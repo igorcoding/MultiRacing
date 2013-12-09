@@ -17,7 +17,7 @@ namespace NeonHockey
 
     }
 
-    Log &Log::operator<<(Log::EndLine &endl)
+    Log &Log::operator<<(Log::EndLine &)
     {
         _entries.push_back({_level, is.str()});
         is.clear();

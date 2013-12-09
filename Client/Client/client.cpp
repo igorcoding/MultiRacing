@@ -132,6 +132,8 @@ bool Client::getCollision(int &x, int &force)
         force = _cachedCollision.y;
 
         _cachedCollision.isReady = false;
+
+        return true;
     }
     else
         return false;

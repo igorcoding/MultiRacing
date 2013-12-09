@@ -22,7 +22,7 @@ HEADERS += \
     gameobject.h \
     vector2d.h
 
-QMAKE_CXXFLAGS += -pthread -std=c++1y
+QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
 QMAKE_LFLAGS += -pthread -std=c++1y
 
 unix {
@@ -35,7 +35,7 @@ win32 {
     INCLUDEPATH += C:/Projects/Qt/boost_1_54_0
     LIBS += -LC:/Projects/Qt/boost_1_54_0/stage/lib/ \
         -lws2_32
-    LIBS += C:/Projects/Qt/boost_1_54_0/stage/lib/libboost_system-mgw48-mt-sd-1_54.a
+    LIBS += C:/Projects/Qt/boost_1_54_0/stage/lib/libboost_system-mgw48-mt-1_54.a
 }
 
 CONFIG(debug, debug|release) {
