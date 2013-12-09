@@ -12,7 +12,6 @@ namespace NeonHockey
         DWORD shadowColor = ARGB(200, 255, 0, 0);
         DWORD itemColor = ARGB(255, 0, 255, 0);
 
-        std::vector<std::pair<std::string, std::string>> items;
         items.push_back(std::make_pair("Connect!", "Connect to dedicated server"));
         items.push_back(std::make_pair("About", "Information about NeonHockey"));
         items.push_back(std::make_pair("Exit", "Exit game"));
@@ -35,6 +34,8 @@ namespace NeonHockey
     {
         float dt = _hge->Timer_GetDelta();
         itemSet(dt);
+
+        return Context::MenuContext;
     }
 
     void MenuContext::renderFunc()
@@ -59,12 +60,12 @@ namespace NeonHockey
 
         if(id == -1)
         {
-            switch(lastid)
+            switch(lastId)
             {
             case 1:
             case 2:
             case 3:
-                lastid = 0;
+                lastId = 0;
                 menu->Enter();
                 menu->SetFocus(1);
                 break;
@@ -72,7 +73,7 @@ namespace NeonHockey
         }
         else if(id)
         {
-            lastid = id;
+            lastId = id;
             menu->Leave();
         }
     }

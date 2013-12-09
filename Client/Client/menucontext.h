@@ -32,7 +32,7 @@ namespace NeonHockey
         hgeGUI *menu;
 
         int id;
-        int lastid;
+        int lastId;
 
         std::vector<std::pair<std::string, std::string>> items;
     };
