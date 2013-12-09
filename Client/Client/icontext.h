@@ -7,6 +7,15 @@
 
 namespace NeonHockey
 {
+    enum class Context
+    {
+        NoContext,
+        MenuContext,
+        ConnectionContext,
+        InGameContext,
+        GameFinishedContext,
+        GameErrorContext
+    };
 
     struct IContextData
     {
@@ -24,8 +33,15 @@ namespace NeonHockey
               _data(data)
         { }
 
+        virtual ~IContext()
+        {
+            delete _data;
+            _data = nullptr;
+        }
+
+        virtual void start() = 0;
         virtual void show() = 0;
-        virtual void frameFunc() = 0;
+        virtual Context frameFunc() = 0;
         virtual void renderFunc() = 0;
     protected:
         HGE* _hge;

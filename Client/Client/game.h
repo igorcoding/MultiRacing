@@ -7,14 +7,14 @@
 #include <memory>
 
 #include "resourcemanager.h"
-#include "puck.h"
-#include "paddle.h"
+#include "icontext.h"
+#include "menucontext.h"
+#include "ingamecontext.h"
 
 namespace NeonHockey
 {
     class Game
     {
-        using Puck_ptr = std::unique_ptr<Puck>;
     public:
         static void start();
         static void endGame();
@@ -24,30 +24,24 @@ namespace NeonHockey
 
         ~Game();
 
-
-
     private:
         static HGE* _hge;
-        static std::vector<Player> _players;
-        static Puck_ptr _puck;
         static ResourceManager _resources;
         static bool _initialized;
         static int _currentPlayerId;
+        static std::map<Context, IContext*> _contexts;
+        static Context _currentContext;
 
         static const std::string game_title;
         static const std::string game_log;
         static const int screen_width;
         static const int screen_height;
-        static const int border_width;
-        static const int gap_width;
-        static std::vector<SpriteInfo> gfx_textures;
 
         Game();
         Game(const Game&) = delete;
         Game& operator =(const Game&) = delete;
 
         static void initializeGame();
-        static void setGfxResources();
         static void initializeGameStates();
         static void initializeGameResources();
         static bool frameFunc();

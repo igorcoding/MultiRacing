@@ -7,18 +7,27 @@
 
 namespace NeonHockey
 {
-    class MenuContext : IContext
+
+    struct MenuContextData : public IContextData
+    {
+
+    };
+
+    class MenuContext : public IContext
     {
     public:
-        MenuContext();
+        MenuContext(HGE* hge, ResourceManager* rm, MenuContextData* data);
+        ~MenuContext();
 
         // IContext interface
     public:
-        void frameFunc();
+        Context frameFunc();
         void renderFunc();
 
-        void show();
+        void start() {}
+        void show() {}
         void itemSet(float dt);
+        void enter();
     private:
         hgeGUI *menu;
 

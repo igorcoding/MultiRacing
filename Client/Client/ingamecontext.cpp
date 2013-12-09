@@ -1,5 +1,6 @@
 #include "ingamecontext.h"
 #include "client.h"
+#include "resourcesloader.h"
 
 namespace NeonHockey
 {
@@ -10,7 +11,17 @@ namespace NeonHockey
     {
     }
 
-    void InGameContext::frameFunc()
+    void InGameContext::start()
+    {
+        this->show();
+    }
+
+    void InGameContext::show()
+    {
+        renderFunc();
+    }
+
+    Context InGameContext::frameFunc()
     {
         auto data = dynamic_cast<InGameContextData*>(_data);
 
@@ -85,9 +96,9 @@ namespace NeonHockey
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
-            return true;
+            return Context::GameErrorContext;
 
-        return false;
+        return Context::InGameContext;
     }
 
     void InGameContext::renderFunc()
@@ -99,13 +110,12 @@ namespace NeonHockey
         {
             auto bgSprite = _rm->getSprite(GfxType::BACKGROUND);
             auto puckSprite = _rm->getSprite(GfxType::PUCK);
-            auto paddleSprite0 = _rm->getSprite(GfxType::PADDLE_CURRENT);
-            auto paddleSprite1 = _rm->getSprite(GfxType::PADDLE_ENEMY);
+            auto paddleSprite = _rm->getSprite(GfxType::PADDLE);
 
             bgSprite->Render(0, 0);
             puckSprite->Render(_puck->x, _puck->y);
-            paddleSprite0->Render(_players[0].paddle()->x, _players[0].paddle()->y);
-            paddleSprite1->Render(_players[1].paddle()->x, _players[1].paddle()->y);
+            paddleSprite->Render(_players[0].paddle()->x, _players[0].paddle()->y);
+            paddleSprite->Render(_players[1].paddle()->x, _players[1].paddle()->y);
 
             //render scores
             hgeFont *fnt = _rm->getFont(FontType::SCORE);
@@ -127,13 +137,10 @@ namespace NeonHockey
 
         _hge->Gfx_EndScene();
 
-        return false;
+        //return false;
     }
 
-    void InGameContext::show()
-    {
-        renderFunc();
-    }
+
 
 }
 

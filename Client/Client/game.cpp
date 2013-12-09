@@ -1,5 +1,6 @@
 #include "game.h"
 #include "client.h"
+#include "resourcesloader.h"
 #include <cmath>
 #include <cstdio>
 
@@ -14,31 +15,20 @@ namespace NeonHockey
     const std::string Game::game_log = "neonhockey.log";
     const int Game::screen_width = 800;
     const int Game::screen_height = 600;
-    const int Game::border_width = 32;
-    const int Game::gap_width = 200;
-    std::vector<SpriteInfo> Game::gfx_textures;
 
     HGE* Game::_hge = nullptr;
-    std::vector<Player> Game::_players(2);
-    Game::Puck_ptr Game::_puck = nullptr;
     ResourceManager Game::_resources;
+    Context Game::_currentContext = Context::MenuContext;
+    std::map<Context, IContext*> Game::_contexts;
 
 
-/*
-    Game& Game::getInstance()
-    {
-        static Game game;
-        if (!game._initialized)
-            initializeGame();
-        return game;
-    }
-*/
     void Game::start()
     {
         if (!_initialized)
             initializeGame();
         if (_initialized)
         {
+            _contexts[_currentContext] = new MenuContext(_hge, &_resources, nullptr);
             _hge->System_Start();
 
             endGame();
@@ -49,10 +39,13 @@ namespace NeonHockey
     void Game::endGame()
     {
         _resources.freeResources();
+        for (auto& context : _contexts)
+            delete context.second;
+        _currentContext = Context::NoContext;
+
         _hge->System_Shutdown();
         _hge->Release();
 
-        _puck.reset();
         _initialized = false;
     }
 
@@ -76,7 +69,6 @@ namespace NeonHockey
     {
         _hge = hgeCreate(HGE_VERSION);
         _resources.initHge(_hge);
-        setGfxResources();
         initializeGameStates();
 
         if (_hge->System_Initiate())
@@ -96,14 +88,6 @@ namespace NeonHockey
 
     }
 
-    void Game::setGfxResources()
-    {
-        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 800, 600, "../resources/Field.png"));
-        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Puck.png"));
-        Game::gfx_textures.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Paddle.png"));
-
-    }
-
     void Game::initializeGameStates()
     {
         _hge->System_SetState(HGE_LOGFILE, Game::game_log.c_str());
@@ -118,8 +102,11 @@ namespace NeonHockey
         _hge->System_SetState(HGE_SCREENBPP, 32);
     }
 
-    void Game::initializeGameResources() //REVIEW: add try/catch block over all loadings
+    void Game::initializeGameResources()
     {
+        ResourcesLoader rloader(&_resources);
+        rloader.loadEverything();
+        /*
         try
         {
             _currentPlayerId = Client::getInstance().id();
@@ -185,126 +172,17 @@ namespace NeonHockey
         Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
         Client::getInstance().getEnemyPaddlePos(_players[!_currentPlayerId].paddle()->x, _players[!_currentPlayerId].paddle()->y);
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
+        */
     }
 
     bool Game::frameFunc()
     {
-        //auto dt = _hge->Timer_GetDelta();
 
-        Player& currentPlayer = _players[_currentPlayerId];
-        Player& enemyPlayer = _players[!_currentPlayerId];
-
-        float mouse_x = 0;
-        float mouse_y = 0;
-
-        if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
-        {
-            _hge->Input_GetMousePos(&mouse_x, &mouse_y);
-            bool inplace = true;
-
-            auto x_max = screenWidth() - border_width - currentPlayer.paddle()->spriteInfo().width() / 2;
-            auto x_min = border_width + currentPlayer.paddle()->spriteInfo().width() / 2;
-            auto y_max = screenHeight() - border_width - currentPlayer.paddle()->spriteInfo().height() / 2;
-            auto y_min = border_width + currentPlayer.paddle()->spriteInfo().height() / 2;
-
-            if (mouse_x > x_max || mouse_x < x_min || mouse_y > y_max || mouse_y < y_min)
-            {
-                inplace = false;
-            }
-
-            if (mouse_y > (screenHeight() - gap_width) / 2 + currentPlayer.paddle()->spriteInfo().height() / 2 &&
-                    mouse_y < (screenHeight() + gap_width) / 2 - currentPlayer.paddle()->spriteInfo().height() / 2)
-            {
-                inplace = true;
-                if (mouse_x > screenWidth() - currentPlayer.paddle()->spriteInfo().width() ||
-                        mouse_x < currentPlayer.paddle()->spriteInfo().width())
-                    inplace = false;
-            }
-            
-
-
-            switch (_players[_currentPlayerId].getSide())
-            {
-            case BoardSide::LEFT:
-                if (!(mouse_x <= screen_width / 2 - currentPlayer.paddle()->spriteInfo().width() / 2))
-                    inplace = false;
-                break;
-            case BoardSide::RIGHT:
-                if (!(mouse_x >= screen_width / 2 + currentPlayer.paddle()->spriteInfo().width() / 2))
-                    inplace = false;
-                break;
-            }
-
-            if (inplace)
-            {
-                currentPlayer.paddle()->x = mouse_x;
-                currentPlayer.paddle()->y = mouse_y;
-                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
-            }
-
-        }
-        //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
-
-        //update coords from server
-        Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
-
-        Client::getInstance().getPuckPos(_puck->x, _puck->y);
-
-
-
-        //sounds system
-
-        //test for collisions
-        int x = 0;
-        int force = 0;
-        //if(Client::getInstance().getCollision(x, force))
-        //    playSound(SoundType::COLLISION, x, force);
-
-        //some kind of error occured?
-        if(Client::getInstance().shouldStop())
-            return true;
-
-        return false;
     }
 
     bool Game::renderFunc()
     {
-        _hge->Gfx_BeginScene();
-        _hge->Gfx_Clear(0);
 
-        try
-        {
-            auto bgSprite = _resources.getSprite(GfxType::BACKGROUND);
-            auto puckSprite = _resources.getSprite(GfxType::PUCK);
-            auto paddleSprite0 = _resources.getSprite(GfxType::PADDLE_CURRENT);
-            auto paddleSprite1 = _resources.getSprite(GfxType::PADDLE_ENEMY);
-
-            bgSprite->Render(0, 0);
-            puckSprite->Render(_puck->x, _puck->y);
-            paddleSprite0->Render(_players[0].paddle()->x, _players[0].paddle()->y);
-            paddleSprite1->Render(_players[1].paddle()->x, _players[1].paddle()->y);
-
-            //render scores
-            hgeFont *fnt = _resources.getFont(FontType::SCORE);
-            fnt->SetColor(ARGB(100, 255, 100, 100));
-            int scoreLeft = _players[0].getPoints();
-            int scoreRight = _players[1].getPoints();
-
-            //TODO: font does load, but doesn't rendering at all
-            fnt->printf(0, 100, HGETEXT_LEFT, "%d : %d", scoreLeft, scoreRight);
-        }
-        catch(std::exception &e)
-        {
-            std::cerr << e.what();
-            std::cerr << "Check game.log for details" << std::endl;
-
-            Client::getInstance().stop();
-            //TODO: change state or close the game. maybe?
-        }
-
-        _hge->Gfx_EndScene();
-
-        return false;
     }
 
     void Game::playSound(SoundType::SoundObjectType type, int at, int volume)

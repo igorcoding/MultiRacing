@@ -14,10 +14,9 @@ namespace NeonHockey
 {
     namespace GfxType
     {
-        enum GfxObjectType { //REVIEW: эти GfxType::GfxObjectType выглядят ужасно
-            PUCK,            //если ты не используешь индексацию числами (magic'ми)
-            PADDLE_CURRENT,  //то стоит просто перейти на enum class
-            PADDLE_ENEMY,
+        enum GfxObjectType {
+            PUCK,
+            PADDLE,
             BACKGROUND
         };
     }

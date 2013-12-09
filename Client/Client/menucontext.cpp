@@ -1,9 +1,11 @@
 #include "menucontext.h"
 #include "menuitem.h"
 
+
 namespace NeonHockey
 {
-    MenuContext::MenuContext()
+    MenuContext::MenuContext(HGE* hge, ResourceManager* rm, MenuContextData* data)
+        : IContext(hge, rm, data)
     {
         menu = new hgeGUI();
 
@@ -11,25 +13,25 @@ namespace NeonHockey
         DWORD itemColor = ARGB(255, 0, 255, 0);
 
         std::vector<std::pair<std::string, std::string>> items;
-        items.push_back(make_pair("Connect!", "Connect to dedicated server"));
-        items.push_back(make_pair("About", "Information about NeonHockey"));
-        items.push_back(make_pair("Exit", "Exit game"));
+        items.push_back(std::make_pair("Connect!", "Connect to dedicated server"));
+        items.push_back(std::make_pair("About", "Information about NeonHockey"));
+        items.push_back(std::make_pair("Exit", "Exit game"));
 
 
         for(int i = 0; i < items.size(); ++i)
             menu->AddCtrl(
-                new hgemenuItem(i + 1,
-                   _rm.getFont(FontType::SCORE),
+                new hgeGUIMenuItem(i + 1,
+                   _rm->getFont(FontType::SCORE),
                    _rm->getSound(SoundType::COLLISION),
                    400, 200+40*i, float(i)/10.0,
                    (char*)items[i].first.c_str(),
-                   Color, SColor));
+                   itemColor, shadowColor));
 
         menu->SetNavMode(HGEGUI_UPDOWN | HGEGUI_CYCLED);
     }
 
 
-    void MenuContext::frameFunc()
+    Context MenuContext::frameFunc()
     {
         float dt = _hge->Timer_GetDelta();
         itemSet(dt);

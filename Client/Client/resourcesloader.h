@@ -1,15 +1,27 @@
 #ifndef RESOURCESLOADER_H
 #define RESOURCESLOADER_H
 
+#include <vector>
+
 #include "resourcemanager.h"
 
 namespace NeonHockey
 {
-    struct ResourcesLoader
+    class ResourcesLoader
     {
-        static void loadGraphics(ResourceManager* rm);
-        static void loadFonts(ResourceManager* rm);
-        static void loadSound(ResourceManager* rm);
+    public:
+        ResourcesLoader(ResourceManager* rm);
+        void loadEverything();
+        void loadGraphics();
+        void loadFonts();
+        void loadSound();
+
+    private:
+        std::vector<SpriteInfo> _gfxResources;
+        ResourceManager* _rm;
+
+        ResourcesLoader(const ResourcesLoader&) = delete;
+        ResourcesLoader& operator =(const ResourcesLoader&) = delete;
     };
 }
 
