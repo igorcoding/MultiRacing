@@ -147,8 +147,6 @@ namespace NeonHockey
             Player p2("Player 2", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
 
             _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[1])));
-            //_players.emplace_back(std::move(p1));
-            //_players.emplace_back(std::move(p2));
             _players[_currentPlayerId] = std::move(p1);
             _players[!_currentPlayerId] = std::move(p2);
 
@@ -158,28 +156,15 @@ namespace NeonHockey
             _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
 
 
-            //REVIEW: addSprite should get SpriteInfo as second parameter. maybe?
-            _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0].xTexturePos(),
-                                                      gfx_textures[0].yTexturePos(),
-                                                      gfx_textures[0].width(),
-                                                      gfx_textures[0].height())->SetHotSpot(0, 0);
+            _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0])->SetHotSpot(0, 0);
 
-            _resources.addSprite(GfxType::PUCK, _puck->spriteInfo().xTexturePos(),
-                                                  _puck->spriteInfo().yTexturePos(),
-                                                  _puck->spriteInfo().width(),
-                                                  _puck->spriteInfo().height())->SetHotSpot(_puck->spriteInfo().width() / 2,
+            _resources.addSprite(GfxType::PUCK, _puck->spriteInfo())->SetHotSpot(_puck->spriteInfo().width() / 2,
                                                                                                   _puck->spriteInfo().height() / 2);
 
-            _resources.addSprite(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
-                                                     _players[_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
-                                                     _players[_currentPlayerId].paddle()->spriteInfo().width(),
-                                                     _players[_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[_currentPlayerId].paddle()->spriteInfo().width() / 2,
+            _resources.addSprite(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo())->SetHotSpot(_players[_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                               _players[_currentPlayerId].paddle()->spriteInfo().height() / 2);
 
-            _resources.addSprite(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().xTexturePos(),
-                                                     _players[!_currentPlayerId].paddle()->spriteInfo().yTexturePos(),
-                                                     _players[!_currentPlayerId].paddle()->spriteInfo().width(),
-                                                     _players[!_currentPlayerId].paddle()->spriteInfo().height())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
+            _resources.addSprite(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
                                                                                                               _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
 
             //_resources.addSound(SoundType::COLLISION, "../resources/hit");
@@ -200,18 +185,6 @@ namespace NeonHockey
         Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
         Client::getInstance().getEnemyPaddlePos(_players[!_currentPlayerId].paddle()->x, _players[!_currentPlayerId].paddle()->y);
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
-
-        /*
-        // initial rendering values
-        const float x_offset = 50.0f;
-        _puck->x = screen_width / 2;
-        _puck->y = screen_height / 2;
-        for (size_t i = 0; i < _players.size(); ++i)
-        {
-            _players[i].paddle()->x = fabs((int) _players[i].getSide() * screen_width - x_offset);
-            _players[i].paddle()->y = screen_height / 2;
-        }
-        */
     }
 
     bool Game::frameFunc()
@@ -276,6 +249,8 @@ namespace NeonHockey
         Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
 
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
+
+
 
         //sounds system
 

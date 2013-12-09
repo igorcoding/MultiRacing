@@ -12,7 +12,9 @@ SOURCES += main.cpp \
     gfxobject.cpp \
     game.cpp \
     client.cpp \
-    log.cpp
+    log.cpp \
+    ingamecontext.cpp \
+    resourcesloader.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -25,7 +27,10 @@ HEADERS += \
     game.h \
     client.h \
     log.h \
-    exceptions.h
+    exceptions.h \
+    icontext.h \
+    ingamecontext.h \
+    resourcesloader.h
 
 
 QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-local-typedefs
