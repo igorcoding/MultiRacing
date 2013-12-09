@@ -3,18 +3,21 @@
 
 #include "icontext.h"
 
-class InGameContext : public IContext
+namespace NeonHockey
 {
-public:
-    InGameContext();
 
-    virtual void load(HGE *hge);
-    virtual void loadResources();
-    virtual void frameFunc();
-    virtual void renderFunc();
+    class InGameContext : public IContext
+    {
+    public:
+        InGameContext(HGE* hge, ResourceManager* rm);
 
-private:
-    HGE* _hge;
-};
+        virtual void frameFunc();
+        virtual void renderFunc();
+
+    private:
+
+    };
+
+}
 
 #endif // INGAMECONTEXT_H

@@ -3,16 +3,25 @@
 
 #include <hge.h>
 
-class IContext
+#include "resourcemanager.h"
+
+namespace NeonHockey
 {
-public:
-    IContext(HGE* hge)
-        : _hge(hge)
-    { }
-    virtual void frameFunc() = 0;
-    virtual void renderFunc() = 0;
-private:
-    HGE* _hge;
-};
+
+    class IContext
+    {
+    public:
+        IContext(HGE* hge, ResourceManager* rm)
+            : _hge(hge),
+              _rm(rm)
+        { }
+        virtual void frameFunc() = 0;
+        virtual void renderFunc() = 0;
+    private:
+        HGE* _hge;
+        ResourceManager* _rm;
+    };
+
+}
 
 #endif // ICONTEXT_H

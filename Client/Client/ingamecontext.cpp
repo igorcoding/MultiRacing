@@ -1,23 +1,19 @@
 #include "ingamecontext.h"
 
-InGameContext::InGameContext()
+namespace NeonHockey
 {
-}
+    InGameContext::InGameContext(HGE* hge, ResourceManager* rm)
+        : IContext(hge, rm)
+    {
+    }
+
+    void InGameContext::frameFunc()
+    {
+    }
+
+    void InGameContext::renderFunc()
+    {
+    }
 
 
-void InGameContext::load(HGE* hge)
-{
-    _hge = hge;
-}
-
-void InGameContext::loadResources()
-{
-}
-
-void InGameContext::frameFunc()
-{
-}
-
-void InGameContext::renderFunc()
-{
 }
