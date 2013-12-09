@@ -67,6 +67,7 @@ void Server::start()
 
 
                 client.id = clientId++;
+                client.name = clientName;
                 clients.emplace_back(std::move(client));
             }
             else
@@ -90,6 +91,7 @@ void Server::start()
             client.socket.send(
                         boost::asio::buffer(
                             std::to_string(ServerMessageType::GameStarted) + " " +
+                            clients[!client.id].name + " " +
                             std::to_string(_cachedPuckPos.x) + " " +
                             std::to_string(_cachedPuckPos.y) + " " +
                             std::to_string(logic.player(0).x) + " " +

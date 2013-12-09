@@ -14,6 +14,7 @@ struct Client
 
     boost::asio::ip::tcp::socket socket;
     std::thread thread;
+    std::string name;
     int id;
 };
 

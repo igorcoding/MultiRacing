@@ -51,6 +51,8 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
             if(messageType == ServerMessageType::GameStarted)
             {
+                is >> _opponentName;
+
                 is >> _cachedPuckPos.x >> _cachedPuckPos.y;
 
                 if(_id == 0) //coords order
@@ -122,6 +124,11 @@ void Client::getPuckPos(float &x, float &y) const
 {
     x = _cachedPuckPos.x;
     y = _cachedPuckPos.y;
+}
+
+const std::string &Client::getOpponentName() const
+{
+    return _opponentName;
 }
 
 bool Client::getCollision(int &x, int &force)

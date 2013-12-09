@@ -27,6 +27,8 @@ public:
 
     void getPuckPos(float &x, float &y) const;
 
+    const std::string &getOpponentName() const;
+
     //test if collision occured,
     //if it is => sets x and force
     //and resets internal flag, so next time it will not return true
@@ -60,9 +62,9 @@ private:
         int x = 0, y = 0;
         bool isReady = false;
     } _cachedPos, _cachedEnemyPos, _cachedPuckPos, _cachedCollision;
-
     //_cachedPuckPos.isReady flag is not used anywhere
 
+    std::string _opponentName;
 
     //sends _data's values
     void sendPos();
