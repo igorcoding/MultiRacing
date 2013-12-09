@@ -1,3 +1,4 @@
+#include <sstream>
 #include "ingamecontext.h"
 #include "client.h"
 #include "resourcesloader.h"
@@ -119,12 +120,20 @@ namespace NeonHockey
 
             //render scores
             hgeFont *fnt = _rm->getFont(FontType::SCORE);
-            fnt->SetColor(ARGB(100, 255, 100, 100));
-            int scoreLeft = _players[0].getPoints();
-            int scoreRight = _players[1].getPoints();
+            fnt->SetColor(ARGB(255, 200, 200, 255));
 
-            //TODO: font does load, but doesn't rendering at all
-            fnt->printf(0, 100, HGETEXT_LEFT, "%d : %d", scoreLeft, scoreRight);
+            std::stringstream scoresStr;
+            scoresStr << "(" << _players[0].getName() << ") "
+                    << _players[0].getPoints()
+                    << " : "
+                    << _players[1].getPoints()
+                    << "(" + _players[1].getName() << ")";
+
+
+            float x = _data->screenWidth/2 - fnt->GetStringWidth(scoresStr.str().c_str());
+            float y = fnt->GetHeight() * 1.5;
+
+            fnt->Render(x, y, HGETEXT_LEFT, scoresStr.str().c_str());
         }
         catch(std::exception &e)
         {
