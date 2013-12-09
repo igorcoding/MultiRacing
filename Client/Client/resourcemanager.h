@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 
+#include "spriteinfo.h"
 
 namespace NeonHockey
 {
@@ -51,6 +52,7 @@ namespace NeonHockey
         void addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size = 0, bool bMipmap = false);
         void addTexture(GfxType::GfxObjectType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
         hgeSprite* addSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
+        hgeSprite* addSprite(GfxType::GfxObjectType gfxType, const SpriteInfo& spriteInfo);
         void addSound(SoundType::SoundObjectType sndType, std::string filename);
         void addFont(FontType::FontObjectType fntType, std::string filename, bool mipMap = false);
 

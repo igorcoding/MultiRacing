@@ -44,8 +44,8 @@ namespace NeonHockey
         static std::vector<SpriteInfo> gfx_textures;
 
         Game();
-        Game(const Game&);
-        Game& operator =(const Game&);
+        Game(const Game&) = delete;
+        Game& operator =(const Game&) = delete;
 
         static void initializeGame();
         static void setGfxResources();
