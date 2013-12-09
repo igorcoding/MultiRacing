@@ -104,6 +104,11 @@ namespace NeonHockey
         return _sprites[gfxType];
     }
 
+    hgeSprite *ResourceManager::addSprite(GfxType::GfxObjectType gfxType, const SpriteInfo &spriteInfo)
+    {
+        addSprite(gfxType, spriteInfo.xTexturePos(), spriteInfo.yTexturePos(), spriteInfo.width(), spriteInfo.height());
+    }
+
     void ResourceManager::addSound(SoundType::SoundObjectType sndType, std::string filename)
     {
 #ifdef PLATFORM_UNIX
