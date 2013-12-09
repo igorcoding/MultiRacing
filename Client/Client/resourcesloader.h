@@ -5,14 +5,13 @@
 
 namespace NeonHockey
 {
-    class ResourcesLoader
+    struct ResourcesLoader
     {
-    public:
-        ResourcesLoader();
-
-    private:
-        ResourceManager _rm;
+        static void loadGraphics(ResourceManager* rm);
+        static void loadFonts(ResourceManager* rm);
+        static void loadSound(ResourceManager* rm);
     };
 }
 
 #endif // RESOURCESLOADER_H
+

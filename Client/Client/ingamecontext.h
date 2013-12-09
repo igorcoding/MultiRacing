@@ -12,7 +12,7 @@ namespace NeonHockey
 {
     struct InGameContextData : public IContextData
     {
-
+        int currentPlayerId;
     };
 
     class InGameContext : public IContext
@@ -28,7 +28,6 @@ namespace NeonHockey
     private:
         std::vector<Player> _players;
         Puck_ptr _puck;
-        int _currentPlayerId;
         const int border_width;
         const int gap_width;
     };

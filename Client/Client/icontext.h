@@ -12,6 +12,7 @@ namespace NeonHockey
     {
         int screenWidth;
         int screenHeight;
+        virtual ~IContextData() {}
     };
 
     class IContext
