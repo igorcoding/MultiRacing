@@ -1,6 +1,6 @@
 #include "puck.h"
 
 Puck::Puck()
-    : GameObject(0, 0, 16)
+    : GameObject(0, 0, 23)
 {
 }

@@ -107,9 +107,11 @@ namespace NeonHockey
     void ResourceManager::addSound(SoundType::SoundObjectType sndType, std::string filename)
     {
 #ifdef PLATFORM_UNIX
-        HEFFECT effect = _hge->Effect_Load((filename + ".ogg").c_str());
+        //auto file = _hge->Resource_MakePath((filename + ".ogg").c_str());
+        HEFFECT effect = _hge->Effect_Load(filename.c_str());
 #else
-        HEFFECT effect = _hge->Effect_Load((filename + ".wav").c_str());
+        auto file = filename + ".wav";
+        HEFFECT effect = _hge->Effect_Load(file.c_str());
 #endif
         if (!effect)
             throw ResourceException(_hge->System_GetErrorMessage());

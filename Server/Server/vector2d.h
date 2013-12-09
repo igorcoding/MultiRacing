@@ -6,7 +6,7 @@ namespace math
     class Vector2D
     {
     public:
-        Vector2D(int x = 0.0f, int y = 0.0f);
+        Vector2D(int x = 0.0f, int setY = 0.0f);
 
         float x() const;
         void x(float x);

@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-class ResourceException : std::exception
+class ResourceException : public std::exception
 {
 public:
 

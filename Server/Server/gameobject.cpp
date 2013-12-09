@@ -18,7 +18,7 @@ void GameObject::setOldPos(float x, float y)
 
 void GameObject::setPos(float x, float y)
 {
-    setOldPos(pos);
+    oldPos = pos;
 
     pos.x(x);
     pos.y(y);
@@ -42,58 +42,17 @@ void GameObject::setAccel(float x, float y)
     accel.y(y);
 }
 
-void GameObject::setOldPos(const math::Vector2D& vec)
-{
-    setOldPos(vec.x(), vec.y());
-}
-
-void GameObject::setPos(const math::Vector2D& vec)
-{
-    setPos(vec.x(), vec.y());
-}
-
-void GameObject::setSpeed(const math::Vector2D& vec)
-{
-    setSpeed(vec.x(), vec.y());
-}
-
-void GameObject::setAccel(const math::Vector2D& vec)
-{
-    setAccel(vec.x(), vec.y());
-}
-
-
-math::Vector2D GameObject::getOldPos()
-{
-    return oldPos;
-}
-
-math::Vector2D GameObject::getPos()
-{
-    return pos;
-}
-
-math::Vector2D GameObject::getSpeed()
-{
-    return speed;
-}
-
-math::Vector2D GameObject::getAccel()
-{
-    return accel;
-}
-
 
 
 
 float GameObject::dx()
 {
-    return getPos().x() - getOldPos().x();
+    return pos.x() - oldPos.x();
 }
 
 float GameObject::dy()
 {
-    return getPos().y() - getOldPos().y();
+    return pos.y() - oldPos.y();
 }
 
 

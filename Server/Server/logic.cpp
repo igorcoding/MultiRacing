@@ -79,14 +79,14 @@ bool Logic::frameFunc(double dt)
     Player& firstPlayer = _players[0];
     Player& secondPlayer = _players[1];
 
-    float d1 = distance(firstPlayer.getPos().x(),
-                        firstPlayer.getPos().y(),
-                        _puck.getPos().x(),
-                        _puck.getPos().y());
-    float d2 = distance(secondPlayer.getPos().x(),
-                        secondPlayer.getPos().y(),
-                        _puck.getPos().x(),
-                        _puck.getPos().y());
+    float d1 = distance(firstPlayer.pos.x(),
+                        firstPlayer.pos.y(),
+                        _puck.pos.x(),
+                        _puck.pos.y());
+    float d2 = distance(secondPlayer.pos.x(),
+                        secondPlayer.pos.y(),
+                        _puck.pos.x(),
+                        _puck.pos.y());
     bool collided_first = d1 < firstPlayer.radius + _puck.radius;
     bool collided_second = d2 < secondPlayer.radius + _puck.radius;
 
@@ -102,40 +102,48 @@ bool Logic::frameFunc(double dt)
     }
 
 
-    float speed = 1.0f;
-    float friction = 0.992f;
-    auto newPuckPos = _puck.getPos() + speed * math::normalize(_puck.getSpeed());
-    auto newPuckSpeed =  friction * _puck.getSpeed();
-    _puck.setPos(newPuckPos);
-    _puck.setSpeed(newPuckSpeed);
+    //float speed = 3.0f;
+    float friction = 1.0f;
+    auto newPuckPos = _puck.pos + _puck.speed;
+    //speed *= friction;
+    auto normalizedPuckSpeed = math::normalize(puck().speed);
+    auto newPuckSpeed =  _puck.speed + math::Vector2D(-friction * normalizedPuckSpeed.x(), -friction * normalizedPuckSpeed.y());
+    _puck.pos = newPuckPos;
+    _puck.speed = newPuckSpeed;
 
 
 
-    auto x_max = defaultScreenWidth - _puck.radius / 2;
-    auto x_min = _puck.radius / 2;
-    auto y_max = defaultScreenHeight - _puck.radius/ 2;
-    auto y_min = _puck.radius / 2;
+    int lr_border = 40;
+    int tb_border = 40;
+    auto x_max = defaultScreenWidth - lr_border - _puck.radius / 2;
+    auto x_min = _puck.radius / 2 + lr_border;
+    auto y_max = defaultScreenHeight - tb_border - _puck.radius/ 2;
+    auto y_min = _puck.radius / 2 + tb_border;
 
 
-    if (_puck.getPos().x() > x_max) {
-        _puck.getPos().x(x_max - (_puck.getPos().x() - x_max));
-        _puck.getSpeed().x(-_puck.getSpeed().x());
+    if (_puck.pos.x() > x_max) {
+        std::cout << "x > max\n";
+        _puck.pos.x(x_max - (_puck.pos.x() - x_max));
+        _puck.speed.x(-_puck.speed.x());
     }
-    if (_puck.getPos().x() < x_min) {
-        _puck.getPos().x(x_min + x_min - _puck.getPos().x());
-        _puck.getSpeed().x(-_puck.getSpeed().x());
+    if (_puck.pos.x() < x_min) {
+        std::cout << "x < min\n";
+        _puck.pos.x(x_min + x_min - _puck.pos.x());
+        _puck.speed.x(-_puck.speed.x());
     }
-    if (_puck.getPos().y() > y_max) {
-        _puck.getPos().y(y_max - (_puck.getPos().y() - y_max));
-        _puck.getSpeed().y(-_puck.getSpeed().y());
+    if (_puck.pos.y() > y_max) {
+        std::cout << "y > max\n";
+        _puck.pos.y(y_max - (_puck.pos.y() - y_max));
+        _puck.speed.y(-_puck.speed.y());
     }
-    if (_puck.getPos().y() < y_min) {
-        _puck.getPos().y(y_min + y_min - _puck.getPos().y());
-        _puck.getSpeed().y(-_puck.getSpeed().y());
+    if (_puck.pos.y() < y_min) {
+        std::cout << "y < min\n";
+        _puck.pos.y(y_min + y_min - _puck.pos.y());
+        _puck.speed.y(-_puck.speed.y());
     }
 
 
-    Server::getInstance().setPuckPos(_puck.getPos().x(), _puck.getPos().y());
+    Server::getInstance().setPuckPos(_puck.pos.x(), _puck.pos.y());
 
     return false;
 }
@@ -202,9 +210,14 @@ void Logic::handleCollision(Player& p, float d, double dt)
     //newPos += _puck.getPosVector();
     //_puck.setPos(newPos[0], newPos[1]);
 
+    float delta = _puck.radius + p.radius - d;
+    auto moving = delta * math::normalize(p.speed);
+    _puck.pos += moving;
 
-    _puck.setSpeed(p.getSpeed());
-    Server::getInstance().setCollision(_puck.x, 100); //at, volume
+
+    auto speedLimit = 100.0;
+    _puck.speed = (1.0/80.0) * p.speed;
+    Server::getInstance().setCollision(_puck.pos.x(), _puck.speed.length()); //at, volume
 }
 
 bool Logic::shouldStop() const
