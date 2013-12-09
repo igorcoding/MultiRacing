@@ -92,5 +92,10 @@ namespace NeonHockey
     {
     }
 
+    void InGameContext::show()
+    {
+    }
 
 }
+
+

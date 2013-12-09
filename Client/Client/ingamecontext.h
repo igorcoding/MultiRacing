@@ -23,6 +23,7 @@ namespace NeonHockey
 
         virtual void frameFunc();
         virtual void renderFunc();
+        virtual void show();
 
     private:
         std::vector<Player> _players;

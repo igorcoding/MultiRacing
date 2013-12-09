@@ -22,6 +22,8 @@ namespace NeonHockey
               _rm(rm),
               _data(data)
         { }
+
+        virtual void show() = 0;
         virtual void frameFunc() = 0;
         virtual void renderFunc() = 0;
     protected:
