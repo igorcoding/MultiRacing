@@ -10,7 +10,8 @@ namespace NeonHockey
         _gfxResources.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Puck.png"));
         _gfxResources.emplace_back(SpriteInfo(0, 0, 64, 64, "../resources/Paddle.png"));
 
-        _gfxResources.emplace_back(SpriteInfo(0, 0, 128, 32, "../resources/InputField.png"));
+        _gfxResources.emplace_back(SpriteInfo(0, 0, 160, 32, "../resources/InputField.png"));
+        _gfxResources.emplace_back(SpriteInfo(0, 0, 100, 32, "../resources/Button.png"));
     }
 
     void ResourcesLoader::loadEverything()
@@ -26,11 +27,13 @@ namespace NeonHockey
         const int puckId = 1;
         const int paddleId = 2;
         const int inputFieldId = 3;
+        const int buttonId = 4;
 
         _rm->addTexture(GfxType::BACKGROUND, _gfxResources[backgroundId].texturePath());
         _rm->addTexture(GfxType::PUCK, _gfxResources[puckId].texturePath());
         _rm->addTexture(GfxType::PADDLE, _gfxResources[paddleId].texturePath());
         _rm->addTexture(GfxType::INPUTFIELD, _gfxResources[inputFieldId].texturePath());
+        _rm->addTexture(GfxType::BUTTON, _gfxResources[buttonId].texturePath());
 
 
         _rm->addSprite(GfxType::BACKGROUND, _gfxResources[backgroundId])->SetHotSpot(0, 0);

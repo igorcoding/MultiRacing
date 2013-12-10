@@ -17,7 +17,8 @@ namespace NeonHockey
         PUCK,
         PADDLE,
         BACKGROUND,
-        INPUTFIELD
+        INPUTFIELD,
+        BUTTON
     };
 
     enum class SoundType

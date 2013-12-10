@@ -42,7 +42,7 @@ namespace NeonHockey
     void InputField::Render(){
         //render background
         hgeSprite *background = _rm->getSprite(GfxType::INPUTFIELD);
-        background->Render(xPos - 10, yPos - 4);
+        background->Render(xPos - 12, yPos - 4);
 
         hgeFont *font = _rm->getFont(FontType::SCORE);
 

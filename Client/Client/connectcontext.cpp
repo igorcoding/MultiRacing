@@ -6,43 +6,42 @@ namespace NeonHockey
     ConnectContext::ConnectContext(HGE* hge, ResourceManager* rm, ConnectContextData *data)
         : IContext(hge, rm, data)
     {
-        input = new InputField(_rm, 1, 100, 100, "127.0.0.1");
+        gui = new hgeGUI();
+
+        ipField = new InputField(_rm, ControlId::Ip, 100, 100, "127.0.0.1");
+        nameField = new InputField(_rm, ControlId::Name, 100, 100 + 48, "Player 0");
+
+        HTEXTURE buttonTexture = _rm->getTexture(GfxType::BUTTON);
+        connectButton = new hgeGUIButton(ControlId::Connect, 86, 190, 100, 28, buttonTexture, 0, 0);
+
+        gui->AddCtrl(ipField);
+        gui->AddCtrl(nameField);
+        gui->AddCtrl(connectButton);
     }
 
     ConnectContext::~ConnectContext()
     {
-        delete input;
-        input = nullptr;
+        delete connectButton;
+        connectButton = nullptr;
+
+        delete nameField;
+        nameField = nullptr;
+
+        delete ipField;
+        ipField = nullptr;
     }
 
     void ConnectContext::show()
     {
-        input->Enter();
-        input->MouseLButton(true);
-        input->Focus(true);
+        gui->Enter();
     }
 
     IContextReturnData ConnectContext::frameFunc()
     {
         float dt = _hge->Timer_GetDelta();
-        input->Update(dt);
-
-        hgeInputEvent event;
-        _hge->Input_GetEvent(&event);
-
-        //input->MouseLButton(_hge->Input_GetKeyState(HGEK_LBUTTON));
-
-        if(event.type == INPUT_KEYDOWN)
-        {
-            input->KeyClick(event.key, event.chr);
-
-            if(event.key == HGEK_ENTER)
-            {
-                //try to start connection
-
-                return IContextReturnData(Context::InGameContext, new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
-            }
-        }
+        if(gui->Update(dt) == ControlId::Connect)
+            return IContextReturnData(Context::InGameContext,
+                new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
 
         return IContextReturnData(Context::ConnectContext, _data);
     }
@@ -50,12 +49,16 @@ namespace NeonHockey
     void ConnectContext::renderFunc()
     {
         hgeFont *font = _rm->getFont(FontType::SCORE);
-        font->Render(60, 100, HGETEXT_LEFT, "IP: ");
+        font->Render(74, 100, HGETEXT_RIGHT, "IP: ");
 
-        input->Render();
+        font->Render(74, 148, HGETEXT_RIGHT, "Name: ");
+
+        gui->Render();
+
+        font->Render(100, 100+48*2, HGETEXT_LEFT, "Connect");
 
         font->Render(10, _data->screenHeight - font->GetHeight()*1.5,
-                     HGETEXT_LEFT, "Input server ip and press Enter");
+                     HGETEXT_LEFT, "Input server ip, your nickname and click Connect");
     }
 }
 

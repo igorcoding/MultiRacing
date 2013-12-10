@@ -25,7 +25,13 @@ namespace NeonHockey
         void renderFunc();
 
     private:
-        InputField *input;
+        hgeGUI *gui;
+
+        InputField *ipField;
+        InputField *nameField;
+        hgeGUIButton *connectButton;
+
+        enum ControlId { Ip = 1, Name = 2, Connect = 3};
     };
 }
 
