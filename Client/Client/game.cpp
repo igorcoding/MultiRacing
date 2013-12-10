@@ -186,8 +186,12 @@ namespace NeonHockey
 
     bool Game::renderFunc()
     {
+        _hge->Gfx_BeginScene();
+        _hge->Gfx_Clear(0);
+
         currentContext()->renderFunc();
 
+        _hge->Gfx_EndScene();
         return false;
     }
 

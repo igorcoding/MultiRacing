@@ -99,8 +99,7 @@ namespace NeonHockey
 
     void InGameContext::renderFunc()
     {
-        _hge->Gfx_BeginScene();
-        _hge->Gfx_Clear(0);
+
 
         try
         {
@@ -139,7 +138,7 @@ namespace NeonHockey
             //TODO: change state or close the game. maybe?
         }
 
-        _hge->Gfx_EndScene();
+
 
         //return false;
     }
