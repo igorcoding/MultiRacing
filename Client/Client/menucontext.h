@@ -29,7 +29,6 @@ namespace NeonHockey
         void renderFunc();
 
         void show();
-        void enter();
     private:
         hgeGUI *menu;
 

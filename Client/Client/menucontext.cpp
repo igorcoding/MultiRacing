@@ -80,16 +80,11 @@ namespace NeonHockey
     void MenuContext::show()
     {
         menu->Enter();
+        menu->SetFocus(ItemType::Connect);
     }
 
     MenuContext::~MenuContext()
     {
         delete menu;
-    }
-
-    void MenuContext::enter()
-    {
-        menu->Enter();
-        menu->SetFocus(1);
     }
 }
