@@ -1,7 +1,7 @@
 #include "menucontext.h"
 #include "menuitem.h"
 #include "ingamecontext.h"
-
+#include "connectcontext.h"
 
 namespace NeonHockey
 {
@@ -47,7 +47,7 @@ namespace NeonHockey
             {
             case ItemType::Connect:
                 lastId = 0;
-                return IContextReturnData(Context::ConnectContext, _data);
+                return IContextReturnData(Context::ConnectContext, new ConnectContextData(_data->screenWidth, _data->screenHeight));
 
             case ItemType::About:
                 lastId = 0;
@@ -55,7 +55,7 @@ namespace NeonHockey
 
             case ItemType::Exit:
                 lastId = 0;
-                return IContextReturnData(Context::NoContext, _data);
+                return IContextReturnData(Context::NoContext, nullptr);
             }
         }
         else if(id)

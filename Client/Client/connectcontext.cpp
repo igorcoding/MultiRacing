@@ -42,7 +42,13 @@ namespace NeonHockey
 
     void ConnectContext::renderFunc()
     {
+        hgeFont *font = _rm->getFont(FontType::SCORE);
+        font->Render(60, 100, HGETEXT_LEFT, "IP: ");
+
         input->Render();
+
+        font->Render(10, _data->screenHeight - font->GetHeight()*1.5,
+                     HGETEXT_LEFT, "Input server ip and press Enter");
     }
 }
 
