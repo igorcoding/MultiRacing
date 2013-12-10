@@ -11,19 +11,37 @@ namespace NeonHockey
     {
         NoContext,
         MenuContext,
-        ConnectionContext,
+        ConnectContext,
         InGameContext,
         GameFinishedContext,
-        GameErrorContext,
-        ConnectContext
+        GameErrorContext
     };
 
     struct IContextData
     {
+        IContextData(int width, int height)
+            : screenWidth(width),
+              screenHeight(height)
+        { }
+
+        virtual ~IContextData() {}
+
         int screenWidth;
         int screenHeight;
-        virtual ~IContextData() {}
+
     };
+
+    struct IContextReturnData
+    {
+        Context c;
+        IContextData* data;
+
+        IContextReturnData(Context c, IContextData* data)
+            : c(c),
+              data(data)
+        { }
+    };
+
 
     class IContext
     {
@@ -40,10 +58,15 @@ namespace NeonHockey
             _data = nullptr;
         }
 
-        virtual void start() = 0;
         virtual void show() = 0;
-        virtual Context frameFunc() = 0;
+        virtual IContextReturnData frameFunc() = 0;
         virtual void renderFunc() = 0;
+        void changeData(IContextData* data)
+        {
+            delete _data;
+            _data = data;
+        }
+
     protected:
         HGE* _hge;
         ResourceManager* _rm;

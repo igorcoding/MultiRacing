@@ -45,7 +45,8 @@ namespace NeonHockey
 
     void ResourcesLoader::loadSound()
     {
-        _rm->addSound(SoundType::COLLISION, "../resources/hit.ogg");
+        //_rm->addSound(SoundType::COLLISION, "../resources/hit.ogg");
+        _rm->addSound(SoundType::COLLISION, "hit.ogg");
     }
 
 }

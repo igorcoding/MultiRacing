@@ -13,6 +13,13 @@ namespace NeonHockey
 {
     struct InGameContextData : public IContextData
     {
+        InGameContextData(int width, int height, int currentPlayerId, int currentPlayerTexture, int enemyPlayerTexture)
+            : IContextData(width, height),
+              currentPlayerId(currentPlayerId),
+              currentPlayerTexture(currentPlayerTexture),
+              enemyPlayerTexture(enemyPlayerTexture)
+        { }
+
         int currentPlayerId;
         int currentPlayerTexture;
         int enemyPlayerTexture;
@@ -25,10 +32,9 @@ namespace NeonHockey
         InGameContext(HGE* hge, ResourceManager* rm, InGameContextData* data);
         ~InGameContext() {}
 
-        virtual void start();
-        virtual void show();
-        virtual Context frameFunc();
-        virtual void renderFunc();
+        void show();
+        IContextReturnData frameFunc();
+        void renderFunc();
 
 
     private:

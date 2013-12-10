@@ -10,6 +10,7 @@
 #include "icontext.h"
 #include "menucontext.h"
 #include "ingamecontext.h"
+#include "connectcontext.h"
 
 namespace NeonHockey
 {
@@ -46,6 +47,10 @@ namespace NeonHockey
         static void initializeGameResources();
         static bool frameFunc();
         static bool renderFunc();
+
+        static IContext* context(Context c);
+        static IContext* currentContext();
+        static void updateContext(Context c, IContextData* contextData);
 
         static void playSound(SoundType::SoundObjectType type, int at = 0, int volume = 100);
 

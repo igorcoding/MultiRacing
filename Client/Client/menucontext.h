@@ -10,7 +10,9 @@ namespace NeonHockey
 
     struct MenuContextData : public IContextData
     {
-
+        MenuContextData(int width, int height)
+            : IContextData(width, height)
+        { }
     };
 
     class MenuContext : public IContext
@@ -21,10 +23,9 @@ namespace NeonHockey
 
         // IContext interface
     public:
-        Context frameFunc();
+        IContextReturnData frameFunc();
         void renderFunc();
 
-        void start() {}
         void show() {}
         void itemSet(float dt);
         void enter();

@@ -30,12 +30,12 @@ namespace NeonHockey
     }
 
 
-    Context MenuContext::frameFunc()
+    IContextReturnData MenuContext::frameFunc()
     {
         float dt = _hge->Timer_GetDelta();
         itemSet(dt);
 
-        return Context::MenuContext;
+        return IContextReturnData(Context::MenuContext, _data);
     }
 
     void MenuContext::renderFunc()

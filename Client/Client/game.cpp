@@ -28,7 +28,7 @@ namespace NeonHockey
             initializeGame();
         if (_initialized)
         {
-            _contexts[_currentContext] = new MenuContext(_hge, &_resources, nullptr);
+            updateContext(Context::MenuContext, new MenuContextData(screenWidth(), screenHeight()));
             _hge->System_Start();
 
             endGame();
@@ -177,12 +177,54 @@ namespace NeonHockey
 
     bool Game::frameFunc()
     {
-
+        auto nextContext = currentContext()->frameFunc();
+        updateContext(nextContext.c, nextContext.data);
     }
 
     bool Game::renderFunc()
     {
+        currentContext()->renderFunc();
+    }
 
+    IContext* Game::context(Context c)
+    {
+        return _contexts[c];
+    }
+
+    IContext* Game::currentContext()
+    {
+        return _contexts[_currentContext];
+    }
+
+    void Game::updateContext(Context c, IContextData* contextData)
+    {
+        auto context = _contexts.find(c);
+        if (context == _contexts.end()) // did not find the context
+        {
+            switch(c)
+            {
+            case Context::MenuContext:
+                _contexts[c] = new MenuContext(_hge, &_resources, dynamic_cast<MenuContextData*>(contextData));
+                break;
+            case Context::ConnectContext:
+                _contexts[c] = new ConnectContext(_hge, &_resources, dynamic_cast<ConnectContextData*>(contextData));
+                break;
+            case Context::InGameContext:
+                _contexts[c] = new InGameContext(_hge, &_resources, dynamic_cast<InGameContextData*>(contextData));
+                break;
+            case Context::GameFinishedContext:
+                break;
+            case Context::GameErrorContext:
+                break;
+            default:
+                break;
+            }
+        }
+        else // found the context
+        {
+            context->second->changeData(contextData);
+        }
+        _currentContext = c;
     }
 
     void Game::playSound(SoundType::SoundObjectType type, int at, int volume)

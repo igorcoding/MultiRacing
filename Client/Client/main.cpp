@@ -7,8 +7,9 @@
 int main()
 {
     using namespace NeonHockey;
-
-    try
+    int a = 0;
+    Game::start();
+    /*try
     {
         std::thread clientThread([]
         {
@@ -78,4 +79,5 @@ int main()
     {
         std::cerr << e.what() << std::endl;
     }
+    */
 }

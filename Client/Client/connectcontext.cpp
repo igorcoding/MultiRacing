@@ -2,7 +2,7 @@
 
 namespace NeonHockey
 {
-    ConnectContext::ConnectContext(HGE* hge, ResourceManager* rm, IContextData* data)
+    ConnectContext::ConnectContext(HGE* hge, ResourceManager* rm, ConnectContextData *data)
         : IContext(hge, rm, data)
     {
         hgeFont *font = _rm->getFont(FontType::SCORE);
@@ -15,12 +15,12 @@ namespace NeonHockey
         input->Enter();
     }
 
-    Context ConnectContext::frameFunc()
+    IContextReturnData ConnectContext::frameFunc()
     {
         float dt = _hge->Timer_GetDelta();
         input->Update(dt);
 
-        return Context::ConnectContext;
+        return IContextReturnData(Context::ConnectContext, _data);
     }
 
     void ConnectContext::renderFunc()

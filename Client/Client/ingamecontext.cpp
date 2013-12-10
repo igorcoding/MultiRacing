@@ -12,17 +12,12 @@ namespace NeonHockey
     {
     }
 
-    void InGameContext::start()
-    {
-        this->show();
-    }
-
     void InGameContext::show()
     {
         renderFunc();
     }
 
-    Context InGameContext::frameFunc()
+    IContextReturnData InGameContext::frameFunc()
     {
         auto data = dynamic_cast<InGameContextData*>(_data);
 
@@ -97,9 +92,9 @@ namespace NeonHockey
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
-            return Context::GameErrorContext;
+            return IContextReturnData(Context::GameErrorContext, data);
 
-        return Context::InGameContext;
+        return IContextReturnData(Context::InGameContext, data);
     }
 
     void InGameContext::renderFunc()
