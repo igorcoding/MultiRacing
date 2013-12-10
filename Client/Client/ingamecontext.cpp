@@ -63,40 +63,26 @@ namespace NeonHockey
             auto y_max = _data->screenHeight - tb_border - currentPlayer.paddle()->sprite()->GetHeight() / 2;
             auto y_min = tb_border + currentPlayer.paddle()->sprite()->GetHeight()  / 2;
 
-            if (mouse_x > x_max || mouse_x < x_min || mouse_y > y_max || mouse_y < y_min)
-            {
-                inplace = false;
-            }
-
-            if (mouse_y > (data->screenHeight - gap_width) / 2 + currentPlayer.paddle()->sprite()->GetHeight()  / 2 &&
-                    mouse_y < (data->screenHeight + gap_width) / 2 - currentPlayer.paddle()->sprite()->GetHeight()  / 2)
-            {
-                inplace = true;
-                if (mouse_x > data->screenWidth - currentPlayer.paddle()->sprite()->GetWidth() ||
-                        mouse_x < currentPlayer.paddle()->sprite()->GetWidth())
-                    inplace = false;
-            }
+            mouse_x = std::min(mouse_x, x_max);
+            mouse_x = std::max(mouse_x, x_min);
+            mouse_y = std::min(mouse_y, y_max);
+            mouse_y = std::max(mouse_y, y_min);
 
 
 
             switch (_players[data->currentPlayerId].getSide())
             {
             case BoardSide::LEFT:
-                if (!(mouse_x <= data->screenWidth / 2 - currentPlayer.paddle()->sprite()->GetWidth() / 2))
-                    inplace = false;
+                mouse_x = std::min(mouse_x, data->screenWidth / 2 - currentPlayer.paddle()->sprite()->GetWidth() / 2);
                 break;
             case BoardSide::RIGHT:
-                if (!(mouse_x >= data->screenHeight / 2 + currentPlayer.paddle()->sprite()->GetWidth() / 2))
-                    inplace = false;
+                mouse_x = std::max(mouse_x, data->screenHeight / 2 + currentPlayer.paddle()->sprite()->GetWidth() / 2);
                 break;
             }
 
-            if (inplace)
-            {
-                currentPlayer.paddle()->x = mouse_x;
-                currentPlayer.paddle()->y = mouse_y;
-                //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
-            }
+            currentPlayer.paddle()->x = mouse_x;
+            currentPlayer.paddle()->y = mouse_y;
+            //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         }
         //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
