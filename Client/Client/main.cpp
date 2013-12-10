@@ -7,7 +7,6 @@
 int main()
 {
     using namespace NeonHockey;
-    int a = 0;
     Game::start();
     /*try
     {

@@ -179,11 +179,16 @@ namespace NeonHockey
     {
         auto nextContext = currentContext()->frameFunc();
         updateContext(nextContext.c, nextContext.data);
+
+
+        return false;
     }
 
     bool Game::renderFunc()
     {
         currentContext()->renderFunc();
+
+        return false;
     }
 
     IContext* Game::context(Context c)

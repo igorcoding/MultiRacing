@@ -63,8 +63,10 @@ namespace NeonHockey
         virtual void renderFunc() = 0;
         void changeData(IContextData* data)
         {
-            delete _data;
+            if (_data != data)
+                delete _data;
             _data = data;
+
         }
 
     protected:
