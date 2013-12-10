@@ -34,7 +34,34 @@ namespace NeonHockey
     IContextReturnData MenuContext::frameFunc()
     {
         float dt = _hge->Timer_GetDelta();
-        itemSet(dt);
+
+        id = menu->Update(dt);
+
+        if(id == -1)
+        {
+            menu->Enter();
+            menu->SetFocus(1);
+
+            switch(lastId)
+            {
+            case ItemType::Connect:
+                lastId = 0;
+                return IContextReturnData(Context::ConnectContext, _data);
+
+            case ItemType::About:
+                lastId = 0;
+                return IContextReturnData(Context::InGameContext, _data);
+
+            case ItemType::Exit:
+                lastId = 0;
+                return IContextReturnData(Context::NoContext, _data);
+            }
+        }
+        else if(id)
+        {
+            lastId = id;
+            menu->Leave();
+        }
 
         return IContextReturnData(Context::MenuContext, _data);
     }
@@ -50,33 +77,14 @@ namespace NeonHockey
 
     }
 
+    void MenuContext::show()
+    {
+        menu->Enter();
+    }
+
     MenuContext::~MenuContext()
     {
         delete menu;
-    }
-
-    void MenuContext::itemSet(float dt)
-    {
-        id = menu->Update(dt);
-
-        if(id == -1)
-        {
-            switch(lastId)
-            {
-            case 1:
-            case 2:
-            case 3:
-                lastId = 0;
-                menu->Enter();
-                menu->SetFocus(1);
-                break;
-            }
-        }
-        else if(id)
-        {
-            lastId = id;
-            menu->Leave();
-        }
     }
 
     void MenuContext::enter()

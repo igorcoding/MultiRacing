@@ -15,6 +15,8 @@ namespace NeonHockey
         { }
     };
 
+    struct ItemType { enum {Null, Connect, About, Exit}; };
+
     class MenuContext : public IContext
     {
     public:
@@ -26,8 +28,7 @@ namespace NeonHockey
         IContextReturnData frameFunc();
         void renderFunc();
 
-        void show() {}
-        void itemSet(float dt);
+        void show();
         void enter();
     private:
         hgeGUI *menu;
