@@ -181,6 +181,14 @@ void Server::setCollision(int x, int force)
     _cachedCollision.isReady = true;
 }
 
+void Server::setGoal(int playerId, int absoluteScore)
+{
+    _cachedGoal.x = playerId;
+    _cachedGoal.y = absoluteScore;
+
+    _cachedGoal.isReady = true;
+}
+
 void Server::listenerThreadProc(Client &client)
 {
     boost::asio::streambuf buffer;
@@ -248,6 +256,11 @@ void Server::senderThreadProc()
                 sendCollisionPos();
                 _cachedCollision.isReady = false;
             }
+            if(_cachedGoal.isReady)
+            {
+                sendGoal();
+                _cachedGoal.isReady = false;
+            }
         }
         catch(std::exception &e)
         {
@@ -285,5 +298,16 @@ void Server::sendCollisionPos()
                       std::to_string(ServerMessageType::Collision) + " " +
                       std::to_string(_cachedCollision.x) + " " +
                       std::to_string(_cachedCollision.y) + "\n"));
+    }
+}
+
+void Server::sendGoal()
+{
+    for(auto &client: clients)
+    {
+        client.socket.send(boost::asio::buffer(
+                      std::to_string(ServerMessageType::Goal) + " " +
+                      std::to_string(_cachedGoal.x) + " " +
+                      std::to_string(_cachedGoal.y) + "\n"));
     }
 }

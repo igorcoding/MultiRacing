@@ -4,9 +4,10 @@ client -> server
 
 server -> client
     1 clientId\n
-    2 \n //gameStarted
+    2 opponentName puckX puckY player0X player0Y player1X player1Y\n //gameStarted
     3 coordX coordY\n //бита of the enemy
     4 coordX coordY\n //шайба
-    5 x volume //удар (позиция, сила)
-    6\n //gameOver
-    7 clientId scoreValue\n
+    5 x volume\n //удар (позиция, сила)
+    6 playerId absoluteScore\n //гол
+    7\n //gameOver
+    8 clientId scoreValue\n

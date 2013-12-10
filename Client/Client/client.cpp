@@ -146,6 +146,21 @@ bool Client::getCollision(int &x, int &force)
         return false;
 }
 
+bool Client::getGoal(int &playerId, int &absoluteScore)
+{
+    if(_cachedGoal.isReady)
+    {
+        playerId = _cachedGoal.x;
+        absoluteScore = _cachedGoal.y;
+
+        _cachedGoal.isReady = false;
+
+        return true;
+    }
+    else
+        return false;
+}
+
 bool Client::isGameStarted() const
 {
     return _gameStarted;
@@ -307,6 +322,24 @@ void Client::listenerThreadProc()
 #ifdef _DEBUG
             std::cout << "Collision received: " << coordX << " " << coordY << std::endl;
 #endif
+
+            _mutex.unlock();
+
+            break;
+        }
+        case ServerMessageType::Goal:
+        {
+            int playerId = 0;
+            int absoluteScore = 0;
+
+            is >> playerId >> absoluteScore;
+            is.ignore(); //skip \n
+
+            _mutex.lock();
+
+            _cachedGoal.x = playerId;
+            _cachedGoal.y = absoluteScore;
+            _cachedGoal.isReady = true;
 
             _mutex.unlock();
 

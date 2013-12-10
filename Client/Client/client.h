@@ -35,6 +35,12 @@ public:
     //(until new collision will be occured)
     bool getCollision(int &x, int &force);
 
+    //test if goal occured,
+    //if it is => sets playerId and his absoluteScore
+    //and resets internal flag, so next time it will not return true
+    //(until new goal will be occured)
+    bool getGoal(int &playerId, int &absoluteScore);
+
     //returns true after GameStarted message from server
     bool isGameStarted() const;
 
@@ -55,13 +61,13 @@ private:
 
 
     struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
-    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, GameOver, Score }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, Goal, GameOver, Score }; };
 
     struct Data
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPos, _cachedEnemyPos, _cachedPuckPos, _cachedCollision;
+    } _cachedPos, _cachedEnemyPos, _cachedPuckPos, _cachedCollision, _cachedGoal;
     //_cachedPuckPos.isReady flag is not used anywhere
 
     std::string _opponentName;
