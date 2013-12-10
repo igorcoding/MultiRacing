@@ -37,7 +37,8 @@ namespace NeonHockey
 
         std::vector<Player> _players;
         Puck_ptr _puck;
-        const int border_width;
+        const int lr_border;
+        const int tb_border;
         const int gap_width;
     };
 

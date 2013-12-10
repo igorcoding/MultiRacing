@@ -233,6 +233,8 @@ namespace NeonHockey
         {
             context->second->changeData(contextData);
         }
+        if (_currentContext != c)
+            Game::context(c)->show();
         _currentContext = c;
     }
 

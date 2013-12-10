@@ -27,7 +27,7 @@ InputField::InputField(hgeFont* _fnt, int _id, float _xPos, float _yPos,
     content[caretposition] = '\0';
     content[maxchar+1] = '\0'; //Last char will always be a string terminator
     rect.Set(xPos, yPos, xPos+length, yPos+(font->GetHeight()));
-};
+}
 
 InputField::~InputField(){
     delete font;
@@ -49,7 +49,7 @@ bool InputField::MouseLButton(bool bDown){
     }
     gui->SetFocus(id);
     return false;
-};
+}
 
 //Saving focus state in focused
 void InputField::Focus(bool bFocused){
@@ -60,7 +60,7 @@ void InputField::Focus(bool bFocused){
         focused = true;
     }
 
-};
+}
 
 void InputField::Update(float fDeltaTime){
     caretTimer += fDeltaTime;
@@ -101,13 +101,13 @@ bool InputField::KeyClick(int key, int chr){
         }
     }
     return false;
-};
+}
 
 //Setting the Text
 void InputField::setText(char *newtext){
     strncpy(content ,newtext ,maxchar);
     content = newtext;
-};
+}
 
 char *InputField::getText(){
     return content;
