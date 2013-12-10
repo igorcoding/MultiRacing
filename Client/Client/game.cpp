@@ -238,7 +238,7 @@ namespace NeonHockey
         _currentContext = c;
     }
 
-    void Game::playSound(SoundType::SoundObjectType type, int at, int volume)
+    void Game::playSound(SoundType type, int at, int volume)
     {
         HEFFECT snd = _resources.getSound(type);
 

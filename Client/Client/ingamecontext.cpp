@@ -56,7 +56,6 @@ namespace NeonHockey
         if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
         {
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
-            bool inplace = true;
 
             auto x_max = _data->screenWidth - lr_border - currentPlayer.paddle()->sprite()->GetWidth() / 2;
             auto x_min = lr_border + currentPlayer.paddle()->sprite()->GetWidth() / 2;
@@ -76,7 +75,7 @@ namespace NeonHockey
                 mouse_x = std::min(mouse_x, data->screenWidth / 2 - currentPlayer.paddle()->sprite()->GetWidth() / 2);
                 break;
             case BoardSide::RIGHT:
-                mouse_x = std::max(mouse_x, data->screenHeight / 2 + currentPlayer.paddle()->sprite()->GetWidth() / 2);
+                mouse_x = std::max(mouse_x, data->screenWidth / 2 + currentPlayer.paddle()->sprite()->GetWidth() / 2);
                 break;
             }
 

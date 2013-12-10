@@ -11,7 +11,7 @@ namespace NeonHockey
     class InputField : public hgeGUIObject
     {
     public:
-        InputField(ResourceManager* _rm, int _id, float xPos, float yPos, char* prevalue);
+        InputField(ResourceManager* _rm, int _id, float xPos, float yPos, const char* prevalue);
         ~InputField();
         virtual void Render();
         //void Render(float x, float y);
@@ -26,7 +26,7 @@ namespace NeonHockey
         ResourceManager* _rm;
 
         int caretposition;
-        char* caret;
+        const char* caret;
         bool caretVisible; //for blinking effect
         bool focused;
         float caretTimer; //for blinking effect

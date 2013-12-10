@@ -52,7 +52,7 @@ namespace NeonHockey
         static IContext* currentContext();
         static void updateContext(Context c, IContextData* contextData);
 
-        static void playSound(SoundType::SoundObjectType type, int at = 0, int volume = 100);
+        static void playSound(SoundType type, int at = 0, int volume = 100);
 
     };
 

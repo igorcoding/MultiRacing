@@ -16,6 +16,7 @@ namespace NeonHockey
     {
     public:
         ConnectContext(HGE* hge, ResourceManager* rm, ConnectContextData* data);
+        ~ConnectContext();
 
         // IContext interface
     public:

@@ -1,4 +1,5 @@
 #include "connectcontext.h"
+#include "ingamecontext.h"
 
 namespace NeonHockey
 {
@@ -6,6 +7,12 @@ namespace NeonHockey
         : IContext(hge, rm, data)
     {
         input = new InputField(_rm, 1, 100, 100, "127.0.0.1");
+    }
+
+    ConnectContext::~ConnectContext()
+    {
+        delete input;
+        input = nullptr;
     }
 
     void ConnectContext::show()
@@ -33,7 +40,7 @@ namespace NeonHockey
             {
                 //try to start connection
 
-                return IContextReturnData(Context::InGameContext, _data);
+                return IContextReturnData(Context::InGameContext, new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
             }
         }
 

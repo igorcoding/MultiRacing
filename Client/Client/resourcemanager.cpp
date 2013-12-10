@@ -39,7 +39,7 @@ namespace NeonHockey
         _clear = true;
     }
 
-    void ResourceManager::freeResource(GfxType::GfxObjectType gfxType)
+    void ResourceManager::freeResource(GfxType gfxType)
     {
         auto foundTexture = _textures.find(gfxType);
         if (foundTexture != _textures.end())            // if there is a texture under gfxType
@@ -55,7 +55,7 @@ namespace NeonHockey
         }
     }
 
-    void ResourceManager::freeResource(SoundType::SoundObjectType sndType)
+    void ResourceManager::freeResource(SoundType sndType)
     {
         auto foundEffect = _sounds.find(sndType);
         if (foundEffect != _sounds.end())
@@ -65,7 +65,7 @@ namespace NeonHockey
         }
     }
 
-    void ResourceManager::freeResource(FontType::FontObjectType fntType)
+    void ResourceManager::freeResource(FontType fntType)
     {
         auto font = _fonts.find(fntType);
         if (font != _fonts.end())
@@ -75,12 +75,12 @@ namespace NeonHockey
         }
     }
 
-    void ResourceManager::addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size, bool bMipmap)
+    void ResourceManager::addTexture(GfxType gfxType, std::string filename, DWORD size, bool bMipmap)
     {
         addTexture(gfxType, filename.c_str(), size, bMipmap);
     }
 
-    void ResourceManager::addTexture(GfxType::GfxObjectType gfxType, const char *filename, DWORD size, bool bMipmap)
+    void ResourceManager::addTexture(GfxType gfxType, const char *filename, DWORD size, bool bMipmap)
     {
         HTEXTURE texture = _hge->Texture_Load(filename, size, bMipmap);
         if (!texture)
@@ -92,7 +92,7 @@ namespace NeonHockey
             _clear = false;
     }
 
-    hgeSprite* ResourceManager::addSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h)
+    hgeSprite* ResourceManager::addSprite(GfxType gfxType, float x, float y, float w, float h)
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
@@ -104,12 +104,12 @@ namespace NeonHockey
         return _sprites[gfxType];
     }
 
-    hgeSprite* ResourceManager::addSprite(GfxType::GfxObjectType gfxType, const SpriteInfo& spriteInfo)
+    hgeSprite* ResourceManager::addSprite(GfxType gfxType, const SpriteInfo& spriteInfo)
     {
         return addSprite(gfxType, spriteInfo.xTexturePos(), spriteInfo.yTexturePos(), spriteInfo.width(), spriteInfo.height());
     }
 
-    void ResourceManager::addSound(SoundType::SoundObjectType sndType, std::string filename)
+    void ResourceManager::addSound(SoundType sndType, std::string filename)
     {
         HEFFECT effect = _hge->Effect_Load(filename.c_str());
 
@@ -122,7 +122,7 @@ namespace NeonHockey
             _clear = false;
     }
 
-    void ResourceManager::addFont(FontType::FontObjectType fntType, std::string filename, bool mipMap)
+    void ResourceManager::addFont(FontType fntType, std::string filename, bool mipMap)
     {
         hgeFont *fnt = new hgeFont(filename.c_str(), mipMap);
         if (!fnt) //TODO: это никогда не сработает, даже если загрузка не прошла
@@ -134,7 +134,7 @@ namespace NeonHockey
             _clear = false;
     }
 
-    HTEXTURE ResourceManager::getTexture(GfxType::GfxObjectType gfxType)
+    HTEXTURE ResourceManager::getTexture(GfxType gfxType)
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
@@ -142,7 +142,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    hgeSprite* ResourceManager::getSprite(GfxType::GfxObjectType gfxType)
+    hgeSprite* ResourceManager::getSprite(GfxType gfxType)
     {
         auto foundKey = _sprites.find(gfxType);
         if (foundKey == _sprites.end())
@@ -150,7 +150,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    HEFFECT ResourceManager::getSound(SoundType::SoundObjectType sndType)
+    HEFFECT ResourceManager::getSound(SoundType sndType)
     {
         auto foundKey = _sounds.find(sndType);
         if (foundKey == _sounds.end())
@@ -158,7 +158,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    hgeFont* ResourceManager::getFont(FontType::FontObjectType fntType)
+    hgeFont* ResourceManager::getFont(FontType fntType)
     {
         auto foundKey = _fonts.find(fntType);
         if (foundKey == _fonts.end())

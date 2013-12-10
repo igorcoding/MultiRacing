@@ -34,7 +34,6 @@ namespace NeonHockey
 
 
     private:
-
         std::vector<Player> _players;
         Puck_ptr _puck;
         const int lr_border;

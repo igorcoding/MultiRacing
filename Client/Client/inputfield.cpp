@@ -6,7 +6,7 @@
 namespace NeonHockey
     {
     //TODO: rewrite this completely
-    InputField::InputField(NeonHockey::ResourceManager* rm, int _id, float _xPos, float _yPos, char *prevalue)
+    InputField::InputField(NeonHockey::ResourceManager* rm, int _id, float _xPos, float _yPos, const char *prevalue)
         : hgeGUIObject()
     {
         _rm = rm;

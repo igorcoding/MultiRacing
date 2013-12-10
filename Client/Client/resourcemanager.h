@@ -12,30 +12,24 @@
 
 namespace NeonHockey
 {
-    namespace GfxType
+    enum class GfxType
     {
-        enum GfxObjectType {
-            PUCK,
-            PADDLE,
-            BACKGROUND,
-            INPUTFIELD
-        };
-    }
+        PUCK,
+        PADDLE,
+        BACKGROUND,
+        INPUTFIELD
+    };
 
-    namespace SoundType
+    enum class SoundType
     {
-        enum SoundObjectType {
-            COLLISION,
-            GOAL
-        };
-    }
+        COLLISION,
+        GOAL
+    };
 
-    namespace FontType
+    enum class FontType
     {
-        enum FontObjectType {
-            SCORE
-        };
-    }
+        SCORE
+    };
 
     class ResourceManager
     {
@@ -45,28 +39,28 @@ namespace NeonHockey
 
         void initHge(HGE *hge);
         void freeResources();
-        void freeResource(GfxType::GfxObjectType gfxType);
-        void freeResource(SoundType::SoundObjectType sndType);
-        void freeResource(FontType::FontObjectType fntType);
+        void freeResource(GfxType gfxType);
+        void freeResource(SoundType sndType);
+        void freeResource(FontType fntType);
 
-        void addTexture(GfxType::GfxObjectType gfxType, std::string filename, DWORD size = 0, bool bMipmap = false);
-        void addTexture(GfxType::GfxObjectType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
-        hgeSprite* addSprite(GfxType::GfxObjectType gfxType, float x, float y, float w, float h);
-        hgeSprite* addSprite(GfxType::GfxObjectType gfxType, const SpriteInfo& spriteInfo);
-        void addSound(SoundType::SoundObjectType sndType, std::string filename);
-        void addFont(FontType::FontObjectType fntType, std::string filename, bool mipMap = false);
+        void addTexture(GfxType gfxType, std::string filename, DWORD size = 0, bool bMipmap = false);
+        void addTexture(GfxType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
+        hgeSprite* addSprite(GfxType gfxType, float x, float y, float w, float h);
+        hgeSprite* addSprite(GfxType gfxType, const SpriteInfo& spriteInfo);
+        void addSound(SoundType sndType, std::string filename);
+        void addFont(FontType fntType, std::string filename, bool mipMap = false);
 
-        HTEXTURE getTexture(GfxType::GfxObjectType gfxType);
-        hgeSprite* getSprite(GfxType::GfxObjectType gfxType);
-        HEFFECT getSound(SoundType::SoundObjectType sndType);        
-        hgeFont *getFont(FontType::FontObjectType fntType);
+        HTEXTURE getTexture(GfxType gfxType);
+        hgeSprite* getSprite(GfxType gfxType);
+        HEFFECT getSound(SoundType sndType);
+        hgeFont *getFont(FontType fntType);
 
     private:
         HGE* _hge;
-        std::map<GfxType::GfxObjectType, HTEXTURE> _textures;
-        std::map<GfxType::GfxObjectType, hgeSprite*> _sprites;
-        std::map<SoundType::SoundObjectType, HEFFECT> _sounds;
-        std::map<FontType::FontObjectType, hgeFont*> _fonts;
+        std::map<GfxType, HTEXTURE> _textures;
+        std::map<GfxType, hgeSprite*> _sprites;
+        std::map<SoundType, HEFFECT> _sounds;
+        std::map<FontType, hgeFont*> _fonts;
 
         bool _clear;
     };
