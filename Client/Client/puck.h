@@ -9,13 +9,11 @@ namespace NeonHockey
     class Puck : public GfxObject
     {
     public:
-        Puck(const SpriteInfo& spriteInfo);
+        Puck(const hgeSprite* sprite);
 
     private:
-        Player* _hitter;
-
-        Puck(const Puck& puck);
-        Puck& operator =(const Puck& puck);
+        Puck(const Puck& puck) = delete;
+        Puck& operator =(const Puck& puck) = delete;
     };
 
 }

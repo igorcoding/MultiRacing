@@ -1,5 +1,6 @@
 #include "menucontext.h"
 #include "menuitem.h"
+#include "ingamecontext.h"
 
 
 namespace NeonHockey
@@ -50,7 +51,7 @@ namespace NeonHockey
 
             case ItemType::About:
                 lastId = 0;
-                return IContextReturnData(Context::InGameContext, _data);
+                return IContextReturnData(Context::InGameContext, new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
 
             case ItemType::Exit:
                 lastId = 0;

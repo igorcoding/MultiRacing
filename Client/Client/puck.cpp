@@ -2,9 +2,8 @@
 
 namespace NeonHockey
 {
-    Puck::Puck(const SpriteInfo &textureInfo)
-        : GfxObject(textureInfo),
-          _hitter(nullptr)
+    Puck::Puck(const hgeSprite *sprite)
+        : GfxObject(sprite)
     {
     }
 

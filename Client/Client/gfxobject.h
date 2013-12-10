@@ -1,7 +1,7 @@
 #ifndef GFXOBJECT_H
 #define GFXOBJECT_H
 
-#include "spriteinfo.h"
+#include <hgesprite.h>
 
 namespace NeonHockey
 {
@@ -10,18 +10,14 @@ namespace NeonHockey
     public:
         float x;
         float y;
-        float dx;
-        float dy;
-        float speed;
-        float accel;
 
-        const SpriteInfo& spriteInfo() const;
+        const hgeSprite* sprite() const;
 
     protected:
-        GfxObject(const SpriteInfo& spriteInfo);
+        GfxObject(const hgeSprite* sprite);
 
     private:
-        const SpriteInfo& _spriteInfo;
+        const hgeSprite* _sprite;
     };
 
 }
