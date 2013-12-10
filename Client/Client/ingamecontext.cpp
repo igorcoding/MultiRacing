@@ -7,7 +7,8 @@ namespace NeonHockey
 {
     InGameContext::InGameContext(HGE* hge, ResourceManager* rm, InGameContextData* gameData)
         : IContext(hge, rm, gameData),
-          border_width(32),
+          lr_border(15),
+          tb_border(18),
           gap_width(200),
           _players(2),
           _puck(nullptr)
@@ -39,7 +40,7 @@ namespace NeonHockey
 
     void InGameContext::show()
     {
-        renderFunc();
+
     }
 
     IContextReturnData InGameContext::frameFunc()
@@ -57,10 +58,10 @@ namespace NeonHockey
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
             bool inplace = true;
 
-            auto x_max = _data->screenWidth - border_width - currentPlayer.paddle()->sprite()->GetWidth() / 2;
-            auto x_min = border_width + currentPlayer.paddle()->sprite()->GetWidth() / 2;
-            auto y_max = _data->screenHeight - border_width - currentPlayer.paddle()->sprite()->GetHeight() / 2;
-            auto y_min = border_width + currentPlayer.paddle()->sprite()->GetHeight()  / 2;
+            auto x_max = _data->screenWidth - lr_border - currentPlayer.paddle()->sprite()->GetWidth() / 2;
+            auto x_min = lr_border + currentPlayer.paddle()->sprite()->GetWidth() / 2;
+            auto y_max = _data->screenHeight - tb_border - currentPlayer.paddle()->sprite()->GetHeight() / 2;
+            auto y_min = tb_border + currentPlayer.paddle()->sprite()->GetHeight()  / 2;
 
             if (mouse_x > x_max || mouse_x < x_min || mouse_y > y_max || mouse_y < y_min)
             {
