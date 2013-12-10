@@ -127,15 +127,18 @@ namespace NeonHockey
             fnt->SetColor(ARGB(255, 200, 200, 255));
 
             std::stringstream scoresStr;
-            scoresStr << "(" << _players[0].getName() << ") "
+            scoresStr << "(" << _players[0].getName() << ")   "
                     << _players[0].getPoints()
-                    << " : "
-                    << _players[1].getPoints()
-                    << "(" + _players[1].getName() << ")";
+                    << " ";
+
+            float widthBeforeColon = fnt->GetStringWidth(scoresStr.str().c_str());
+
+            scoresStr << ": " << _players[1].getPoints()
+                    << "   (" + _players[1].getName() << ")";
 
 
-            float x = _data->screenWidth/2 - fnt->GetStringWidth(scoresStr.str().c_str());
-            float y = fnt->GetHeight() * 1.5;
+            float x = _data->screenWidth / 2 - widthBeforeColon;
+            float y = fnt->GetHeight() / 2;
 
             fnt->Render(x, y, HGETEXT_LEFT, scoresStr.str().c_str());
         }
