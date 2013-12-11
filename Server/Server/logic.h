@@ -25,6 +25,7 @@ public:
     bool shouldStop() const;
     StopReason reason() const;
 
+    int getWinnerId() const;
 
     const static int defaultScreenWidth = 800;
     const static int defaultScreenHeight = 600;
@@ -41,6 +42,8 @@ private:
     std::vector<Player> _players;
     Puck _puck;
     bool _initialized;
+
+    int _winnerId = -1;
 
     std::chrono::milliseconds _framePeriod = std::chrono::milliseconds(10);
     std::mutex _mutex;

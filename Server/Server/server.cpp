@@ -133,7 +133,8 @@ void Server::start()
             {
                 client.socket.send(
                             boost::asio::buffer(
-                                std::to_string(ServerMessageType::GameOver) + "\n"));
+                                std::to_string(ServerMessageType::GameOver)
+                                + " " + std::to_string(logic.getWinnerId()) + "\n"));
                 break;
             }
         }

@@ -171,9 +171,19 @@ int Client::id() const
     return _id;
 }
 
+int Client::getWinnerId() const
+{
+    return _winnerId;
+}
+
 bool Client::isConnected() const
 {
     return _connected;
+}
+
+bool Client::isGameOver() const
+{
+    return _gameOver;
 }
 
 bool Client::shouldStop() const
@@ -347,6 +357,17 @@ void Client::listenerThreadProc()
         }
         case ServerMessageType::GameOver:
             std::cout << "GameOver recieved!" << std::endl;
+
+            is >> _winnerId;
+            is.ignore(); //skip \n
+
+            if(_winnerId == _id)
+                std::cout << "Win!" << std::endl;
+            else
+                std::cout << "Loose!" << std::endl;
+
+            _gameOver = true;
+
             _shouldStop = true;
             break;
         }

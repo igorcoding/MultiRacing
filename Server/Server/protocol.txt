@@ -9,5 +9,5 @@ server -> client
     4 coordX coordY\n //шайба
     5 x volume\n //удар (позиция, сила)
     6 playerId absoluteScore\n //гол
-    7\n //gameOver
+    7 winnerId\n //gameOver
     8 clientId scoreValue\n

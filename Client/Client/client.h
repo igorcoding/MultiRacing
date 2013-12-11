@@ -47,7 +47,11 @@ public:
     //gets client id (0 or 1, or -1 if id isn't assigned yet)
     int id() const;
 
+    int getWinnerId() const;
+
     bool isConnected() const;
+
+    bool isGameOver() const;
 
     //if any errors occured
     bool shouldStop() const;
@@ -84,9 +88,12 @@ private:
     boost::asio::ip::tcp::socket _socket;
 
     int _id = -1;
+    int _winnerId = -1;
+
     bool _connected = false;
     bool _shouldStop = false;
     bool _gameStarted = false;
+    bool _gameOver = false;
 };
 
 #endif // CLIENT_H

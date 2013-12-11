@@ -189,3 +189,8 @@ Logic::StopReason Logic::reason() const
 {
     return _reason;
 }
+
+int Logic::getWinnerId() const
+{
+    return _winnerId;
+}
