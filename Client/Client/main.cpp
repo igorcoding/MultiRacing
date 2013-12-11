@@ -66,6 +66,8 @@ int main()
             }
         };
 
+        //testing
+        std::cout << "Opponent name: " << Client::getInstance().getOpponentName() << std::endl;
 
         //Game& game = Game::getInstance();
         Game::start();

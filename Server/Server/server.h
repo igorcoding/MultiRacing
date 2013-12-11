@@ -14,6 +14,7 @@ struct Client
 
     boost::asio::ip::tcp::socket socket;
     std::thread thread;
+    std::string name;
     int id;
 };
 
@@ -24,8 +25,10 @@ public:
 
     void start();
 
+    //TODO: maybe make universal setter/getter/sender for all the packets?
     void setPuckPos(int x, int y);
     void setCollision(int x, int force);
+    void setGoal(int playerId, int absoluteScore);
 
 private:
     Server();
@@ -36,7 +39,7 @@ private:
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPuckPos, _cachedCollision;
+    } _cachedPuckPos, _cachedCollision, _cachedGoal;
 
     void listenerThreadProc(Client &client);
 
@@ -47,10 +50,12 @@ private:
 
     void sendPuckPos();
     void sendCollisionPos();
+    void sendGoal();
 
 
+    //TODO: move them to some kind of shared (between Client and Server) config file
     struct ClientMessageType { enum { Error, Auth, PaddlePos }; };
-    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, GameOver, Score }; };
+    struct ServerMessageType { enum { Error, ClientId, GameStarted, PaddlePos, PuckPos, Collision, Goal, GameOver, Score }; };
 
     boost::asio::io_service io_service;
     std::vector<Client> clients;

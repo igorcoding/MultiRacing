@@ -112,7 +112,6 @@ namespace NeonHockey
     void ResourceManager::addSound(SoundType sndType, std::string filename)
     {
         HEFFECT effect = _hge->Effect_Load(filename.c_str());
-
         if (!effect)
             throw ResourceException(_hge->System_GetErrorMessage());
 

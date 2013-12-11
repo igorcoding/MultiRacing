@@ -67,6 +67,7 @@ void Server::start()
 
 
                 client.id = clientId++;
+                client.name = clientName;
                 clients.emplace_back(std::move(client));
             }
             else
@@ -90,6 +91,7 @@ void Server::start()
             client.socket.send(
                         boost::asio::buffer(
                             std::to_string(ServerMessageType::GameStarted) + " " +
+                            clients[!client.id].name + " " +
                             std::to_string(_cachedPuckPos.x) + " " +
                             std::to_string(_cachedPuckPos.y) + " " +
                             std::to_string(logic.player(0).x) + " " +
@@ -131,7 +133,8 @@ void Server::start()
             {
                 client.socket.send(
                             boost::asio::buffer(
-                                std::to_string(ServerMessageType::GameOver) + "\n"));
+                                std::to_string(ServerMessageType::GameOver)
+                                + " " + std::to_string(logic.getWinnerId()) + "\n"));
                 break;
             }
         }
@@ -177,6 +180,14 @@ void Server::setCollision(int x, int force)
     _cachedCollision.y = force;
 
     _cachedCollision.isReady = true;
+}
+
+void Server::setGoal(int playerId, int absoluteScore)
+{
+    _cachedGoal.x = playerId;
+    _cachedGoal.y = absoluteScore;
+
+    _cachedGoal.isReady = true;
 }
 
 void Server::listenerThreadProc(Client &client)
@@ -246,6 +257,11 @@ void Server::senderThreadProc()
                 sendCollisionPos();
                 _cachedCollision.isReady = false;
             }
+            if(_cachedGoal.isReady)
+            {
+                sendGoal();
+                _cachedGoal.isReady = false;
+            }
         }
         catch(std::exception &e)
         {
@@ -283,5 +299,16 @@ void Server::sendCollisionPos()
                       std::to_string(ServerMessageType::Collision) + " " +
                       std::to_string(_cachedCollision.x) + " " +
                       std::to_string(_cachedCollision.y) + "\n"));
+    }
+}
+
+void Server::sendGoal()
+{
+    for(auto &client: clients)
+    {
+        client.socket.send(boost::asio::buffer(
+                      std::to_string(ServerMessageType::Goal) + " " +
+                      std::to_string(_cachedGoal.x) + " " +
+                      std::to_string(_cachedGoal.y) + "\n"));
     }
 }

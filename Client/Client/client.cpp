@@ -49,10 +49,8 @@ bool Client::connect(std::string ip, int port, std::string playerName)
     catch(boost::system::system_error& e)
     {
         _socket.close();
-
         std::cerr << e.what() << std::endl;
         _shouldStop = true;
-
         return false;
     }
 
@@ -73,6 +71,8 @@ void Client::workerThreadProc()
 
         if(messageType == ServerMessageType::GameStarted)
         {
+            _is >> _opponentName;
+
             _is >> _cachedPuckPos.x >> _cachedPuckPos.y;
 
             if(_id == 0) //coords order
@@ -96,12 +96,8 @@ void Client::workerThreadProc()
             std::thread listenerThread(std::bind(&Client::listenerThreadProc, this));
             std::thread senderThread(std::bind(&Client::senderThreadProc, this));
 
-
             listenerThread.join();
             senderThread.join();
-
-            _socket.shutdown(ip::tcp::socket::shutdown_receive);
-            _socket.close();
         }
     }
     catch(boost::system::system_error& e)
@@ -141,6 +137,11 @@ void Client::getPuckPos(float &x, float &y) const
     y = _cachedPuckPos.y;
 }
 
+const std::string &Client::getOpponentName() const
+{
+    return _opponentName;
+}
+
 bool Client::getCollision(int &x, int &force)
 {
     if(_cachedCollision.isReady)
@@ -149,6 +150,21 @@ bool Client::getCollision(int &x, int &force)
         force = _cachedCollision.y;
 
         _cachedCollision.isReady = false;
+
+        return true;
+    }
+    else
+        return false;
+}
+
+bool Client::getGoal(int &playerId, int &absoluteScore)
+{
+    if(_cachedGoal.isReady)
+    {
+        playerId = _cachedGoal.x;
+        absoluteScore = _cachedGoal.y;
+
+        _cachedGoal.isReady = false;
 
         return true;
     }
@@ -166,9 +182,19 @@ int Client::id() const
     return _id;
 }
 
+int Client::getWinnerId() const
+{
+    return _winnerId;
+}
+
 bool Client::isConnected() const
 {
     return _connected;
+}
+
+bool Client::isGameOver() const
+{
+    return _gameOver;
 }
 
 bool Client::shouldStop() const
@@ -251,6 +277,8 @@ void Client::listenerThreadProc()
         int messageType = 0;
         _is >> messageType;
 
+        std::cout << messageType << std::endl;
+
         switch(messageType)
         {
         case ServerMessageType::PaddlePos:
@@ -319,8 +347,37 @@ void Client::listenerThreadProc()
 
             break;
         }
+        case ServerMessageType::Goal:
+        {
+            int playerId = 0;
+            int absoluteScore = 0;
+
+            _is >> playerId >> absoluteScore;
+            _is.ignore(); //skip \n
+
+            _mutex.lock();
+
+            _cachedGoal.x = playerId;
+            _cachedGoal.y = absoluteScore;
+            _cachedGoal.isReady = true;
+
+            _mutex.unlock();
+
+            break;
+        }
         case ServerMessageType::GameOver:
             std::cout << "GameOver recieved!" << std::endl;
+
+            _is >> _winnerId;
+            _is.ignore(); //skip \n
+
+            if(_winnerId == _id)
+                std::cout << "Win!" << std::endl;
+            else
+                std::cout << "Loose!" << std::endl;
+
+            _gameOver = true;
+
             _shouldStop = true;
             break;
         }
