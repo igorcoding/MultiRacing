@@ -69,6 +69,7 @@ private:
 
     void senderThreadProc();
     void listenerThreadProc();
+    void workerThreadProc();
 
     boost::asio::io_service _service;
 

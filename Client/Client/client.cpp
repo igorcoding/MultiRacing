@@ -25,8 +25,7 @@ bool Client::connect(std::string ip, int port, std::string playerName)
                                   + playerName + "\n"));
 
         boost::asio::streambuf buffer;
-        boost::system::error_code err;
-        read_until(_socket, buffer, "\n", err);
+        read_until(_socket, buffer, "\n");
 
         std::istream is(&buffer);
 
@@ -43,45 +42,12 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
             std::cout << "Client id: " << _id << std::endl;
 
-            //wait for GameStarted message
-            read_until(_socket, buffer, "\n");
+            //spawn new thread (main for Client)
+            std::thread workerThread([this]{ workerThreadProc(); });
+            workerThread.detach();
 
-            int messageType = 0;
-            is >> messageType;
-
-            if(messageType == ServerMessageType::GameStarted)
-            {
-                is >> _cachedPuckPos.x >> _cachedPuckPos.y;
-
-                if(_id == 0) //coords order
-                {
-                    is >> _cachedPos.x >> _cachedPos.y;
-                    is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
-                }
-                else
-                {
-                    is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
-                    is >> _cachedPos.x >> _cachedPos.y;
-                }
-
-                is.ignore(); //skip \n
-
-                _gameStarted = true;
-
-                std::cout << "Game stared!" << std::endl;
-
-                //start listener thread
-                std::thread listenerThread(std::bind(&Client::listenerThreadProc, this));
-                std::thread senderThread(std::bind(&Client::senderThreadProc, this));
-
-                listenerThread.join();
-                senderThread.join();
-            }
+            return true;
         }
-
-
-        _socket.shutdown(ip::tcp::socket::shutdown_receive);
-        _socket.close();
     }
     catch(boost::system::system_error& e)
     {
@@ -94,6 +60,63 @@ bool Client::connect(std::string ip, int port, std::string playerName)
     }
 
     return true;
+}
+
+void Client::workerThreadProc()
+{
+    using namespace boost::asio;
+
+    try
+    {
+        boost::asio::streambuf buffer;
+        std::istream is(&buffer);
+
+        //wait for GameStarted message
+        read_until(_socket, buffer, "\n");
+
+        int messageType = 0;
+        is >> messageType;
+
+        if(messageType == ServerMessageType::GameStarted)
+        {
+            is >> _cachedPuckPos.x >> _cachedPuckPos.y;
+
+            if(_id == 0) //coords order
+            {
+                is >> _cachedPos.x >> _cachedPos.y;
+                is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+            }
+            else
+            {
+                is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+                is >> _cachedPos.x >> _cachedPos.y;
+            }
+
+            is.ignore(); //skip \n
+
+            _gameStarted = true;
+
+            std::cout << "Game stared!" << std::endl;
+
+            //start listener thread
+            std::thread listenerThread(std::bind(&Client::listenerThreadProc, this));
+            std::thread senderThread(std::bind(&Client::senderThreadProc, this));
+
+
+            listenerThread.join();
+            senderThread.join();
+
+            _socket.shutdown(ip::tcp::socket::shutdown_receive);
+            _socket.close();
+        }
+    }
+    catch(boost::system::system_error& e)
+    {
+        _socket.close();
+
+        std::cerr << e.what() << std::endl;
+        _shouldStop = true;
+    }
 }
 
 void Client::sendPaddlePos(float x, float y) //REVIEW: -_-
