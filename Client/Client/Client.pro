@@ -41,7 +41,10 @@ HEADERS += \
     connectcontext.h
 
 
-QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-local-typedefs
+QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
+QMAKE_LFLAGS += -pthread -std=c++1y
+
+# DEFINES += SINGLEPLAYER_DEBUG
 
 unix {
     DEFINES += PLATFORM_UNIX

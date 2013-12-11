@@ -3,13 +3,13 @@
 #include "resourcesloader.h"
 #include <cmath>
 #include <cstdio>
+#include <utility>
 
 namespace NeonHockey
 {
     Game::Game()
     { }
 
-    int Game::_currentPlayerId = -1;
     bool Game::_initialized = false;
     const std::string Game::game_title = "Neon Hockey v0.1";
     const std::string Game::game_log = "neonhockey.log";
@@ -69,6 +69,7 @@ namespace NeonHockey
     {
         _hge = hgeCreate(HGE_VERSION);
         _resources.initHge(_hge);
+        initOptions();
         initializeGameStates();
 
         if (_hge->System_Initiate())
@@ -236,6 +237,11 @@ namespace NeonHockey
         if (_currentContext != c)
             Game::context(c)->show();
         _currentContext = c;
+    }
+
+    void Game::initOptions()
+    {
+        //_options.insert(std::make_pair(OptionType::SCREEN_WIDTH, ))
     }
 
     void Game::playSound(SoundType type, int at, int volume)

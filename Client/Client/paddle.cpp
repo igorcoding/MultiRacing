@@ -3,7 +3,7 @@
 namespace NeonHockey
 {
     Paddle::Paddle(const hgeSprite* sprite)
-        : GfxObject(sprite)
+        : GfxObject(sprite, 40, 40)
     {
     }
 }

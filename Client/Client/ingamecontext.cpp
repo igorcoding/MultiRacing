@@ -7,8 +7,8 @@ namespace NeonHockey
 {
     InGameContext::InGameContext(HGE* hge, ResourceManager* rm, InGameContextData* gameData)
         : IContext(hge, rm, gameData),
-          lr_border(15),
-          tb_border(18),
+          lr_border(26),
+          tb_border(30),
           gap_width(200),
           _players(2),
           _puck(nullptr)
@@ -57,10 +57,25 @@ namespace NeonHockey
         {
             _hge->Input_GetMousePos(&mouse_x, &mouse_y);
 
-            auto x_max = _data->screenWidth - lr_border - currentPlayer.paddle()->sprite()->GetWidth() / 2;
-            auto x_min = lr_border + currentPlayer.paddle()->sprite()->GetWidth() / 2;
-            auto y_max = _data->screenHeight - tb_border - currentPlayer.paddle()->sprite()->GetHeight() / 2;
-            auto y_min = tb_border + currentPlayer.paddle()->sprite()->GetHeight()  / 2;
+
+            auto x_max = _data->screenWidth - lr_border - currentPlayer.paddle()->width / 2;
+            auto x_min = lr_border + currentPlayer.paddle()->width / 2;
+            if (currentPlayer.paddle()->y >= gap_width + currentPlayer.paddle()->height / 2
+                    && currentPlayer.paddle()->y <= (_data->screenHeight + gap_width)/2 - currentPlayer.paddle()->height / 2)
+            {
+                switch (currentPlayer.getSide())
+                {
+                case BoardSide::LEFT:
+                    x_min = currentPlayer.paddle()->width / 2;
+                    break;
+                case BoardSide::RIGHT:
+                    x_max = data->screenWidth - currentPlayer.paddle()->width / 2;
+                    break;
+                }
+            }
+
+            auto y_max = _data->screenHeight - tb_border - currentPlayer.paddle()->height / 2;
+            auto y_min = tb_border + currentPlayer.paddle()->height  / 2;
 
             mouse_x = std::min(mouse_x, x_max);
             mouse_x = std::max(mouse_x, x_min);
@@ -69,15 +84,19 @@ namespace NeonHockey
 
 
 
-            switch (_players[data->currentPlayerId].getSide())
+            switch (currentPlayer.getSide())
             {
             case BoardSide::LEFT:
-                mouse_x = std::min(mouse_x, data->screenWidth / 2 - currentPlayer.paddle()->sprite()->GetWidth() / 2);
+                mouse_x = std::min(mouse_x, data->screenWidth / 2 - currentPlayer.paddle()->width / 2);
                 break;
             case BoardSide::RIGHT:
-                mouse_x = std::max(mouse_x, data->screenWidth / 2 + currentPlayer.paddle()->sprite()->GetWidth() / 2);
+                mouse_x = std::max(mouse_x, data->screenWidth / 2 + currentPlayer.paddle()->width / 2);
                 break;
             }
+
+
+
+
 
             currentPlayer.paddle()->x = mouse_x;
             currentPlayer.paddle()->y = mouse_y;

@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include <hge.h>
+#include <boost/any.hpp>
+#include <boost/variant.hpp>
 
 #include <vector>
 #include <memory>
@@ -22,6 +24,9 @@ namespace NeonHockey
 
         static int screenWidth();
         static int screenHeight();
+        static const char* gameTitle();
+        static const char* gameLog();
+
 
         ~Game();
 
@@ -29,7 +34,6 @@ namespace NeonHockey
         static HGE* _hge;
         static ResourceManager _resources;
         static bool _initialized;
-        static int _currentPlayerId;
         static std::map<Context, IContext*> _contexts;
         static Context _currentContext;
 
@@ -52,6 +56,12 @@ namespace NeonHockey
         static IContext* currentContext();
         static void updateContext(Context c, IContextData* contextData);
 
+
+        static void initOptions();
+        static bool isWindowed();
+        static bool isUsingSound();
+        static bool isMouseHidden();
+        static int screenBpp();
         static void playSound(SoundType type, int at = 0, int volume = 100);
 
     };

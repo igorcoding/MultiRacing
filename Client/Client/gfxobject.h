@@ -10,11 +10,13 @@ namespace NeonHockey
     public:
         float x;
         float y;
+        float width;
+        float height;
 
         const hgeSprite* sprite() const;
 
     protected:
-        GfxObject(const hgeSprite* sprite);
+        GfxObject(const hgeSprite* sprite, float w, float h);
 
     private:
         const hgeSprite* _sprite;

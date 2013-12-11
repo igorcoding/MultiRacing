@@ -1,0 +1,37 @@
+
+-------------------------------------------------------------------
+       hge-unix can be found at http://icculus.org/hge-unix/
+  Please don't bother Relish Games about the Unix version of HGE.
+   They are responsible for the Windows version, not this build.
+-------------------------------------------------------------------
+
+HGE Started...
+hge-unix version: 1.81
+Date: Wed Dec 11 11:28:42 2013
+
+Application: Neon Hockey v0.1
+OS: Unix
+Screen: 1366x768
+
+OpenGL: loading entry points and examining extensions...
+GL_RENDERER: Mesa DRI Intel(R) Ivybridge Mobile 
+GL_VENDOR: Intel Open Source Technology Center
+GL_VERSION: 3.0 Mesa 9.1.7
+OpenGL: Using GL_ARB_texture_rectangle
+OpenGL: Using GL_EXT_framebuffer_object
+OpenGL: WARNING: no YUV texture support; videos may render slowly.
+OpenGL: Using GL_ARB_vertex_buffer_object
+Mode: 800 x 600
+
+Starting OpenAL init
+OpenAL initialized
+AL_VENDOR: OpenAL Community
+AL_RENDERER: OpenAL Soft
+AL_VERSION: 1.1 ALSOFT 1.14
+AL_EXTENSIONS: AL_EXT_ALAW AL_EXT_DOUBLE AL_EXT_EXPONENT_DISTANCE AL_EXT_FLOAT32 AL_EXT_IMA4 AL_EXT_LINEAR_DISTANCE AL_EXT_MCFORMATS AL_EXT_MULAW AL_EXT_MULAW_MCFORMATS AL_EXT_OFFSET AL_EXT_source_distance_model AL_LOKI_quadriphonic AL_SOFT_buffer_samples AL_SOFT_buffer_sub_data AL_SOFTX_deferred_updates AL_SOFT_direct_channels AL_SOFT_loop_points
+Init done.
+
+Can't load resource: ../resources/Field.png
+
+Finishing..
+The End.

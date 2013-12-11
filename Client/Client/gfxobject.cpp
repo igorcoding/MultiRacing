@@ -2,9 +2,11 @@
 
 namespace NeonHockey
 {
-    GfxObject::GfxObject(const hgeSprite* sprite)
+    GfxObject::GfxObject(const hgeSprite* sprite, float w, float h)
         : x(0.0f),
           y(0.0f),
+          width(w),
+          height(h),
           _sprite(sprite)
     { }
 
