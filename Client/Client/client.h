@@ -76,6 +76,9 @@ private:
     std::mutex _mutex;
     boost::asio::ip::tcp::socket _socket;
 
+    boost::asio::streambuf _buffer;
+    std::istream _is;
+
     int _id = -1;
     bool _connected = false;
     bool _shouldStop = false;

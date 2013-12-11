@@ -24,21 +24,16 @@ bool Client::connect(std::string ip, int port, std::string playerName)
         _socket.write_some(buffer(std::to_string(ClientMessageType::Auth) + " "
                                   + playerName + "\n"));
 
-        boost::asio::streambuf buffer;
-        read_until(_socket, buffer, "\n");
-
-        std::istream is(&buffer);
-
-        read_until(_socket, buffer, "\n");
+        read_until(_socket, _buffer, "\n");
 
         int messageType = 0;
-        is >> messageType;
+        _is >> messageType;
 
         if(messageType == ServerMessageType::ClientId)
         {
-            is >> _id;
+            _is >> _id;
 
-            is.ignore(); //skip \n
+            _is.ignore(); //skip \n
 
             std::cout << "Client id: " << _id << std::endl;
 
@@ -48,6 +43,8 @@ bool Client::connect(std::string ip, int port, std::string playerName)
 
             return true;
         }
+        else
+            return false;
     }
     catch(boost::system::system_error& e)
     {
@@ -59,7 +56,7 @@ bool Client::connect(std::string ip, int port, std::string playerName)
         return false;
     }
 
-    return true;
+    return false;
 }
 
 void Client::workerThreadProc()
@@ -68,31 +65,28 @@ void Client::workerThreadProc()
 
     try
     {
-        boost::asio::streambuf buffer;
-        std::istream is(&buffer);
-
         //wait for GameStarted message
-        read_until(_socket, buffer, "\n");
+        read_until(_socket, _buffer, "\n");
 
         int messageType = 0;
-        is >> messageType;
+        _is >> messageType;
 
         if(messageType == ServerMessageType::GameStarted)
         {
-            is >> _cachedPuckPos.x >> _cachedPuckPos.y;
+            _is >> _cachedPuckPos.x >> _cachedPuckPos.y;
 
             if(_id == 0) //coords order
             {
-                is >> _cachedPos.x >> _cachedPos.y;
-                is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+                _is >> _cachedPos.x >> _cachedPos.y;
+                _is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
             }
             else
             {
-                is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
-                is >> _cachedPos.x >> _cachedPos.y;
+                _is >> _cachedEnemyPos.x >> _cachedEnemyPos.y;
+                _is >> _cachedPos.x >> _cachedPos.y;
             }
 
-            is.ignore(); //skip \n
+            _is.ignore(); //skip \n
 
             _gameStarted = true;
 
@@ -188,7 +182,7 @@ void Client::stop()
 }
 
 Client::Client()
-    : _socket(_service)
+    : _socket(_service), _is(&_buffer)
 {
 
 }
@@ -242,14 +236,11 @@ void Client::senderThreadProc()
 
 void Client::listenerThreadProc()
 {
-    boost::asio::streambuf buffer;
-    std::istream is(&buffer);
-
     while(!_shouldStop)
     {
         try
         {
-            read_until(_socket, buffer, "\n");
+            read_until(_socket, _buffer, "\n");
         }
         catch(boost::system::system_error& e)
         {
@@ -258,7 +249,7 @@ void Client::listenerThreadProc()
         }
 
         int messageType = 0;
-        is >> messageType;
+        _is >> messageType;
 
         switch(messageType)
         {
@@ -267,8 +258,8 @@ void Client::listenerThreadProc()
             int coordX = 0;
             int coordY = 0;
 
-            is >> coordX >> coordY;
-            is.ignore(); //skip \n
+            _is >> coordX >> coordY;
+            _is.ignore(); //skip \n
 
             _mutex.lock();
             //update view
@@ -290,8 +281,8 @@ void Client::listenerThreadProc()
             int coordX = 0;
             int coordY = 0;
 
-            is >> coordX >> coordY;
-            is.ignore(); //skip \n
+            _is >> coordX >> coordY;
+            _is.ignore(); //skip \n
 
             _mutex.lock();
 
@@ -311,8 +302,8 @@ void Client::listenerThreadProc()
             int coordX = 0;
             int coordY = 0;
 
-            is >> coordX >> coordY;
-            is.ignore(); //skip \n
+            _is >> coordX >> coordY;
+            _is.ignore(); //skip \n
 
             _mutex.lock();
 
