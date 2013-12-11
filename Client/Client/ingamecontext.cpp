@@ -36,6 +36,10 @@ namespace NeonHockey
         _puck = std::move(std::unique_ptr<Puck>(new Puck(_rm->getSprite(GfxType::PUCK))));
         _players[data->currentPlayerId] = std::move(p0);
         _players[!data->currentPlayerId] = std::move(p1);
+
+        Client::getInstance().getPaddlePos(_players[data->currentPlayerId].paddle()->x, _players[data->currentPlayerId].paddle()->y);
+        Client::getInstance().getEnemyPaddlePos(_players[!data->currentPlayerId].paddle()->x, _players[!data->currentPlayerId].paddle()->y);
+        Client::getInstance().getPuckPos(_puck->x, _puck->y);
     }
 
     void InGameContext::show()
@@ -100,15 +104,15 @@ namespace NeonHockey
 
             currentPlayer.paddle()->x = mouse_x;
             currentPlayer.paddle()->y = mouse_y;
-            //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+            Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         }
         //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         //update coords from server
-        //Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
+        Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
 
-        //Client::getInstance().getPuckPos(_puck->x, _puck->y);
+        Client::getInstance().getPuckPos(_puck->x, _puck->y);
 
 
 

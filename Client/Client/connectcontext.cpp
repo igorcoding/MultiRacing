@@ -65,7 +65,6 @@ namespace NeonHockey
             if (connectionResult.valid() && is_ready(connectionResult))
             {
                 bool connected = connectionResult.get();
-                std::cout << connected << std::endl;
                 if (connected)
                 {
                     std::cout << "connected\n";
