@@ -30,8 +30,8 @@ namespace NeonHockey
             throw std::exception();
         }
 
-        Player p0("Player 0", side0, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
-        Player p1("Player 1", side1, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
+        Player p0(data->currentPlayerName, side0, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
+        Player p1(data->opponentName, side1, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
 
         _puck = std::move(std::unique_ptr<Puck>(new Puck(_rm->getSprite(GfxType::PUCK))));
         _players[data->currentPlayerId] = std::move(p0);

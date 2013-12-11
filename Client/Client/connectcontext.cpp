@@ -12,7 +12,7 @@ namespace NeonHockey
         gui = new hgeGUI();
 
         ipField = new InputField(_rm, ControlId::Ip, 100, 100, "127.0.0.1");
-        nameField = new InputField(_rm, ControlId::Name, 100, 100 + 48, "Player 0");
+        nameField = new InputField(_rm, ControlId::Name, 100, 100 + 48, "Player0");
 
         HTEXTURE buttonTexture = _rm->getTexture(GfxType::BUTTON);
         connectButton = new hgeGUIButton(ControlId::Connect, 86, 190, 100, 28, buttonTexture, 0, 0);
@@ -82,9 +82,9 @@ namespace NeonHockey
             {
                 std::cout << "waiting finished. game started.";
                 auto playerId = Client::getInstance().id();
-                //auto opponentName = Client::getInstance.
+                auto opponentName = Client::getInstance().getOpponentName();
                 return IContextReturnData(Context::InGameContext,
-                                          new InGameContextData(_data->screenWidth, _data->screenHeight, playerId));
+                                          new InGameContextData(_data->screenWidth, _data->screenHeight, playerId, std::string(nameField->getText()), opponentName));
             }
             else
             {
@@ -121,6 +121,7 @@ namespace NeonHockey
 
     bool ConnectContext::connectToServer(const std::string& ip, const std::string& playerName)
     {
+        std::cout << playerName;
         constexpr int port = 14882;
         try
         {

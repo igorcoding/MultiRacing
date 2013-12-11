@@ -51,7 +51,8 @@ namespace NeonHockey
 
             case ItemType::About:
                 lastId = 0;
-                return IContextReturnData(Context::InGameContext, new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
+                break;
+                //return IContextReturnData(Context::InGameContext, new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
 
             case ItemType::Exit:
                 lastId = 0;
