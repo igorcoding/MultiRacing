@@ -5,7 +5,7 @@
 
 namespace NeonHockey
 {
-    ConnectContext::ConnectContext(HGE* hge, ResourceManager* rm, ConnectContextData *data)
+    ConnectContext::ConnectContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<ConnectContextData> data)
         : IContext(hge, rm, data),
           status(ConnectionStatus::Default)
     {
@@ -46,7 +46,7 @@ namespace NeonHockey
         if(gui->Update(dt) == ControlId::Connect)
         {
             return IContextReturnData(Context::InGameContext,
-                new InGameContextData(_data->screenWidth, _data->screenHeight, 0));
+                                      std::make_shared<InGameContextData>(_data->screenWidth, _data->screenHeight, 0, "1", "2"));
         }
 #else
 
@@ -84,7 +84,7 @@ namespace NeonHockey
                 auto playerId = Client::getInstance().id();
                 auto opponentName = Client::getInstance().getOpponentName();
                 return IContextReturnData(Context::InGameContext,
-                                          new InGameContextData(_data->screenWidth, _data->screenHeight, playerId, std::string(nameField->getText()), opponentName));
+                                          std::make_shared<InGameContextData>(_data->screenWidth, _data->screenHeight, playerId, std::string(nameField->getText()), opponentName));
             }
             else
             {
@@ -106,7 +106,7 @@ namespace NeonHockey
 
     void ConnectContext::renderFunc()
     {
-        hgeFont *font = _rm->getFont(FontType::SCORE);
+        auto font = _rm->getFont(FontType::SCORE);
         font->Render(74, 100, HGETEXT_RIGHT, "IP: ");
 
         font->Render(74, 148, HGETEXT_RIGHT, "Name: ");

@@ -10,7 +10,7 @@ namespace NeonHockey
     class ResourcesLoader
     {
     public:
-        ResourcesLoader(ResourceManager* rm);
+        ResourcesLoader(std::shared_ptr<ResourceManager> rm);
         void loadEverything();
         void loadGraphics();
         void loadFonts();
@@ -18,7 +18,7 @@ namespace NeonHockey
 
     private:
         std::vector<SpriteInfo> _gfxResources;
-        ResourceManager* _rm;
+        std::shared_ptr<ResourceManager> _rm;
 
         ResourcesLoader(const ResourcesLoader&) = delete;
         ResourcesLoader& operator =(const ResourcesLoader&) = delete;

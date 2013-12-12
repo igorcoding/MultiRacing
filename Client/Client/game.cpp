@@ -17,7 +17,7 @@ namespace NeonHockey
     const int Game::screen_height = 600;
 
     HGE* Game::_hge = nullptr;
-    ResourceManager Game::_resources;
+    std::shared_ptr<ResourceManager> Game::_resources = std::make_shared<ResourceManager>();
     Context Game::_currentContext = Context::MenuContext;
     std::map<Context, IContext*> Game::_contexts;
 
@@ -28,7 +28,7 @@ namespace NeonHockey
             initializeGame();
         if (_initialized)
         {
-            updateContext(Context::MenuContext, new MenuContextData(screenWidth(), screenHeight()));
+            updateContext(Context::MenuContext, std::make_shared<MenuContextData>(screenWidth(), screenHeight()));
             _hge->System_Start();
 
             endGame();
@@ -38,7 +38,7 @@ namespace NeonHockey
 
     void Game::endGame()
     {
-        _resources.freeResources();
+        _resources->freeResources();
         for (auto& context : _contexts)
             delete context.second;
         _currentContext = Context::NoContext;
@@ -68,8 +68,7 @@ namespace NeonHockey
     void Game::initializeGame()
     {
         _hge = hgeCreate(HGE_VERSION);
-        _resources.initHge(_hge);
-        initOptions();
+        _resources->initHge(_hge);
         initializeGameStates();
 
         if (_hge->System_Initiate())
@@ -105,75 +104,8 @@ namespace NeonHockey
 
     void Game::initializeGameResources()
     {
-        ResourcesLoader rloader(&_resources);
+        ResourcesLoader rloader(_resources);
         rloader.loadEverything();
-        /*
-        try
-        {
-            _currentPlayerId = Client::getInstance().id();
-            //int id = 0;
-            BoardSide::BoardSide side0, side1;
-            switch (_currentPlayerId)
-            {
-            case 0:
-                side0 = BoardSide::LEFT;
-                side1 = BoardSide::RIGHT;
-                break;
-            case 1:
-                side0 = BoardSide::RIGHT;
-                side1 = BoardSide::LEFT;
-                break;
-            default:
-                throw std::exception();
-            }
-
-            // retrieve players
-            int texture1_id = 2;
-            int texture2_id = 2;
-
-            Player p1("Player 1", side0, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture1_id])));
-            Player p2("Player 2", side1, 0, std::unique_ptr<Paddle>(new Paddle(gfx_textures[texture2_id])));
-
-            _puck = std::move(std::unique_ptr<Puck>(new Puck(gfx_textures[1])));
-            _players[_currentPlayerId] = std::move(p1);
-            _players[!_currentPlayerId] = std::move(p2);
-
-            _resources.addTexture(GfxType::BACKGROUND, gfx_textures[0].texturePath());
-            _resources.addTexture(GfxType::PUCK, _puck->spriteInfo().texturePath());
-            _resources.addTexture(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo().texturePath());
-            _resources.addTexture(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo().texturePath());
-
-
-            _resources.addSprite(GfxType::BACKGROUND, gfx_textures[0])->SetHotSpot(0, 0);
-
-            _resources.addSprite(GfxType::PUCK, _puck->spriteInfo())->SetHotSpot(_puck->spriteInfo().width() / 2,
-                                                                                                  _puck->spriteInfo().height() / 2);
-
-            _resources.addSprite(GfxType::PADDLE_CURRENT, _players[_currentPlayerId].paddle()->spriteInfo())->SetHotSpot(_players[_currentPlayerId].paddle()->spriteInfo().width() / 2,
-                                                                                                              _players[_currentPlayerId].paddle()->spriteInfo().height() / 2);
-
-            _resources.addSprite(GfxType::PADDLE_ENEMY, _players[!_currentPlayerId].paddle()->spriteInfo())->SetHotSpot(_players[!_currentPlayerId].paddle()->spriteInfo().width() / 2,
-                                                                                                              _players[!_currentPlayerId].paddle()->spriteInfo().height() / 2);
-
-            _resources.addSound(SoundType::COLLISION, "../resources/hit.ogg");
-            //_resources.addSound(SoundType::COLLISION, "/home/igor/Documents/projects/cpp/NeonHockey/Client/resources/hit.ogg");
-
-            _resources.addFont(FontType::SCORE, "../resources/Digital.fnt");
-        }
-        catch(std::exception &e)
-        {
-            std::cerr << e.what();
-            std::cerr << "Check game.log for details" << std::endl;
-
-            //Client::getInstance().stop();
-            //TODO: change state or close the game. maybe?
-        }
-
-
-        Client::getInstance().getPaddlePos(_players[_currentPlayerId].paddle()->x, _players[_currentPlayerId].paddle()->y);
-        Client::getInstance().getEnemyPaddlePos(_players[!_currentPlayerId].paddle()->x, _players[!_currentPlayerId].paddle()->y);
-        Client::getInstance().getPuckPos(_puck->x, _puck->y);
-        */
     }
 
     bool Game::frameFunc()
@@ -181,12 +113,16 @@ namespace NeonHockey
         auto nextContext = currentContext()->frameFunc();
         updateContext(nextContext.c, nextContext.data);
 
+        if (_currentContext == Context::NoContext)
+            return true;
 
         return false;
     }
 
     bool Game::renderFunc()
     {
+        if (_currentContext == Context::NoContext)
+            return true;
         _hge->Gfx_BeginScene();
         _hge->Gfx_Clear(0);
 
@@ -206,7 +142,7 @@ namespace NeonHockey
         return _contexts[_currentContext];
     }
 
-    void Game::updateContext(Context c, IContextData* contextData)
+    void Game::updateContext(Context c, std::shared_ptr<IContextData> contextData)
     {
         auto context = _contexts.find(c);
         if (context == _contexts.end()) // did not find the context
@@ -214,17 +150,20 @@ namespace NeonHockey
             switch(c)
             {
             case Context::MenuContext:
-                _contexts[c] = new MenuContext(_hge, &_resources, dynamic_cast<MenuContextData*>(contextData));
+                _contexts[c] = new MenuContext(_hge, _resources, std::dynamic_pointer_cast<MenuContextData>(contextData));
                 break;
             case Context::ConnectContext:
-                _contexts[c] = new ConnectContext(_hge, &_resources, dynamic_cast<ConnectContextData*>(contextData));
+                _contexts[c] = new ConnectContext(_hge, _resources, std::dynamic_pointer_cast<ConnectContextData>(contextData));
                 break;
             case Context::InGameContext:
-                _contexts[c] = new InGameContext(_hge, &_resources, dynamic_cast<InGameContextData*>(contextData));
+                _contexts[c] = new InGameContext(_hge, _resources, std::dynamic_pointer_cast<InGameContextData>(contextData));
                 break;
             case Context::GameFinishedContext:
                 break;
             case Context::GameErrorContext:
+                break;
+            case Context::NoContext:
+                //endGame();
                 break;
             default:
                 break;
@@ -234,7 +173,7 @@ namespace NeonHockey
         {
             context->second->changeData(contextData);
         }
-        if (_currentContext != c)
+        if (_currentContext != c && c != Context::NoContext)
             Game::context(c)->show();
         _currentContext = c;
     }
@@ -246,7 +185,7 @@ namespace NeonHockey
 
     void Game::playSound(SoundType type, int at, int volume)
     {
-        HEFFECT snd = _resources.getSound(type);
+        HEFFECT snd = _resources->getSound(type);
 
         //converts at to [-100, 100] range
         _hge->Effect_PlayEx(snd, volume, at * 200 /screen_width - 100);

@@ -5,7 +5,7 @@
 
 namespace NeonHockey
 {
-    MenuContext::MenuContext(HGE* hge, ResourceManager* rm, MenuContextData* data)
+    MenuContext::MenuContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<MenuContextData> data)
         : IContext(hge, rm, data)
     {
         menu = new hgeGUI();
@@ -21,7 +21,7 @@ namespace NeonHockey
         for(int i = 0; i < items.size(); ++i)
             menu->AddCtrl(
                 new hgeGUIMenuItem(i + 1,
-                   _rm->getFont(FontType::SCORE),
+                   _rm->getFont(FontType::SCORE).get(),
                    //_rm->getSound(SoundType::COLLISION),
                     0,
                    400, 200+40*i, float(i)/10.0,
@@ -47,7 +47,7 @@ namespace NeonHockey
             {
             case ItemType::Connect:
                 lastId = 0;
-                return IContextReturnData(Context::ConnectContext, new ConnectContextData(_data->screenWidth, _data->screenHeight));
+                return IContextReturnData(Context::ConnectContext, std::make_shared<ConnectContextData>(_data->screenWidth, _data->screenHeight));
 
             case ItemType::About:
                 lastId = 0;

@@ -34,9 +34,9 @@ namespace NeonHockey
     struct IContextReturnData
     {
         Context c;
-        IContextData* data;
+        std::shared_ptr<IContextData> data;
 
-        IContextReturnData(Context c, IContextData* data)
+        IContextReturnData(Context c, std::shared_ptr<IContextData> data)
             : c(c),
               data(data)
         { }
@@ -46,7 +46,7 @@ namespace NeonHockey
     class IContext
     {
     public:
-        IContext(HGE* hge, ResourceManager* rm, IContextData* data)
+        IContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<IContextData> data)
             : _hge(hge),
               _rm(rm),
               _data(data)
@@ -54,25 +54,25 @@ namespace NeonHockey
 
         virtual ~IContext()
         {
-            delete _data;
-            _data = nullptr;
+            //delete _data;
+            //_data = nullptr;
         }
 
         virtual void show() = 0;
         virtual IContextReturnData frameFunc() = 0;
         virtual void renderFunc() = 0;
-        void changeData(IContextData* data)
+        void changeData(std::shared_ptr<IContextData> data)
         {
-            if (_data != data)
-                delete _data;
+            //if (_data != data)
+            //    delete _data;
             _data = data;
 
         }
 
     protected:
         HGE* _hge;
-        ResourceManager* _rm;
-        IContextData* _data;
+        std::shared_ptr<ResourceManager> _rm;
+        std::shared_ptr<IContextData> _data;
     };
 
 }

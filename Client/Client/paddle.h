@@ -8,7 +8,7 @@ namespace NeonHockey
     class Paddle : public GfxObject
     {
     public:
-        Paddle(const hgeSprite* sprite);
+        Paddle(const std::shared_ptr<hgeSprite>& sprite);
     };
 }
 

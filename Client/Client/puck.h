@@ -9,7 +9,7 @@ namespace NeonHockey
     class Puck : public GfxObject
     {
     public:
-        Puck(const hgeSprite* sprite);
+        Puck(const std::shared_ptr<hgeSprite>& sprite);
 
     private:
         Puck(const Puck& puck) = delete;

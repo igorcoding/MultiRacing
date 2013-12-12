@@ -32,7 +32,7 @@ namespace NeonHockey
 
     private:
         static HGE* _hge;
-        static ResourceManager _resources;
+        static std::shared_ptr<ResourceManager> _resources;
         static bool _initialized;
         static std::map<Context, IContext*> _contexts;
         static Context _currentContext;
@@ -54,7 +54,7 @@ namespace NeonHockey
 
         static IContext* context(Context c);
         static IContext* currentContext();
-        static void updateContext(Context c, IContextData* contextData);
+        static void updateContext(Context c, std::shared_ptr<IContextData> contextData);
 
 
         static void initOptions();

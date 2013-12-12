@@ -5,7 +5,7 @@
 
 namespace NeonHockey
 {
-    InGameContext::InGameContext(HGE* hge, ResourceManager* rm, InGameContextData* gameData)
+    InGameContext::InGameContext(HGE *hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<InGameContextData> gameData)
         : IContext(hge, rm, gameData),
           lr_border(26),
           tb_border(30),
@@ -13,7 +13,7 @@ namespace NeonHockey
           _players(2),
           _puck(nullptr)
     {
-        auto data = dynamic_cast<InGameContextData*>(_data);
+        auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
         BoardSide::BoardSide side0, side1;
         switch (data->currentPlayerId)
@@ -49,7 +49,7 @@ namespace NeonHockey
 
     IContextReturnData InGameContext::frameFunc()
     {
-        auto data = dynamic_cast<InGameContextData*>(_data);
+        auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
         Player& currentPlayer = _players[data->currentPlayerId];
         Player& enemyPlayer = _players[!data->currentPlayerId];
@@ -145,7 +145,7 @@ namespace NeonHockey
             paddleSprite->Render(_players[1].paddle()->x, _players[1].paddle()->y);
 
             //render scores
-            hgeFont *fnt = _rm->getFont(FontType::SCORE);
+            auto fnt = _rm->getFont(FontType::SCORE);
             fnt->SetColor(ARGB(255, 200, 200, 255));
 
             std::stringstream scoresStr;

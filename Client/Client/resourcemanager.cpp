@@ -21,16 +21,16 @@ namespace NeonHockey
 
     void ResourceManager::freeResources()
     {
-        for (auto it = _sprites.begin(); it != _sprites.end(); ++it)
-            delete it->second;
+        //for (auto it = _sprites.begin(); it != _sprites.end(); ++it)
+        //    delete it->second;
         for (auto it = _textures.begin(); it != _textures.end(); ++it)
             _hge->Texture_Free(it->second);
 
         for(auto &s: _sounds)
             _hge->Effect_Free(s.second);
 
-        for(auto &f: _fonts)
-            delete f.second;
+        //for(auto &f: _fonts)
+        //    delete f.second;
 
         _sprites.clear();
         _textures.clear();
@@ -47,7 +47,7 @@ namespace NeonHockey
             auto foundSprite = _sprites.find(gfxType);  // search for the sprite
             if (foundSprite != _sprites.end())          // delete sprite
             {
-                delete foundSprite->second;
+                //delete foundSprite->second;
                 _sprites.erase(foundSprite);
             }
             _hge->Texture_Free(foundTexture->second);   // delete texture
@@ -70,7 +70,7 @@ namespace NeonHockey
         auto font = _fonts.find(fntType);
         if (font != _fonts.end())
         {
-            delete font->second;
+            //delete font->second;
             _fonts.erase(font);
         }
     }
@@ -92,19 +92,19 @@ namespace NeonHockey
             _clear = false;
     }
 
-    hgeSprite* ResourceManager::addSprite(GfxType gfxType, float x, float y, float w, float h)
+    std::shared_ptr<hgeSprite> ResourceManager::addSprite(GfxType gfxType, float x, float y, float w, float h)
     {
         auto foundKey = _textures.find(gfxType);
         if (foundKey == _textures.end())
             throw ResourceException(_hge->System_GetErrorMessage());  // TODO: not sure if we need to clean up all the resources here
 
-        _sprites[gfxType] = new hgeSprite(foundKey->second, x, y, w, h);
+        _sprites[gfxType] = std::make_shared<hgeSprite>(foundKey->second, x, y, w, h);
         if (_clear)
             _clear = false;
         return _sprites[gfxType];
     }
 
-    hgeSprite* ResourceManager::addSprite(GfxType gfxType, const SpriteInfo& spriteInfo)
+    std::shared_ptr<hgeSprite> ResourceManager::addSprite(GfxType gfxType, const SpriteInfo& spriteInfo)
     {
         return addSprite(gfxType, spriteInfo.xTexturePos(), spriteInfo.yTexturePos(), spriteInfo.width(), spriteInfo.height());
     }
@@ -123,7 +123,7 @@ namespace NeonHockey
 
     void ResourceManager::addFont(FontType fntType, std::string filename, bool mipMap)
     {
-        hgeFont *fnt = new hgeFont(filename.c_str(), mipMap);
+        auto fnt = std::make_shared<hgeFont>(filename.c_str(), mipMap);
         if (!fnt) //TODO: это никогда не сработает, даже если загрузка не прошла
             throw ResourceException(_hge->System_GetErrorMessage());
 
@@ -141,7 +141,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    hgeSprite* ResourceManager::getSprite(GfxType gfxType)
+    std::shared_ptr<hgeSprite> ResourceManager::getSprite(GfxType gfxType)
     {
         auto foundKey = _sprites.find(gfxType);
         if (foundKey == _sprites.end())
@@ -157,7 +157,7 @@ namespace NeonHockey
         return foundKey->second;
     }
 
-    hgeFont* ResourceManager::getFont(FontType fntType)
+    std::shared_ptr<hgeFont> ResourceManager::getFont(FontType fntType)
     {
         auto foundKey = _fonts.find(fntType);
         if (foundKey == _fonts.end())

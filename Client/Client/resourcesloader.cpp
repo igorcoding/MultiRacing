@@ -2,7 +2,7 @@
 
 namespace NeonHockey
 {    
-    ResourcesLoader::ResourcesLoader(ResourceManager* rm)
+    ResourcesLoader::ResourcesLoader(std::shared_ptr<ResourceManager> rm)
         : _rm(rm)
     {
         //REVIEW: надо ассоциировать с типом сразу

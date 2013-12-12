@@ -6,11 +6,10 @@
 namespace NeonHockey
     {
     //TODO: rewrite this completely
-    InputField::InputField(NeonHockey::ResourceManager* rm, int _id, float _xPos, float _yPos, const char *prevalue)
-        : hgeGUIObject()
+    InputField::InputField(std::shared_ptr<ResourceManager> rm, int _id, float _xPos, float _yPos, const char *prevalue)
+        : hgeGUIObject(),
+          _rm(rm)
     {
-        _rm = rm;
-
         id = _id;
         xPos = _xPos;
         yPos = _yPos;
@@ -41,10 +40,10 @@ namespace NeonHockey
 
     void InputField::Render(){
         //render background
-        hgeSprite *background = _rm->getSprite(GfxType::INPUTFIELD);
+        auto background = _rm->getSprite(GfxType::INPUTFIELD);
         background->Render(xPos - 12, yPos - 4);
 
-        hgeFont *font = _rm->getFont(FontType::SCORE);
+        auto font = _rm->getFont(FontType::SCORE);
 
         font->Render(xPos, yPos, HGETEXT_LEFT, content);
 

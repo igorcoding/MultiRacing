@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 #include "spriteinfo.h"
 
@@ -46,22 +47,22 @@ namespace NeonHockey
 
         void addTexture(GfxType gfxType, std::string filename, DWORD size = 0, bool bMipmap = false);
         void addTexture(GfxType gfxType, const char* filename, DWORD size = 0, bool bMipmap = false);
-        hgeSprite* addSprite(GfxType gfxType, float x, float y, float w, float h);
-        hgeSprite* addSprite(GfxType gfxType, const SpriteInfo& spriteInfo);
+        std::shared_ptr<hgeSprite> addSprite(GfxType gfxType, float x, float y, float w, float h);
+        std::shared_ptr<hgeSprite> addSprite(GfxType gfxType, const SpriteInfo& spriteInfo);
         void addSound(SoundType sndType, std::string filename);
         void addFont(FontType fntType, std::string filename, bool mipMap = false);
 
         HTEXTURE getTexture(GfxType gfxType);
-        hgeSprite* getSprite(GfxType gfxType);
+        std::shared_ptr<hgeSprite> getSprite(GfxType gfxType);
         HEFFECT getSound(SoundType sndType);
-        hgeFont *getFont(FontType fntType);
+        std::shared_ptr<hgeFont> getFont(FontType fntType);
 
     private:
         HGE* _hge;
         std::map<GfxType, HTEXTURE> _textures;
-        std::map<GfxType, hgeSprite*> _sprites;
+        std::map<GfxType, std::shared_ptr<hgeSprite>> _sprites;
         std::map<SoundType, HEFFECT> _sounds;
-        std::map<FontType, hgeFont*> _fonts;
+        std::map<FontType, std::shared_ptr<hgeFont>> _fonts;
 
         bool _clear;
     };

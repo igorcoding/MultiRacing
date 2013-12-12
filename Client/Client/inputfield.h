@@ -11,7 +11,7 @@ namespace NeonHockey
     class InputField : public hgeGUIObject
     {
     public:
-        InputField(ResourceManager* _rm, int _id, float xPos, float yPos, const char* prevalue);
+        InputField(std::shared_ptr<ResourceManager> _rm, int _id, float xPos, float yPos, const char* prevalue);
         ~InputField();
         virtual void Render();
         //void Render(float x, float y);
@@ -23,7 +23,7 @@ namespace NeonHockey
         char *getText();
 
     protected:
-        ResourceManager* _rm;
+        std::shared_ptr<ResourceManager> _rm;
 
         int caretposition;
         const char* caret;

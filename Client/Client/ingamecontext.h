@@ -29,7 +29,7 @@ namespace NeonHockey
     {
         using Puck_ptr = std::unique_ptr<Puck>;
     public:
-        InGameContext(HGE* hge, ResourceManager* rm, InGameContextData* data);
+        InGameContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<InGameContextData> data);
         ~InGameContext() {}
 
         void show();

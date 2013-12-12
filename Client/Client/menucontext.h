@@ -20,7 +20,7 @@ namespace NeonHockey
     class MenuContext : public IContext
     {
     public:
-        MenuContext(HGE* hge, ResourceManager* rm, MenuContextData* data);
+        MenuContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<MenuContextData> data);
         ~MenuContext();
 
         // IContext interface

@@ -2,6 +2,7 @@
 #define GFXOBJECT_H
 
 #include <hgesprite.h>
+#include <memory>
 
 namespace NeonHockey
 {
@@ -13,13 +14,13 @@ namespace NeonHockey
         float width;
         float height;
 
-        const hgeSprite* sprite() const;
+        const std::shared_ptr<hgeSprite> sprite() const;
 
     protected:
-        GfxObject(const hgeSprite* sprite, float w, float h);
+        GfxObject(const std::shared_ptr<hgeSprite>& sprite, float w, float h);
 
     private:
-        const hgeSprite* _sprite;
+        const std::shared_ptr<hgeSprite> _sprite;
     };
 
 }

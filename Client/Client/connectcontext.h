@@ -24,7 +24,7 @@ namespace NeonHockey
         };
 
     public:
-        ConnectContext(HGE* hge, ResourceManager* rm, ConnectContextData* data);
+        ConnectContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<ConnectContextData> data);
         ~ConnectContext();
 
         // IContext interface
