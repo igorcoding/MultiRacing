@@ -13,7 +13,9 @@ public:
     virtual void setLimit(float limit);
     virtual void start(float limit);
     virtual void stop();
+
     virtual bool isStarted() const;
+    virtual float elapsed() const;
 
     virtual void update(float dt) = 0;
 

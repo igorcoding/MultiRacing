@@ -8,6 +8,7 @@
 #include "puck.h"
 #include "player.h"
 #include "spriteinfo.h"
+#include "untiltimer.h"
 
 namespace NeonHockey
 {
@@ -38,11 +39,15 @@ namespace NeonHockey
 
 
     private:
+        void setUpTimers();
+
+        UntilTimer goalEffectTimer;
         std::vector<Player> _players;
         Puck_ptr _puck;
         const int lr_border;
         const int tb_border;
         const int gap_width;
+        int lastGoalSide = 0; //0 - left, 1 - right
     };
 
 }

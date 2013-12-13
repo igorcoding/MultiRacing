@@ -37,3 +37,8 @@ bool AbstractTimer::isStarted() const
     return _started;
 }
 
+float AbstractTimer::elapsed() const
+{
+    return _elapsed;
+}
+

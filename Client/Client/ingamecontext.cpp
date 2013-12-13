@@ -11,7 +11,7 @@ namespace NeonHockey
           tb_border(30),
           gap_width(200),
           _players(2),
-          _puck(nullptr)
+          _puck(nullptr) //REVIEW: move to header
     {
         auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
@@ -37,9 +37,30 @@ namespace NeonHockey
         _players[data->currentPlayerId] = std::move(p0);
         _players[!data->currentPlayerId] = std::move(p1);
 
+        setUpTimers();
+
         Client::getInstance().getPaddlePos(_players[data->currentPlayerId].paddle()->x, _players[data->currentPlayerId].paddle()->y);
         Client::getInstance().getEnemyPaddlePos(_players[!data->currentPlayerId].paddle()->x, _players[!data->currentPlayerId].paddle()->y);
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
+    }
+
+    void InGameContext::setUpTimers()
+    {
+        goalEffectTimer.setHandler([this](float dt)
+        {
+            auto goalFont = _rm->getFont(FontType::SCORE);
+
+            //TODO: GOAL string should appear on 'goaler' side
+            const char *goalStr = "GOAL";
+            auto strWidth = goalFont->GetStringWidth(goalStr);
+
+            goalFont->Render(_data->screenWidth/2 - strWidth/2,
+                             _data->screenHeight/2,
+                             HGETEXT_LEFT,
+                             goalStr);
+        });
+
+        goalEffectTimer.setLimit(5*1000);
     }
 
     void InGameContext::show()
@@ -135,6 +156,8 @@ namespace NeonHockey
     {
         try
         {
+            float dt = _hge->Timer_GetDelta();
+
             auto bgSprite = _rm->getSprite(GfxType::BACKGROUND);
             auto puckSprite = _rm->getSprite(GfxType::PUCK);
             auto paddleSprite = _rm->getSprite(GfxType::PADDLE);
@@ -163,6 +186,8 @@ namespace NeonHockey
             float y = fnt->GetHeight() / 2;
 
             fnt->Render(x, y, HGETEXT_LEFT, scoresStr.str().c_str());
+
+            goalEffectTimer.update(dt);
         }
         catch(std::exception &e)
         {

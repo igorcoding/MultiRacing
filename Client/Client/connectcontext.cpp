@@ -67,12 +67,12 @@ namespace NeonHockey
                 bool connected = connectionResult.get();
                 if (connected)
                 {
-                    std::cout << "connected\n";
+                    std::cout << "Connected" << std::endl;
                     status = ConnectionStatus::WaitingOpponent;
                 }
                 else
                 {
-                    std::cout << "failed to connect. Reenter ip.\n";
+                    std::cout << "Failed to connect. Please, reenter IP" << std::endl;
                     status = ConnectionStatus::Default;
                 }
             }
@@ -80,7 +80,7 @@ namespace NeonHockey
         case ConnectionStatus::WaitingOpponent:
             if(Client::getInstance().isGameStarted())
             {
-                std::cout << "waiting finished. game started.";
+                std::cout << "Waiting finished. Game started" << std::endl;
                 auto playerId = Client::getInstance().id();
                 auto opponentName = Client::getInstance().getOpponentName();
                 return IContextReturnData(Context::InGameContext,
