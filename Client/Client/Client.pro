@@ -18,7 +18,10 @@ SOURCES += main.cpp \
     menuitem.cpp \
     menucontext.cpp \
     inputfield.cpp \
-    connectcontext.cpp
+    connectcontext.cpp \
+    delaytimer.cpp \
+    untiltimer.cpp \
+    abstracttimer.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -38,7 +41,10 @@ HEADERS += \
     menuitem.h \
     menucontext.h \
     inputfield.h \
-    connectcontext.h
+    connectcontext.h \
+    delaytimer.h \
+    untiltimer.h \
+    abstracttimer.h
 
 
 QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
