@@ -1,0 +1,19 @@
+#ifndef TIMER_H
+#define TIMER_H
+
+#include <functional>
+
+class AbstractTimer
+{
+public:
+    AbstractTimer() = default;
+    virtual ~AbstractTimer() = default;
+    
+    void setHandler(std::function<void(int)> handler);
+    void update(float dt) = 0;
+    
+private:
+    std::function<void(int)> _handler;
+};
+
+#endif // TIMER_H
