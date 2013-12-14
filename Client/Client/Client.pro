@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     delaytimer.cpp \
     untiltimer.cpp \
     abstracttimer.cpp \
-    timerfactory.cpp
+    timerfactory.cpp \
+    gameovercontext.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -46,7 +47,8 @@ HEADERS += \
     delaytimer.h \
     untiltimer.h \
     abstracttimer.h \
-    timerfactory.h
+    timerfactory.h \
+    gameovercontext.h
 
 
 QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs

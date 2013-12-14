@@ -13,7 +13,7 @@ namespace NeonHockey
         MenuContext,
         ConnectContext,
         InGameContext,
-        GameFinishedContext,
+        GameOverContext,
         GameErrorContext
     };
 

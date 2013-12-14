@@ -158,7 +158,7 @@ namespace NeonHockey
             case Context::InGameContext:
                 _contexts[c] = new InGameContext(_hge, _resources, std::dynamic_pointer_cast<InGameContextData>(contextData));
                 break;
-            case Context::GameFinishedContext:
+            case Context::GameOverContext:
                 break;
             case Context::GameErrorContext:
                 break;
