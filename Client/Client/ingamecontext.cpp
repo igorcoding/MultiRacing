@@ -49,25 +49,7 @@ namespace NeonHockey
         _players[data->currentPlayerId].paddle()->setInitPos(paddle_x, paddle_y);
         _players[!data->currentPlayerId].paddle()->setInitPos(enemy_x, enemy_y);
         _puck->setInitPos(puck_x, puck_y);
-    }
 
-    void InGameContext::setUpTimers()
-    {
-        goalEffectTimer.setHandler([this](float dt)
-        {
-            auto goalFont = _rm->getFont(FontType::SCORE);
-
-            //TODO: GOAL string should appear on 'goaler' side
-            const char *goalStr = "GOAL";
-            auto strWidth = goalFont->GetStringWidth(goalStr);
-
-            goalFont->Render(_data->screenWidth/2 - strWidth/2,
-                             _data->screenHeight/2,
-                             HGETEXT_LEFT,
-                             goalStr);
-        });
-
-        goalEffectTimer.setLimit(5*1000);
     }
 
     void InGameContext::show()
@@ -77,6 +59,8 @@ namespace NeonHockey
 
     IContextReturnData InGameContext::frameFunc()
     {
+        float dt = _hge->Timer_GetDelta();
+
         auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
         Player& currentPlayer = _players[data->currentPlayerId];
@@ -125,6 +109,31 @@ namespace NeonHockey
                 mouse_x = std::max(mouse_x, data->screenWidth / 2 + currentPlayer.paddle()->width / 2);
                 break;
             }
+
+            int playerId = 0;
+            int absoluteScore = 0;
+            if(Client::getInstance().getGoal(playerId, absoluteScore))
+            {
+                timers.createUntilTimer(
+                    TimerFactory::InvokeType::OnRender,
+                    3*1000,
+                    true,
+                    [this](float dt)
+                    {
+                        auto goalFont = _rm->getFont(FontType::SCORE);
+
+                        //TODO: GOAL string should appear on 'goaler' side
+                        const char *goalStr = "GOAL";
+                        auto strWidth = goalFont->GetStringWidth(goalStr);
+
+                        goalFont->Render(_data->screenWidth/2 - strWidth/2,
+                                         _data->screenHeight/2,
+                                         HGETEXT_LEFT,
+                                         goalStr);
+                    });
+            }
+
+            timers.render(dt);
 
             currentPlayer.paddle()->x = mouse_x;
             currentPlayer.paddle()->y = mouse_y;
@@ -199,7 +208,7 @@ namespace NeonHockey
 
             fnt->Render(x, y, HGETEXT_LEFT, scoresStr.str().c_str());
 
-            goalEffectTimer.update(dt);
+            timers.update(dt);
         }
         catch(std::exception &e)
         {

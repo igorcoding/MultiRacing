@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     connectcontext.cpp \
     delaytimer.cpp \
     untiltimer.cpp \
-    abstracttimer.cpp
+    abstracttimer.cpp \
+    timerfactory.cpp
 
 HEADERS += \
     spriteinfo.h \
@@ -44,7 +45,8 @@ HEADERS += \
     connectcontext.h \
     delaytimer.h \
     untiltimer.h \
-    abstracttimer.h
+    abstracttimer.h \
+    timerfactory.h
 
 
 QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
