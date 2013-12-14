@@ -37,8 +37,6 @@ namespace NeonHockey
         _players[data->currentPlayerId] = std::move(p0);
         _players[!data->currentPlayerId] = std::move(p1);
 
-        setUpTimers();
-
         float paddle_x = -1, paddle_y = -1;
         float enemy_x = -1, enemy_y = -1;
         float puck_x = -1, puck_y = -1;
