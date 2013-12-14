@@ -8,7 +8,7 @@
 #include "puck.h"
 #include "player.h"
 #include "spriteinfo.h"
-#include "untiltimer.h"
+#include "timerfactory.h"
 
 namespace NeonHockey
 {
@@ -38,10 +38,9 @@ namespace NeonHockey
         void renderFunc();
 
 
-    private:
-        void setUpTimers();
+    private:        
+        TimerFactory timers;
 
-        UntilTimer goalEffectTimer;
         std::vector<Player> _players;
         Puck_ptr _puck;
         const int lr_border;
