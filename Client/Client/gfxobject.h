@@ -13,6 +13,11 @@ namespace NeonHockey
         float y;
         float width;
         float height;
+        float initX;
+        float initY;
+
+        void setInitPos(float x, float y);
+        void resetToInit();
 
         const std::shared_ptr<hgeSprite> sprite() const;
 

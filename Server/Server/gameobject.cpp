@@ -16,6 +16,11 @@ void GameObject::setOldPos(float x, float y)
     oldPos.y(y);
 }
 
+void GameObject::setOldPos()
+{
+    setOldPos(pos.x(), pos.y());
+}
+
 void GameObject::setPos(float x, float y)
 {
     oldPos = pos;
@@ -31,15 +36,20 @@ void GameObject::setSpeed(float x, float y)
 {
     speed.x(x);
     speed.y(y);
-
-    //const float friction = 2.0f;
-    //setAccel(-x / friction, -y / friction);
 }
 
 void GameObject::setAccel(float x, float y)
 {
     accel.x(x);
     accel.y(y);
+}
+
+void GameObject::reset()
+{
+    pos.reset();
+    oldPos.reset();
+    speed.reset();
+
 }
 
 

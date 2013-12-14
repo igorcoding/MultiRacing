@@ -34,10 +34,14 @@ private:
     Logic(const Logic& root) = delete;
     Logic& operator=(const Logic&) = delete;
 
-    bool frameFunc(double dt);
     void setInitialCoords();
-    float distance(int x1, int y1, int x2, int y2);
-    void handleCollision(Player& p, float d, double dt);
+    bool frameFunc(double dt);
+    void checkCollisions();
+    void handleCollision(Player& p);
+    void handleWallCollisionsAndGoal();
+    bool checkGoal(float x_min, float x_max);
+    void handleGoal(int goaler);
+
 
     std::vector<Player> _players;
     Puck _puck;

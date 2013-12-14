@@ -7,11 +7,11 @@ namespace NeonHockey
 {
     InGameContext::InGameContext(HGE *hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<InGameContextData> gameData)
         : IContext(hge, rm, gameData),
+          _players(2),
+          _puck(nullptr),
           lr_border(26),
           tb_border(30),
-          gap_width(200),
-          _players(2),
-          _puck(nullptr) //REVIEW: move to header
+          gap_width(200)
     {
         auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
@@ -39,9 +39,16 @@ namespace NeonHockey
 
         setUpTimers();
 
-        Client::getInstance().getPaddlePos(_players[data->currentPlayerId].paddle()->x, _players[data->currentPlayerId].paddle()->y);
-        Client::getInstance().getEnemyPaddlePos(_players[!data->currentPlayerId].paddle()->x, _players[!data->currentPlayerId].paddle()->y);
-        Client::getInstance().getPuckPos(_puck->x, _puck->y);
+        float paddle_x = -1, paddle_y = -1;
+        float enemy_x = -1, enemy_y = -1;
+        float puck_x = -1, puck_y = -1;
+        Client::getInstance().getPaddlePos(paddle_x, paddle_y);
+        Client::getInstance().getEnemyPaddlePos(enemy_x, enemy_y);
+        Client::getInstance().getPuckPos(puck_x, puck_y);
+
+        _players[data->currentPlayerId].paddle()->setInitPos(paddle_x, paddle_y);
+        _players[!data->currentPlayerId].paddle()->setInitPos(enemy_x, enemy_y);
+        _puck->setInitPos(puck_x, puck_y);
     }
 
     void InGameContext::setUpTimers()
@@ -119,16 +126,12 @@ namespace NeonHockey
                 break;
             }
 
-
-
-
-
             currentPlayer.paddle()->x = mouse_x;
             currentPlayer.paddle()->y = mouse_y;
-            Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+            //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         }
-        //Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+        Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
 
         //update coords from server
         Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
@@ -136,14 +139,23 @@ namespace NeonHockey
         Client::getInstance().getPuckPos(_puck->x, _puck->y);
 
 
-
         //sounds system
 
-        //test for collisions
+        // test for collisions
         int x = 0;
         int force = 0;
         //if(Client::getInstance().getCollision(x, force))
         //    playSound(SoundType::COLLISION, x, force);
+
+
+        // test for a goal
+        int playerId = -1;
+        int points = -1;
+        if (Client::getInstance().getGoal(playerId, points))
+        {
+            handleGoal(playerId, points);
+            Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+        }
 
         //some kind of error occured?
         if(Client::getInstance().shouldStop())
@@ -201,6 +213,16 @@ namespace NeonHockey
 
 
         //return false;
+    }
+
+    void InGameContext::handleGoal(int playerId, int points)
+    {
+        // play a goal sound
+
+        _players[playerId].setPoints(points);
+        for (auto& p : _players)
+            p.paddle()->resetToInit();
+        //_puck->resetToInit();
     }
 
 

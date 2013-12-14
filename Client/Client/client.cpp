@@ -111,12 +111,12 @@ void Client::workerThreadProc()
 
 void Client::sendPaddlePos(float x, float y) //REVIEW: -_-
 {
-    if(x != _cachedPos.x || y != _cachedPos.y)
-    {
+    //if(x != _cachedPos.x || y != _cachedPos.y)
+    //{
         _cachedPos.x = x;
         _cachedPos.y = y;
         _cachedPos.isReady = true;
-    }
+    //}
 }
 
 void Client::getEnemyPaddlePos(float &x, float &y) const
@@ -276,8 +276,6 @@ void Client::listenerThreadProc()
 
         int messageType = 0;
         _is >> messageType;
-
-        std::cout << messageType << std::endl;
 
         switch(messageType)
         {

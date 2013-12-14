@@ -26,6 +26,7 @@ namespace NeonHockey
 
         const std::string& getName() const;
         BoardSide::BoardSide getSide() const;
+        void setPoints(int points);
         int getPoints() const;
         Paddle* paddle() const;
 

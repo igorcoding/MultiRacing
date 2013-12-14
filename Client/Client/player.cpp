@@ -28,6 +28,11 @@ namespace NeonHockey
         return _side;
     }
 
+    void Player::setPoints(int points)
+    {
+        _points = points;
+    }
+
     int Player::getPoints() const
     {
         return _points;

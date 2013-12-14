@@ -48,6 +48,8 @@ namespace NeonHockey
         const int tb_border;
         const int gap_width;
         int lastGoalSide = 0; //0 - left, 1 - right
+
+        void handleGoal(int playerId, int points);
     };
 
 }

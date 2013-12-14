@@ -67,15 +67,50 @@ void Logic::stop(Logic::StopReason reason)
     _shouldStop = true;
 }
 
+void Logic::setInitialCoords()
+{
+    // initial rendering values
+    const float x_offset = 80.0f;
+
+    _puck.reset();
+    auto puck_x = defaultScreenWidth / 2;
+    auto puck_y = defaultScreenHeight / 2;
+    _puck.setPos(puck_x, puck_y);
+    _puck.setOldPos(puck_x, puck_y);
+    //_puck.setSpeed(-1, 0);
+
+    for (size_t i = 0; i < _players.size(); ++i)
+    {
+        _players[i].reset();
+        auto player_x = fabs((int) _players[i].side * defaultScreenWidth - x_offset);
+        auto player_y = defaultScreenHeight / 2;
+        _players[i].setPos(player_x, player_y);
+        _players[i].setOldPos(player_x, player_y);
+    }
+    _initialized = true;
+}
 
 bool Logic::frameFunc(double dt)
 {
     for (auto& p : _players)
-    {
         p.setSpeed(p.dx() / dt, p.dy() / dt);
-    }
 
-    //collisions with players
+    _puck.setOldPos();
+    checkCollisions();
+
+    float friction = 1.0f;
+    _puck.pos += _puck.speed;
+    auto normalizedPuckSpeed = math::normalize(puck().speed);
+    //_puck.speed += math::Vector2D(-friction * normalizedPuckSpeed.x(), -friction * normalizedPuckSpeed.y());
+
+    handleWallCollisionsAndGoal();
+
+    Server::getInstance().setPuckPos(_puck.pos.x(), _puck.pos.y());
+    return false;
+}
+
+void Logic::checkCollisions()
+{
     Player& firstPlayer = _players[0];
     Player& secondPlayer = _players[1];
 
@@ -87,97 +122,113 @@ bool Logic::frameFunc(double dt)
     if (collided_first)
     {
         std::cout << "collided first\n";
-        handleCollision(firstPlayer, d1, dt);
+        handleCollision(firstPlayer);
     }
     if (collided_second)
     {
         std::cout << "collided second\n";
-        handleCollision(secondPlayer, d2, dt);
+        handleCollision(secondPlayer);
     }
+}
 
+void Logic::handleCollision(Player& p)
+{
+    auto x = _puck.pos - _puck.oldPos;
+    _puck.pos -= x;
 
-    float friction = 1.0f;
-    _puck.pos += _puck.speed;
-    auto normalizedPuckSpeed = math::normalize(puck().speed);
-    _puck.speed += math::Vector2D(-friction * normalizedPuckSpeed.x(), -friction * normalizedPuckSpeed.y());
+    if (p.speed == math::Vector2D::Zero)
+    {
+        auto d_vec_norm = (p.pos - _puck.pos).normalize();
+        auto n_vec_norm = math::normalize(math::normal(d_vec_norm));
+        auto I = math::Vector2D(n_vec_norm.x(), d_vec_norm.x()).normalize();
+        auto J = math::Vector2D(n_vec_norm.y(), d_vec_norm.y()).normalize();
 
+        auto u_prime = math::Vector2D(math::proj(_puck.speed, n_vec_norm),
+                                      -math::proj(_puck.speed, d_vec_norm));
+        auto new_speed_norm = math::Vector2D(math::proj(u_prime, I),
+                                             math::proj(u_prime, J)).normalize();
 
+        _puck.speed = _puck.speed.length() * new_speed_norm;
+    }
+    else
+    {
+        auto speedLimit = 50.0;
+        _puck.speed = std::min((1.0/80.0) * p.speed, speedLimit * p.speed);
+    }
+    Server::getInstance().setCollision(_puck.pos.x(), _puck.speed.length()); //at, volume
+}
+
+void Logic::handleWallCollisionsAndGoal()
+{
     int lr_border = 40;
     int tb_border = 40;
+
     auto x_max = defaultScreenWidth - lr_border - _puck.radius / 2;
     auto x_min = _puck.radius / 2 + lr_border;
     auto y_max = defaultScreenHeight - tb_border - _puck.radius/ 2;
     auto y_min = _puck.radius / 2 + tb_border;
 
 
-    if (_puck.pos.x() > x_max) {
-        std::cout << "x > max\n";
-        _puck.pos.x(x_max - (_puck.pos.x() - x_max));
-        _puck.speed.x(-_puck.speed.x());
-    }
-    if (_puck.pos.x() < x_min) {
-        std::cout << "x < min\n";
-        _puck.pos.x(x_min + x_min - _puck.pos.x());
-        _puck.speed.x(-_puck.speed.x());
-    }
-    if (_puck.pos.y() > y_max) {
-        std::cout << "y > max\n";
-        _puck.pos.y(y_max - (_puck.pos.y() - y_max));
-        _puck.speed.y(-_puck.speed.y());
-    }
-    if (_puck.pos.y() < y_min) {
-        std::cout << "y < min\n";
-        _puck.pos.y(y_min + y_min - _puck.pos.y());
-        _puck.speed.y(-_puck.speed.y());
-    }
+    bool goal = checkGoal(x_min, x_max);
 
-
-    Server::getInstance().setPuckPos(_puck.pos.x(), _puck.pos.y());
-
-    return false;
-}
-
-void Logic::setInitialCoords()
-{
-    // initial rendering values
-    const float x_offset = 80.0f;
-
-    auto puck_x = defaultScreenWidth / 2 - 150;
-    auto puck_y = defaultScreenHeight / 2;
-    _puck.setPos(puck_x, puck_y);
-    _puck.setOldPos(puck_x, puck_y);
-
-    for (size_t i = 0; i < _players.size(); ++i)
+    if (!goal)
     {
-        auto player_x = fabs((int) _players[i].side * defaultScreenWidth - x_offset);
-        auto player_y = defaultScreenHeight / 2;
-        _players[i].setOldPos(player_x, player_y);
-        _players[i].setPos(player_x, player_y);
+        if (_puck.pos.x() > x_max) {
+            _puck.pos.x(x_max - (_puck.pos.x() - x_max));
+            _puck.speed.x(-_puck.speed.x());
+        }
+        if (_puck.pos.x() < x_min) {
+            _puck.pos.x(x_min + x_min - _puck.pos.x());
+            _puck.speed.x(-_puck.speed.x());
+        }
+        if (_puck.pos.y() > y_max) {
+            _puck.pos.y(y_max - (_puck.pos.y() - y_max));
+            _puck.speed.y(-_puck.speed.y());
+        }
+        if (_puck.pos.y() < y_min) {
+            _puck.pos.y(y_min + y_min - _puck.pos.y());
+            _puck.speed.y(-_puck.speed.y());
+        }
     }
-    _initialized = true;
 }
 
-void Logic::handleCollision(Player& p, float d, double dt)
+bool Logic::checkGoal(float x_min, float x_max)
 {
-    /*int k = 3; // M/m
-    auto p_v_sqr = p.vx * p.vx + p.vy + p.vy;
-    auto old_puck_v_sqr = _puck.vx * _puck.vx + _puck.vy + _puck.vy;
-    auto puck_v = std::sqrt(k * p_v_sqr + old_puck_v_sqr);
+    int gap_width = 200;
+    bool goal = false;
+    if (_puck.pos.y() >= gap_width + _puck.radius / 2
+            && _puck.pos.y() <= (defaultScreenHeight + gap_width) / 2 - _puck.radius / 2)  // if in goal section
+    {
+        if (_puck.pos.x() > x_max) {
+            goal = true;
+            handleGoal(0);
+        }
+        if (_puck.pos.x() < x_min) {
+            goal = true;
+            handleGoal(1);
+        }
+    }
+    return goal;
+}
 
-    auto cos_gamma = (k * p.vx + _puck.vx) / puck_v;
-    auto sin_gamma = (k * p.vy + _puck.vy) / puck_v;
-
-    _puck.vx = puck_v * cos_gamma;
-    _puck.vy = puck_v * sin_gamma;
-*/
-
-    float delta = _puck.radius + p.radius - d;
-    auto moving = delta * math::normalize(p.speed);
-    _puck.pos += moving;
-
-    auto speedLimit = 100.0;
-    _puck.speed = (1.0/80.0) * p.speed;
-    Server::getInstance().setCollision(_puck.pos.x(), _puck.speed.length()); //at, volume
+void Logic::handleGoal(int goaler)
+{
+    float circleRadius = 100.0f;
+    float side = goaler;
+    if (goaler == 0)
+    {
+        std::cout << "Left player goaled\n";
+        side = +1.0f;
+    }
+    else
+    {
+        std::cout << "Right player goaled\n";
+        side = -1.0f;
+    }
+    _players[goaler].points += 1;
+    setInitialCoords();
+    _puck.pos.x(_puck.pos.x() + side * circleRadius);
+    Server::getInstance().setGoal(goaler, player(goaler).points);
 }
 
 bool Logic::shouldStop() const

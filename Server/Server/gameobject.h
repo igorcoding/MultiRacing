@@ -16,9 +16,12 @@ public:
     int radius;
 
     void setOldPos(float x, float y);
+    void setOldPos();
     void setPos(float x, float y);
     void setSpeed(float x, float y);
     void setAccel(float x, float y);
+
+    void reset();
 
     float dx();
     float dy();
