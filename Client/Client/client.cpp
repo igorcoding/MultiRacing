@@ -109,14 +109,14 @@ void Client::workerThreadProc()
     }
 }
 
-void Client::sendPaddlePos(float x, float y) //REVIEW: -_-
+void Client::sendPaddlePos(float x, float y, bool force)
 {
-    //if(x != _cachedPos.x || y != _cachedPos.y)
-    //{
+    if(!(x == _cachedPos.x && y == _cachedPos.y) || force)
+    {
         _cachedPos.x = x;
         _cachedPos.y = y;
         _cachedPos.isReady = true;
-    //}
+    }
 }
 
 void Client::getEnemyPaddlePos(float &x, float &y) const

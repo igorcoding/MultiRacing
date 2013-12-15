@@ -9,6 +9,7 @@
 #include "player.h"
 #include "spriteinfo.h"
 #include "timerfactory.h"
+#include "delaytimer.h"
 
 namespace NeonHockey
 {
@@ -39,15 +40,18 @@ namespace NeonHockey
 
 
     private:        
-        TimerFactory timers;
-
         std::vector<Player> _players;
         Puck_ptr _puck;
         const int lr_border;
         const int tb_border;
         const int gap_width;
         int lastGoalSide = 0; //0 - left, 1 - right
+        TimerFactory timers;
+        DelayTimer timeoutTimer;
 
+        void checkAllowedBounds(float& mouse_x, float& mouse_y);
+        void checkCollisions();
+        void checkGoal();
         void handleGoal(int playerId, int points);
     };
 

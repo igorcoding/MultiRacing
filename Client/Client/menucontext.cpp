@@ -13,7 +13,7 @@ namespace NeonHockey
         DWORD shadowColor = ARGB(200, 255, 0, 0);
         DWORD itemColor = ARGB(255, 0, 255, 0);
 
-        items.push_back(std::make_pair("Connect!", "Connect to dedicated server"));
+        items.push_back(std::make_pair("Connect", "Connect to dedicated server"));
         items.push_back(std::make_pair("About", "Information about NeonHockey"));
         items.push_back(std::make_pair("Exit", "Exit game"));
 

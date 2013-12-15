@@ -11,6 +11,7 @@ public:
 
     virtual void setHandler(std::function<void(float)> handler);
     virtual void setLimit(float limit);
+    virtual void start();
     virtual void start(float limit);
     virtual void stop();
 

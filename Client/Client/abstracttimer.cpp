@@ -18,6 +18,11 @@ void AbstractTimer::setLimit(float limit)
     _limit = limit;
 }
 
+void AbstractTimer::start()
+{
+    start(_limit);
+}
+
 void AbstractTimer::start(float limit)
 {
     _started = true;

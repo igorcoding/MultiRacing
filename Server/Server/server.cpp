@@ -85,8 +85,8 @@ void Server::start()
 
         for(auto &client: clients)
         {
-            _cachedPuckPos.x = logic.puck().x;
-            _cachedPuckPos.y = logic.puck().y;
+            _cachedPuckPos.x = logic.puck().pos.x();
+            _cachedPuckPos.y = logic.puck().pos.y();
 
             client.socket.send(
                         boost::asio::buffer(
@@ -94,10 +94,10 @@ void Server::start()
                             clients[!client.id].name + " " +
                             std::to_string(_cachedPuckPos.x) + " " +
                             std::to_string(_cachedPuckPos.y) + " " +
-                            std::to_string(logic.player(0).x) + " " +
-                            std::to_string(logic.player(0).y) + " " +
-                            std::to_string(logic.player(1).x) + " " +
-                            std::to_string(logic.player(1).y) + "\n"));
+                            std::to_string(logic.player(0).pos.x()) + " " +
+                            std::to_string(logic.player(0).pos.y()) + " " +
+                            std::to_string(logic.player(1).pos.x()) + " " +
+                            std::to_string(logic.player(1).pos.y()) + "\n"));
 
             //start listener thread
             client.thread = std::thread(

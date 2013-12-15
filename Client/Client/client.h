@@ -17,7 +17,7 @@ public:
     bool connect(std::string ip, int port, std::string playerName);
 
     //sets Data's values and isReady flag
-    void sendPaddlePos(float x, float y);
+    void sendPaddlePos(float x, float y, bool force = false);
 
     //immediately returns cached coords
     void getEnemyPaddlePos(float &x, float &y) const;

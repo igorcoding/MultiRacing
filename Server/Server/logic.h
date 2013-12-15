@@ -39,7 +39,7 @@ private:
     void checkCollisions();
     void handleCollision(Player& p);
     void handleWallCollisionsAndGoal();
-    bool checkGoal(float x_min, float x_max);
+    bool checkGoal();
     void handleGoal(int goaler);
 
 

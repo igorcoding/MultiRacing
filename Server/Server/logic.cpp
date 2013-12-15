@@ -152,8 +152,8 @@ void Logic::handleCollision(Player& p)
     }
     else
     {
-        auto speedLimit = 50.0;
-        _puck.speed = std::min((1.0/80.0) * p.speed, speedLimit * p.speed);
+        auto speedLimit = 10.0;
+        _puck.speed = std::min(p.speed, speedLimit * math::normalize(p.speed));
     }
     Server::getInstance().setCollision(_puck.pos.x(), _puck.speed.length()); //at, volume
 }
@@ -169,7 +169,7 @@ void Logic::handleWallCollisionsAndGoal()
     auto y_min = _puck.radius / 2 + tb_border;
 
 
-    bool goal = checkGoal(x_min, x_max);
+    bool goal = checkGoal();
 
     if (!goal)
     {
@@ -192,23 +192,23 @@ void Logic::handleWallCollisionsAndGoal()
     }
 }
 
-bool Logic::checkGoal(float x_min, float x_max)
+bool Logic::checkGoal()
 {
     int gap_width = 200;
-    bool goal = false;
-    if (_puck.pos.y() >= gap_width + _puck.radius / 2
-            && _puck.pos.y() <= (defaultScreenHeight + gap_width) / 2 - _puck.radius / 2)  // if in goal section
+    if (_puck.pos.y() >= gap_width + _puck.radius
+            && _puck.pos.y() <= (defaultScreenHeight + gap_width) / 2 - _puck.radius)  // if in goal section
     {
+        auto x_min = 0;
+        auto x_max = defaultScreenWidth;
         if (_puck.pos.x() > x_max) {
-            goal = true;
             handleGoal(0);
         }
         if (_puck.pos.x() < x_min) {
-            goal = true;
             handleGoal(1);
         }
+        return true;
     }
-    return goal;
+    return false;
 }
 
 void Logic::handleGoal(int goaler)

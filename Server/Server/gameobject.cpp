@@ -4,7 +4,6 @@ GameObject::GameObject(float _x, float _y, int _radius)
     : oldPos(_x, _y),
       pos(_x, _y),
       speed(),
-      accel(),
       radius(_radius)
 {
 
@@ -27,21 +26,12 @@ void GameObject::setPos(float x, float y)
 
     pos.x(x);
     pos.y(y);
-
-    this->x = x;
-    this->y = y;
 }
 
 void GameObject::setSpeed(float x, float y)
 {
     speed.x(x);
     speed.y(y);
-}
-
-void GameObject::setAccel(float x, float y)
-{
-    accel.x(x);
-    accel.y(y);
 }
 
 void GameObject::reset()
