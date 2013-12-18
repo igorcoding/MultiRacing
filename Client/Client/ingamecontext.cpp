@@ -1,4 +1,5 @@
 #include <sstream>
+#include "menucontext.h"
 #include "ingamecontext.h"
 #include "gameovercontext.h"
 #include "client.h"
@@ -68,50 +69,57 @@ namespace NeonHockey
 
     IContextReturnData InGameContext::frameFunc()
     {
-        float dt = _hge->Timer_GetDelta();
-        auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
-
-        Player& currentPlayer = _players[data->currentPlayerId];
-        Player& enemyPlayer = _players[!data->currentPlayerId];
-
-        if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
+        try
         {
-            timeoutTimer.stop();
-            float mouse_x = 0;
-            float mouse_y = 0;
-            _hge->Input_GetMousePos(&mouse_x, &mouse_y);
-            checkAllowedBounds(mouse_x, mouse_y);
+            float dt = _hge->Timer_GetDelta();
+            auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
-            currentPlayer.paddle()->x = mouse_x;
-            currentPlayer.paddle()->y = mouse_y;
-            Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
-            timeoutTimer.start();
+            Player& currentPlayer = _players[data->currentPlayerId];
+            Player& enemyPlayer = _players[!data->currentPlayerId];
+
+            if (_hge->Input_IsMouseOver() && _hge->Input_GetKeyState(HGEK_LBUTTON))
+            {
+                timeoutTimer.stop();
+                float mouse_x = 0;
+                float mouse_y = 0;
+                _hge->Input_GetMousePos(&mouse_x, &mouse_y);
+                checkAllowedBounds(mouse_x, mouse_y);
+
+                currentPlayer.paddle()->x = mouse_x;
+                currentPlayer.paddle()->y = mouse_y;
+                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+                timeoutTimer.start();
+            }
+            Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
+            Client::getInstance().getPuckPos(_puck->x, _puck->y);
+
+            checkCollisions();
+            checkGoal();
+
+            timers.update(dt);
+            timeoutTimer.update(dt);
+
+            if(Client::getInstance().isGameOver())
+            {
+                bool win = Client::getInstance().getWinnerId() == data->currentPlayerId;
+
+                return IContextReturnData(Context::GameOverContext,
+                            std::make_shared<GameOverContextData>(
+                                              _data->screenWidth,
+                                              _data->screenHeight,
+                                              win,
+                                              &_players[0], &_players[1]));
+            }
+
+            if(Client::getInstance().shouldStop())
+                return IContextReturnData(Context::MenuContext, std::make_shared<MenuContextData>(_data->screenWidth, _data->screenHeight));
+
+            return IContextReturnData(Context::InGameContext, data);
         }
-        Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
-        Client::getInstance().getPuckPos(_puck->x, _puck->y);
-
-        checkCollisions();
-        checkGoal();
-
-        timers.update(dt);
-        timeoutTimer.update(dt);
-
-        if(Client::getInstance().isGameOver())
+        catch (std::exception& e)
         {
-            bool win = Client::getInstance().getWinnerId() == data->currentPlayerId;
-
-            return IContextReturnData(Context::GameOverContext,
-                        std::make_shared<GameOverContextData>(
-                                          _data->screenWidth,
-                                          _data->screenHeight,
-                                          win,
-                                          &_players[0], &_players[1]));
+            return IContextReturnData(Context::MenuContext, std::make_shared<MenuContextData>(_data->screenWidth, _data->screenHeight));
         }
-
-        if(Client::getInstance().shouldStop())
-            return IContextReturnData(Context::GameErrorContext, data);
-
-        return IContextReturnData(Context::InGameContext, data);
     }
 
     void InGameContext::renderFunc()
