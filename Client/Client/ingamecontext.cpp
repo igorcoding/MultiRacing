@@ -112,13 +112,13 @@ namespace NeonHockey
             }
 
             if(Client::getInstance().shouldStop())
-                return IContextReturnData(Context::MenuContext, std::make_shared<MenuContextData>(_data->screenWidth, _data->screenHeight));
+                return IContextReturnData(Context::GameErrorContext, nullptr);
 
             return IContextReturnData(Context::InGameContext, data);
         }
         catch (std::exception& e)
         {
-            return IContextReturnData(Context::MenuContext, std::make_shared<MenuContextData>(_data->screenWidth, _data->screenHeight));
+            return IContextReturnData(Context::GameErrorContext, nullptr);
         }
     }
 

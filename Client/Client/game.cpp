@@ -39,9 +39,7 @@ namespace NeonHockey
     void Game::endGame()
     {
         _resources->freeResources();
-        for (auto& context : _contexts)
-            delete context.second;
-        _currentContext = Context::NoContext;
+        cleanContexts();
 
         _hge->System_Shutdown();
         _hge->Release();
@@ -162,10 +160,11 @@ namespace NeonHockey
                 _contexts[c] = new GameOverContext(_hge, _resources, std::dynamic_pointer_cast<GameOverContextData>(contextData));
                 break;
             case Context::GameErrorContext:
-                break;
+                cleanContexts();
+                updateContext(Context::MenuContext, std::make_shared<MenuContextData>(screenWidth(), screenHeight()));
+                return;
             case Context::NoContext:
-                //endGame();
-                break;
+                return;
             default:
                 break;
             }
@@ -174,9 +173,17 @@ namespace NeonHockey
         {
             context->second->changeData(contextData);
         }
-        if (_currentContext != c && c != Context::NoContext)
+        if (_currentContext != c)
             Game::context(c)->show();
         _currentContext = c;
+    }
+
+    void Game::cleanContexts()
+    {
+        for (auto& context : _contexts)
+            delete context.second;
+        _contexts.clear();
+        _currentContext = Context::NoContext;
     }
 
     void Game::initOptions()

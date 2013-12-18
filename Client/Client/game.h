@@ -56,6 +56,7 @@ namespace NeonHockey
         static IContext* context(Context c);
         static IContext* currentContext();
         static void updateContext(Context c, std::shared_ptr<IContextData> contextData);
+        static void cleanContexts();
 
 
         static void initOptions();
