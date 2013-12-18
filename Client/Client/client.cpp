@@ -48,7 +48,9 @@ bool Client::connect(std::string ip, int port, std::string playerName)
     }
     catch(boost::system::system_error& e)
     {
+        _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
         _socket.close();
+
         std::cerr << e.what() << std::endl;
         _shouldStop = true;
         return false;
@@ -96,12 +98,30 @@ void Client::workerThreadProc()
             std::thread listenerThread(std::bind(&Client::listenerThreadProc, this));
             std::thread senderThread(std::bind(&Client::senderThreadProc, this));
 
-            listenerThread.join();
             senderThread.join();
+
+            //stop listener
+            _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+            _socket.close();
+
+            listenerThread.join();
+
+            std::cout << "All child threads stopped" << std::endl;
+
+            //cleanup
+
+            _id = -1;
+            _winnerId = -1;
+
+            _connected = false;
+            _shouldStop = false;
+            _gameStarted = false;
+            _gameOver = false;
         }
     }
     catch(boost::system::system_error& e)
     {
+        _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
         _socket.close();
 
         std::cerr << e.what() << std::endl;
@@ -235,6 +255,9 @@ void Client::sendPos()
         }
         catch(boost::system::system_error& e)
         {
+            _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+            _socket.close();
+
             std::cerr << e.what() << std::endl;
             _shouldStop = true;
         }

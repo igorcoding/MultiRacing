@@ -6,7 +6,8 @@ int main()
 {
     std::setlocale(LC_ALL, "Russian");
 
-    Server::getInstance().start();
+    while(true) //restart on error
+        Server::getInstance().start();
 }
 
 

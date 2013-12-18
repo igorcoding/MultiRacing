@@ -71,6 +71,9 @@ namespace NeonHockey
     {
         try
         {
+            if(Client::getInstance().shouldStop() || !Client::getInstance().isGameStarted())
+                return IContextReturnData(Context::GameErrorContext, nullptr);
+
             float dt = _hge->Timer_GetDelta();
             auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 

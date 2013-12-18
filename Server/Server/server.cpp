@@ -115,11 +115,20 @@ void Server::start()
                                           std::ref(Server::getInstance())));
 
 
+        //wait
         senderThread.join();
 
         logicThread.join();
 
-        std::cout << "All child threads stopped." << std::endl;
+        //stop listeners
+        for(auto &client: clients)
+        {
+            client.socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+            client.socket.close();
+        }
+
+        for(auto &client: clients)
+            client.thread.join();
 
         switch(Logic::getInstance().reason())
         {
@@ -139,17 +148,12 @@ void Server::start()
         }
         }
 
+        std::cout << "All child threads stopped." << std::endl;
 
-        //wait
-        for(auto &client: clients)
-            client.thread.join();
 
-        //free clients
-        for(auto &client: clients)
-        {
-            client.socket.shutdown(boost::asio::ip::tcp::socket::shutdown_receive);
-            client.socket.close();
-        }
+        //cleanup
+
+        clients.clear();
     }
     catch(boost::system::system_error& e)
     {
