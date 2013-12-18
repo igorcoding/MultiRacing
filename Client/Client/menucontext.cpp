@@ -75,8 +75,7 @@ namespace NeonHockey
         menu->Render();
         int id = menu->GetFocus();
         if(id) //TODO: too many magics
-            statusFont->Render(10, 800-32, 0, items[id-1].second.c_str());
-
+            statusFont->Render(10, 600-32, 0, items[id-1].second.c_str());
     }
 
     void MenuContext::show()

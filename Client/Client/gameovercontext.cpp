@@ -28,9 +28,9 @@ namespace NeonHockey
         const char *resultStr = nullptr;
 
         if(data->_win)
-            resultStr = "YOU WON!";
+            resultStr = "YOU WON";
         else
-            resultStr = "YOU LOST!";
+            resultStr = "YOU LOST";
 
         int resultStrLen = fnt->GetStringWidth(resultStr);
 

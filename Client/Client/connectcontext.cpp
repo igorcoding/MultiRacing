@@ -115,13 +115,13 @@ namespace NeonHockey
 
         font->Render(100, 100+48*2, HGETEXT_LEFT, "Connect");
 
+        //TODO: move to StatusBar class
         font->Render(10, _data->screenHeight - font->GetHeight()*1.5,
                      HGETEXT_LEFT, "Input server ip, your nickname and click Connect");
     }
 
     bool ConnectContext::connectToServer(const std::string& ip, const std::string& playerName)
     {
-        std::cout << playerName;
         constexpr int port = 14882;
         try
         {
