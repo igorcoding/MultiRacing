@@ -22,8 +22,8 @@ namespace NeonHockey
             menu->AddCtrl(
                 new hgeGUIMenuItem(i + 1,
                    _rm->getFont(FontType::SCORE).get(),
-                   //_rm->getSound(SoundType::COLLISION),
-                    0,
+                   _rm->getSound(SoundType::COLLISION),
+                   //0,
                    400, 200+40*i, float(i)/10.0,
                    (char*)items[i].first.c_str(),
                    itemColor, shadowColor));

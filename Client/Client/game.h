@@ -64,7 +64,7 @@ namespace NeonHockey
         static bool isUsingSound();
         static bool isMouseHidden();
         static int screenBpp();
-        static void playSound(SoundType type, int at = 0, int volume = 100);
+
 
     };
 
