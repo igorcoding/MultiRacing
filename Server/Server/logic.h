@@ -48,6 +48,7 @@ private:
     bool _initialized;
 
     int _winnerId = -1;
+    int _scoresToWin = 7;
 
     std::chrono::milliseconds _framePeriod = std::chrono::milliseconds(10);
     std::mutex _mutex;

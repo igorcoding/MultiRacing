@@ -65,6 +65,8 @@ void Logic::stop(Logic::StopReason reason)
 {
     _reason = reason;
     _shouldStop = true;
+
+    std::cout << "Logic::stop(" << (int)_reason << ") called" << std::endl;
 }
 
 void Logic::setInitialCoords()
@@ -229,6 +231,14 @@ void Logic::handleGoal(int goaler)
     setInitialCoords();
     _puck.pos.x(_puck.pos.x() + side * circleRadius);
     Server::getInstance().setGoal(goaler, player(goaler).points);
+
+    if(player(goaler).points >= _scoresToWin)
+    {
+        std::cout << "Logic: we have a winner!" << std::endl;
+
+        _winnerId = goaler;
+        Server::getInstance().setWinner(_winnerId);
+    }
 }
 
 bool Logic::shouldStop() const

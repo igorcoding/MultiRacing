@@ -6,10 +6,10 @@ class AbstractTimer
 {
 public:
     AbstractTimer() = default;
-    AbstractTimer(float limit, bool startNow, std::function<void(float)> handler);
+    AbstractTimer(float limit, bool startNow, std::function<void(AbstractTimer *timer, float)> handler);
     virtual ~AbstractTimer() = default;
 
-    virtual void setHandler(std::function<void(float)> handler);
+    virtual void setHandler(std::function<void(AbstractTimer *timer, float)> handler);
     virtual void setLimit(float limit);
     virtual void start();
     virtual void start(float limit);
@@ -21,7 +21,7 @@ public:
     virtual void update(float dt) = 0;
 
 protected:
-    std::function<void(float)> _handler;
+    std::function<void(AbstractTimer *timer, float)> _handler;
     float _elapsed = 0;
     float _limit = 0;
     bool _started = false;

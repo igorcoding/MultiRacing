@@ -1,5 +1,6 @@
 #include <sstream>
 #include "ingamecontext.h"
+#include "gameovercontext.h"
 #include "client.h"
 #include "resourcesloader.h"
 
@@ -13,7 +14,7 @@ namespace NeonHockey
           tb_border(30),
           gap_width(200),
           timeoutTimer(10.0 / 1000.0, false,
-                       [this](float dt)
+                       [this](AbstractTimer *timer, float dt)
                         {
                             std::cout << "timeout\n";
                             auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
@@ -95,6 +96,17 @@ namespace NeonHockey
         timers.update(dt);
         timeoutTimer.update(dt);
 
+        if(Client::getInstance().isGameOver())
+        {
+            bool win = Client::getInstance().getWinnerId() == data->currentPlayerId;
+
+            return IContextReturnData(Context::GameOverContext,
+                        std::make_shared<GameOverContextData>(
+                                          _data->screenWidth,
+                                          _data->screenHeight,
+                                          win,
+                                          &_players[0], &_players[1]));
+        }
 
         if(Client::getInstance().shouldStop())
             return IContextReturnData(Context::GameErrorContext, data);
@@ -211,20 +223,33 @@ namespace NeonHockey
 
             timers.createUntilTimer(
                 TimerFactory::InvokeType::OnRender,
-                3,
+                1,
                 true,
-                [this](float dt)
+                [this](AbstractTimer *timer, float dt)
                 {
                     auto goalFont = _rm->getFont(FontType::SCORE);
 
                     //TODO: GOAL string should appear on 'goaler' side
                     const char *goalStr = "GOAL";
+
+
+                    //TODO: add separate font object for each use-case
+                    float scale = timer->elapsed()*20;
+                    goalFont->SetScale(scale);
+                    int alpha = 255;
+                    if(timer->elapsed() > 0.3)
+                        alpha = 255 - timer->elapsed() * 255;
+
+                    goalFont->SetColor(ARGB(alpha, 10, 200, 35));
+
                     auto strWidth = goalFont->GetStringWidth(goalStr);
 
                     goalFont->Render(_data->screenWidth/2 - strWidth/2,
-                                     _data->screenHeight/2,
+                                     _data->screenHeight/6 - goalFont->GetHeight()/2*scale,
                                      HGETEXT_LEFT,
                                      goalStr);
+                    goalFont->SetScale(1);
+                    goalFont->SetColor(ARGB(255, 200, 200, 255));
                 });
         }
 

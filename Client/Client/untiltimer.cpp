@@ -7,7 +7,7 @@ void UntilTimer::update(float dt)
         _elapsed += dt;
 
         if(_elapsed <= _limit)
-            _handler(dt);
+            _handler(this, dt);
         else
             _started = false;
     }

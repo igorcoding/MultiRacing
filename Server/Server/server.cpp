@@ -94,10 +94,10 @@ void Server::start()
                             clients[!client.id].name + " " +
                             std::to_string(_cachedPuckPos.x) + " " +
                             std::to_string(_cachedPuckPos.y) + " " +
-                            std::to_string(logic.player(0).pos.x()) + " " +
-                            std::to_string(logic.player(0).pos.y()) + " " +
-                            std::to_string(logic.player(1).pos.x()) + " " +
-                            std::to_string(logic.player(1).pos.y()) + "\n"));
+                            std::to_string((int)logic.player(0).pos.x()) + " " +
+                            std::to_string((int)logic.player(0).pos.y()) + " " +
+                            std::to_string((int)logic.player(1).pos.x()) + " " +
+                            std::to_string((int)logic.player(1).pos.y()) + "\n"));
 
             //start listener thread
             client.thread = std::thread(
@@ -119,6 +119,8 @@ void Server::start()
 
         logicThread.join();
 
+        std::cout << "All child threads stopped." << std::endl;
+
         switch(Logic::getInstance().reason())
         {
         case Logic::StopReason::ClientDisconnected:
@@ -128,15 +130,7 @@ void Server::start()
         }
         case Logic::StopReason::GameOver:
         {
-            //send GameOver to all clients
-            for(auto &client: clients)
-            {
-                client.socket.send(
-                            boost::asio::buffer(
-                                std::to_string(ServerMessageType::GameOver)
-                                + " " + std::to_string(logic.getWinnerId()) + "\n"));
-                break;
-            }
+            break;
         }
         case Logic::StopReason::ServerStopped:
         case Logic::StopReason::LogicException:
@@ -188,6 +182,14 @@ void Server::setGoal(int playerId, int absoluteScore)
     _cachedGoal.y = absoluteScore;
 
     _cachedGoal.isReady = true;
+}
+
+void Server::setWinner(int playerId)
+{
+    _cachedWinner.x = playerId;
+    _cachedWinner.y = 0; //unused
+
+    _cachedWinner.isReady = true;
 }
 
 void Server::listenerThreadProc(Client &client)
@@ -262,6 +264,13 @@ void Server::senderThreadProc()
                 sendGoal();
                 _cachedGoal.isReady = false;
             }
+            if(_cachedWinner.isReady)
+            {
+                sendGameOver();
+                _cachedWinner.isReady = false;
+
+                Logic::getInstance().stop(Logic::StopReason::GameOver);
+            }
         }
         catch(std::exception &e)
         {
@@ -310,5 +319,15 @@ void Server::sendGoal()
                       std::to_string(ServerMessageType::Goal) + " " +
                       std::to_string(_cachedGoal.x) + " " +
                       std::to_string(_cachedGoal.y) + "\n"));
+    }
+}
+
+void Server::sendGameOver()
+{
+    for(auto &client: clients)
+    {
+        client.socket.send(boost::asio::buffer(
+                      std::to_string(ServerMessageType::GameOver) + " " +
+                      std::to_string(_cachedWinner.x) + "\n"));
     }
 }

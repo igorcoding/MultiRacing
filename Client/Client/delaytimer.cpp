@@ -8,7 +8,7 @@ void DelayTimer::update(float dt)
 
         if(_elapsed >= _limit)
         {
-            _handler(dt);
+            _handler(this, dt);
             _started = false;
         }
     }

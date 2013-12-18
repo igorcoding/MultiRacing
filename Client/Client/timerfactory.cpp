@@ -2,7 +2,7 @@
 #include "untiltimer.h"
 #include "delaytimer.h"
 
-void TimerFactory::createUntilTimer(TimerFactory::InvokeType invokeType, float limit, bool startNow, const std::function<void (float)> &handler)
+void TimerFactory::createUntilTimer(TimerFactory::InvokeType invokeType, float limit, bool startNow, const std::function<void (AbstractTimer *timer, float)> &handler)
 {
     if(invokeType == InvokeType::OnRender)
         renderTimers.push_back(new UntilTimer(limit, startNow, handler));
@@ -10,7 +10,7 @@ void TimerFactory::createUntilTimer(TimerFactory::InvokeType invokeType, float l
         updateTimers.push_back(new UntilTimer(limit, startNow, handler));
 }
 
-void TimerFactory::createDelayTimer(TimerFactory::InvokeType invokeType, float limit, bool startNow, const std::function<void (float)> &handler)
+void TimerFactory::createDelayTimer(TimerFactory::InvokeType invokeType, float limit, bool startNow, const std::function<void (AbstractTimer *timer, float)> &handler)
 {
     if(invokeType == InvokeType::OnRender)
         renderTimers.push_back(new DelayTimer(limit, startNow, handler));

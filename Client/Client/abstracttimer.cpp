@@ -1,14 +1,14 @@
 #include "abstracttimer.h"
 
 
-AbstractTimer::AbstractTimer(float limit, bool startNow, std::function<void (float)> handler)
+AbstractTimer::AbstractTimer(float limit, bool startNow, std::function<void (AbstractTimer *timer, float)> handler)
 {
     _handler = handler;
     _started = startNow;
     _limit = limit;
 }
 
-void AbstractTimer::setHandler(std::function<void(float)> handler)
+void AbstractTimer::setHandler(std::function<void(AbstractTimer *timer, float)> handler)
 {
     _handler = handler;
 }

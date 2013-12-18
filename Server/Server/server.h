@@ -29,6 +29,7 @@ public:
     void setPuckPos(int x, int y);
     void setCollision(int x, int force);
     void setGoal(int playerId, int absoluteScore);
+    void setWinner(int playerId);
 
 private:
     Server();
@@ -39,7 +40,7 @@ private:
     {
         int x = 0, y = 0;
         bool isReady = false;
-    } _cachedPuckPos, _cachedCollision, _cachedGoal;
+    } _cachedPuckPos, _cachedCollision, _cachedGoal, _cachedWinner;
 
     void listenerThreadProc(Client &client);
 
@@ -51,6 +52,7 @@ private:
     void sendPuckPos();
     void sendCollisionPos();
     void sendGoal();
+    void sendGameOver();
 
 
     //TODO: move them to some kind of shared (between Client and Server) config file
