@@ -13,6 +13,7 @@
 #include "menucontext.h"
 #include "ingamecontext.h"
 #include "connectcontext.h"
+#include "gameovercontext.h"
 
 namespace NeonHockey
 {

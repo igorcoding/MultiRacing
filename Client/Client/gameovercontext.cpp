@@ -3,6 +3,10 @@
 
 namespace NeonHockey
 {
+    GameOverContext::GameOverContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<GameOverContextData> data)
+        : IContext(hge, rm, data)
+    { }
+
     void GameOverContext::show()
     {
 

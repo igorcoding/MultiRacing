@@ -22,9 +22,8 @@ namespace NeonHockey
     class GameOverContext : public IContext
     {
     public:
+        GameOverContext(HGE* hge, std::shared_ptr<ResourceManager> rm, std::shared_ptr<GameOverContextData> data);
 
-        // IContext interface
-    public:
         void show();
         IContextReturnData frameFunc();
         void renderFunc();
