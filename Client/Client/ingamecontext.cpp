@@ -278,10 +278,12 @@ namespace NeonHockey
 
     void InGameContext::playSound(SoundType type, int at, int volume)
     {
+#ifndef PLATFORM_UNIX //currently not supported
         HEFFECT snd = _rm->getSound(type);
 
         //converts at to [-100, 100] range
         _hge->Effect_PlayEx(snd, volume, at * 200 /_data->screenWidth - 100);
+#endif
     }
 
 }
