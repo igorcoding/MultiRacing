@@ -211,10 +211,10 @@ namespace NeonHockey
 
     void InGameContext::checkCollisions()
     {
-        //int x = 0;
-        //int force = 0;
-        //if(Client::getInstance().getCollision(x, force))
-        //    playSound(SoundType::COLLISION, x, force);
+        int x = 0;
+        int force = 0;
+        if(Client::getInstance().getCollision(x, force))
+            playSound(SoundType::COLLISION, x, force);
     }
 
     void InGameContext::checkGoal()
@@ -266,13 +266,20 @@ namespace NeonHockey
     void InGameContext::handleGoal(int playerId, int points)
     {
         // play a goal sound
-
+        playSound(SoundType::GOAL, 0, 50);
         _players[playerId].setPoints(points);
         for (auto& p : _players)
             p.paddle()->resetToInit();
     }
 
 
+    void InGameContext::playSound(SoundType type, int at, int volume)
+    {
+        HEFFECT snd = _rm->getSound(type);
+
+        //converts at to [-100, 100] range
+        _hge->Effect_PlayEx(snd, volume, at * 200 /_data->screenWidth - 100);
+    }
 
 }
 

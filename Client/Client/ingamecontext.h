@@ -53,6 +53,7 @@ namespace NeonHockey
         void checkCollisions();
         void checkGoal();
         void handleGoal(int playerId, int points);
+        void playSound(SoundType type, int at = 0, int volume = 100);
     };
 
 }

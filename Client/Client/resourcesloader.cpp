@@ -17,7 +17,7 @@ namespace NeonHockey
     void ResourcesLoader::loadEverything()
     {
         loadGraphics();
-        //loadSound();
+        loadSound();
         loadFonts();
     }
 
@@ -54,8 +54,8 @@ namespace NeonHockey
 
     void ResourcesLoader::loadSound()
     {
-        //_rm->addSound(SoundType::COLLISION, "../resources/hit.ogg");
-        _rm->addSound(SoundType::COLLISION, "hit.ogg");
+        _rm->addSound(SoundType::COLLISION, "../resources/hit.ogg");
+        _rm->addSound(SoundType::GOAL, "../resources/goal.ogg");
     }
 
 }

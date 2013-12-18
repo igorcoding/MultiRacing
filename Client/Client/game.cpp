@@ -191,11 +191,5 @@ namespace NeonHockey
         //_options.insert(std::make_pair(OptionType::SCREEN_WIDTH, ))
     }
 
-    void Game::playSound(SoundType type, int at, int volume)
-    {
-        HEFFECT snd = _resources->getSound(type);
 
-        //converts at to [-100, 100] range
-        _hge->Effect_PlayEx(snd, volume, at * 200 /screen_width - 100);
-    }
 }
