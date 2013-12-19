@@ -18,7 +18,7 @@ namespace NeonHockey
         items.push_back(std::make_pair("Exit", "Exit game"));
 
 
-        for(int i = 0; i < items.size(); ++i)
+        for(unsigned i = 0; i < items.size(); ++i)
             menu->AddCtrl(
                 new hgeGUIMenuItem(i + 1,
                    _rm->getFont(FontType::SCORE).get(),

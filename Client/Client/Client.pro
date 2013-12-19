@@ -51,7 +51,7 @@ HEADERS += \
     gameovercontext.h
 
 
-QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs
+QMAKE_CXXFLAGS += -pthread -std=c++1y -Wno-unused-local-typedefs -Wno-unused-variable -Wno-unused-parameter
 QMAKE_LFLAGS += -pthread -std=c++1y
 
 #DEFINES += SINGLEPLAYER_DEBUG
