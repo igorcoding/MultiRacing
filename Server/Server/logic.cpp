@@ -123,12 +123,16 @@ void Logic::checkCollisions()
 
     if (collided_first)
     {
+#ifdef _DEBUG
         std::cout << "collided first\n";
+#endif
         handleCollision(firstPlayer);
     }
     if (collided_second)
     {
+#ifdef _DEBUG
         std::cout << "collided second\n";
+#endif
         handleCollision(secondPlayer);
     }
 }
