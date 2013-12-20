@@ -30,7 +30,11 @@ namespace NeonHockey
 
     enum class FontType
     {
-        SCORE
+        SCORE,
+        GOAL,
+        MENU,
+        STATUSBAR,
+        UI
     };
 
     class ResourceManager

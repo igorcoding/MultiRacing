@@ -44,6 +44,7 @@ namespace NeonHockey
 
         bool connectToServer(const std::string& ip, const std::string& playerName);
         ConnectionStatus status;
+        std::string statusStr;
         std::future<bool> connectionResult;
         template<typename R> bool is_ready(std::future<R>& f);
     };

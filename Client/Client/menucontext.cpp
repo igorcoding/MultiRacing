@@ -21,7 +21,7 @@ namespace NeonHockey
         for(unsigned i = 0; i < items.size(); ++i)
             menu->AddCtrl(
                 new hgeGUIMenuItem(i + 1,
-                   _rm->getFont(FontType::SCORE).get(),
+                   _rm->getFont(FontType::MENU).get(),
 #ifndef PLATFORM_UNIX
                    _rm->getSound(SoundType::COLLISION),
 #else
@@ -73,7 +73,7 @@ namespace NeonHockey
 
     void MenuContext::renderFunc()
     {
-        auto statusFont = _rm->getFont(FontType::SCORE);
+        auto statusFont = _rm->getFont(FontType::STATUSBAR);
 
         menu->Render();
         int id = menu->GetFocus();

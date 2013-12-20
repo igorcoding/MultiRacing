@@ -20,6 +20,8 @@ namespace NeonHockey
         gui->AddCtrl(ipField);
         gui->AddCtrl(nameField);
         gui->AddCtrl(connectButton);
+
+        statusStr = "Input server ip, your nickname and click Connect";
     }
 
     ConnectContext::~ConnectContext()
@@ -36,6 +38,9 @@ namespace NeonHockey
 
     void ConnectContext::show()
     {
+        //TODO: повторный запуск без сброса
+        statusStr = "Input server ip, your nickname and click Connect";
+
         gui->Enter();
     }
 
@@ -67,12 +72,14 @@ namespace NeonHockey
                 bool connected = connectionResult.get();
                 if (connected)
                 {
-                    std::cout << "Connected" << std::endl;
+                    statusStr = "Failed to connect. Please, reenter IP";
+                    std::cout << statusStr << std::endl;
                     status = ConnectionStatus::WaitingOpponent;
                 }
                 else
                 {
-                    std::cout << "Failed to connect. Please, reenter IP" << std::endl;
+                    statusStr = "Failed to connect. Please, reenter IP";
+                    std::cout << statusStr << std::endl;
                     status = ConnectionStatus::Default;
                 }
             }
@@ -106,9 +113,9 @@ namespace NeonHockey
 
     void ConnectContext::renderFunc()
     {
-        auto font = _rm->getFont(FontType::SCORE);
-        font->Render(74, 100, HGETEXT_RIGHT, "IP: ");
+        auto font = _rm->getFont(FontType::UI);
 
+        font->Render(74, 100, HGETEXT_RIGHT, "IP: ");
         font->Render(74, 148, HGETEXT_RIGHT, "Name: ");
 
         gui->Render();
@@ -117,7 +124,7 @@ namespace NeonHockey
 
         //TODO: move to StatusBar class
         font->Render(10, _data->screenHeight - font->GetHeight()*1.5,
-                     HGETEXT_LEFT, "Input server ip, your nickname and click Connect");
+                     HGETEXT_LEFT, statusStr.c_str());
     }
 
     bool ConnectContext::connectToServer(const std::string& ip, const std::string& playerName)

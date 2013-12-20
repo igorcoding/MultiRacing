@@ -52,6 +52,10 @@ namespace NeonHockey
     void ResourcesLoader::loadFonts()
     {
         _rm->addFont(FontType::SCORE, "../resources/Digital.fnt");
+        _rm->addFont(FontType::GOAL, "../resources/Digital.fnt");
+        _rm->addFont(FontType::MENU, "../resources/Digital.fnt");
+        _rm->addFont(FontType::STATUSBAR, "../resources/Digital.fnt");
+        _rm->addFont(FontType::UI, "../resources/Digital.fnt");
     }
 
     void ResourcesLoader::loadSound()

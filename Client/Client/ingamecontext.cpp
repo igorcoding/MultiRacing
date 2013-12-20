@@ -15,14 +15,16 @@ namespace NeonHockey
           tb_border(30),
           gap_width(200),
           timeoutTimer(10.0 / 1000.0, false,
-                       [this](AbstractTimer *timer, float dt)
-                        {
-                            std::cout << "timeout\n";
-                            auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
-                            Player& currentPlayer = _players[data->currentPlayerId];
-                            Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x,
-                                                                currentPlayer.paddle()->y, true);
-                        })
+            [this](AbstractTimer *timer, float dt)
+            {
+#ifdef _DEBUG
+                std::cout << "Timeout" << std::endl;
+#endif
+                auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
+                Player& currentPlayer = _players[data->currentPlayerId];
+                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x,
+                                                    currentPlayer.paddle()->y, true);
+            })
 
     {
         auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
@@ -60,6 +62,13 @@ namespace NeonHockey
         _players[!data->currentPlayerId].paddle()->setInitPos(enemy_x, enemy_y);
         _puck->setInitPos(puck_x, puck_y);
 
+        //setup fonts
+        auto goalFont = _rm->getFont(FontType::GOAL);
+        goalFont->SetColor(ARGB(255, 10, 200, 35));
+
+        auto scoreFont = _rm->getFont(FontType::SCORE);
+        scoreFont->SetColor(ARGB(255, 200, 200, 255));
+
     }
 
     void InGameContext::show()
@@ -71,9 +80,6 @@ namespace NeonHockey
     {
         try
         {
-            //if(Client::getInstance().shouldStop() || !Client::getInstance().isGameStarted())
-           //     return IContextReturnData(Context::GameErrorContext, nullptr);
-
             float dt = _hge->Timer_GetDelta();
             auto data = std::dynamic_pointer_cast<InGameContextData>(_data);
 
@@ -142,7 +148,6 @@ namespace NeonHockey
 
             //render scores
             auto fnt = _rm->getFont(FontType::SCORE);
-            fnt->SetColor(ARGB(255, 200, 200, 255));
 
             std::stringstream scoresStr;
             scoresStr << "(" << _players[0].getName() << ")   "
@@ -238,13 +243,11 @@ namespace NeonHockey
                 true,
                 [this](AbstractTimer *timer, float dt)
                 {
-                    auto goalFont = _rm->getFont(FontType::SCORE);
+                    auto goalFont = _rm->getFont(FontType::GOAL);
 
                     //TODO: GOAL string should appear on 'goaler' side
                     const char *goalStr = "GOAL";
 
-
-                    //TODO: add separate font object for each use-case
                     float scale = timer->elapsed()*20;
                     goalFont->SetScale(scale);
                     int alpha = 255;
@@ -252,6 +255,7 @@ namespace NeonHockey
                         alpha = 255 - timer->elapsed() * 255;
 
                     goalFont->SetColor(ARGB(alpha, 10, 200, 35));
+                    goalFont->SetSpacing(dt*20);
 
                     auto strWidth = goalFont->GetStringWidth(goalStr);
 
@@ -259,8 +263,6 @@ namespace NeonHockey
                                      _data->screenHeight/6 - goalFont->GetHeight()/2*scale,
                                      HGETEXT_LEFT,
                                      goalStr);
-                    goalFont->SetScale(1);
-                    goalFont->SetColor(ARGB(255, 200, 200, 255));
                 });
         }
 
@@ -269,7 +271,7 @@ namespace NeonHockey
     void InGameContext::handleGoal(int playerId, int points)
     {
         // play a goal sound
-        playSound(SoundType::GOAL, 0, 50);
+        playSound(SoundType::GOAL, _data->screenWidth / 2, 50);
         _players[playerId].setPoints(points);
         for (auto& p : _players)
             p.paddle()->resetToInit();
