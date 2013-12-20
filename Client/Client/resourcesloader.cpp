@@ -17,7 +17,9 @@ namespace NeonHockey
     void ResourcesLoader::loadEverything()
     {
         loadGraphics();
+#ifndef PLATFORM_UNIX
         loadSound();
+#endif
         loadFonts();
     }
 

@@ -164,7 +164,7 @@ namespace NeonHockey
                 updateContext(Context::MenuContext, std::make_shared<MenuContextData>(screenWidth(), screenHeight()));
                 return;
             case Context::NoContext:
-                return;
+                break;
             default:
                 break;
             }
@@ -173,7 +173,7 @@ namespace NeonHockey
         {
             context->second->changeData(contextData);
         }
-        if (_currentContext != c)
+        if (_currentContext != c && c != Context::NoContext)
             Game::context(c)->show();
         _currentContext = c;
     }
