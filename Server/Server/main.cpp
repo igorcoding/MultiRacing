@@ -25,7 +25,7 @@ int main()
 
     startServer(port);
 
-    for(;;)
+    do
     {
         std::cin >> command;
 
