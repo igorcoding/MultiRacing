@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <chrono>
+#include <future>
 
 struct Client
 {
@@ -23,7 +24,8 @@ class Server
 public:
     static Server& getInstance();
 
-    void start();
+    bool start(int port);
+    void stop();
 
     //TODO: maybe make universal setter/getter/sender for all the packets?
     void setPuckPos(int x, int y);
@@ -42,9 +44,8 @@ private:
         bool isReady = false;
     } _cachedPuckPos, _cachedCollision, _cachedGoal, _cachedWinner;
 
+    void workerThreadProc(boost::asio::ip::tcp::acceptor &&acceptor);
     void listenerThreadProc(Client &client);
-
-    //sends puck pos for all clients
     void senderThreadProc();
 
     void sendCoords(int clientId, int x, int y);
@@ -61,7 +62,7 @@ private:
 
     boost::asio::io_service io_service;
     std::vector<Client> clients;
-    const int _port = 14882;
+    std::future<void> _workerFuture;
 
     std::chrono::microseconds _senderPeriod = std::chrono::milliseconds(30);
     std::chrono::microseconds _listenerPeriod = std::chrono::microseconds(1);

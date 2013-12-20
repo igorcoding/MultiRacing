@@ -18,17 +18,75 @@ Server& Server::getInstance()
     return inst;
 }
 
-void Server::start()
+bool Server::start(int port)
+{
+    using namespace boost::asio::ip;
+
+    try
+    {
+        //spawn workerThread
+        _workerFuture = std::async(std::launch::async, [this, port]
+        {
+            workerThreadProc(tcp::acceptor(io_service, tcp::endpoint(tcp::v4(), port)));
+        });
+
+        std::cout << "Server started at port: " << port << std::endl;
+
+        return true;
+    }
+    catch(boost::system::system_error& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+}
+
+void Server::stop()
+{
+    Logic::getInstance().stop(Logic::StopReason::ServerStopped);
+
+    _workerFuture.get();
+}
+
+void Server::setPuckPos(int x, int y)
+{
+    if(x != _cachedPuckPos.x || y != _cachedPuckPos.y)
+    {
+        _cachedPuckPos.x = x;
+        _cachedPuckPos.y = y;
+
+        _cachedPuckPos.isReady = true;
+    }
+}
+
+void Server::setCollision(int x, int force)
+{
+    _cachedCollision.x = x;
+    _cachedCollision.y = force;
+
+    _cachedCollision.isReady = true;
+}
+
+void Server::setGoal(int playerId, int absoluteScore)
+{
+    _cachedGoal.x = playerId;
+    _cachedGoal.y = absoluteScore;
+
+    _cachedGoal.isReady = true;
+}
+
+void Server::setWinner(int playerId)
+{
+    _cachedWinner.x = playerId;
+    _cachedWinner.y = 0; //unused
+
+    _cachedWinner.isReady = true;
+}
+
+void Server::workerThreadProc(boost::asio::ip::tcp::acceptor &&acceptor)
 {
     try
     {
-        using namespace boost::asio::ip;
-
-        tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), _port));
-        boost::system::error_code error;
-
-        std::cout << "Server started at port: " << _port << std::endl;
-
         const int clientsNeeded = 2;
 
         for(int clientId = 0; clientId < clientsNeeded; )
@@ -36,11 +94,11 @@ void Server::start()
             //get client
             Client client(io_service);
 
-            acceptor.accept(client.socket, error);
+            acceptor.accept(client.socket);
 
             //get Auth message
             boost::asio::streambuf buffer;
-            read_until(client.socket, buffer, "\n", error);
+            read_until(client.socket, buffer, "\n");
 
             std::istream is(&buffer);
 
@@ -159,41 +217,6 @@ void Server::start()
     {
         std::cerr << e.what() << std::endl;
     }
-}
-
-void Server::setPuckPos(int x, int y)
-{
-    if(x != _cachedPuckPos.x || y != _cachedPuckPos.y)
-    {
-        _cachedPuckPos.x = x;
-        _cachedPuckPos.y = y;
-
-        _cachedPuckPos.isReady = true;
-    }
-}
-
-void Server::setCollision(int x, int force)
-{
-    _cachedCollision.x = x;
-    _cachedCollision.y = force;
-
-    _cachedCollision.isReady = true;
-}
-
-void Server::setGoal(int playerId, int absoluteScore)
-{
-    _cachedGoal.x = playerId;
-    _cachedGoal.y = absoluteScore;
-
-    _cachedGoal.isReady = true;
-}
-
-void Server::setWinner(int playerId)
-{
-    _cachedWinner.x = playerId;
-    _cachedWinner.y = 0; //unused
-
-    _cachedWinner.isReady = true;
 }
 
 void Server::listenerThreadProc(Client &client)

@@ -61,6 +61,7 @@ namespace NeonHockey
             status = ConnectionStatus::Connecting;
             auto ip = std::string(ipField->getText());
             auto name = std::string(nameField->getText());
+
             connectionResult = std::async(std::launch::async, &ConnectContext::connectToServer, this, ip, name);
         }
 
@@ -72,7 +73,7 @@ namespace NeonHockey
                 bool connected = connectionResult.get();
                 if (connected)
                 {
-                    statusStr = "Failed to connect. Please, reenter IP";
+                    statusStr = "Connected. Waiting for opponent.";
                     std::cout << statusStr << std::endl;
                     status = ConnectionStatus::WaitingOpponent;
                 }
@@ -152,7 +153,7 @@ namespace NeonHockey
     template<typename R>
     bool ConnectContext::is_ready(std::future<R>& f)
     {
-        return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+        return f.wait_for(std::chrono::milliseconds(1)) == std::future_status::ready;
     }
 }
 
