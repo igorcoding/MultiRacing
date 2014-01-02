@@ -178,6 +178,16 @@ namespace NeonHockey
         _currentContext = c;
     }
 
+    void Game::deleteContext(Context c)
+    {
+        auto context = _contexts.find(c);
+        if (context != _contexts.end())
+        {
+            delete context->second;
+        }
+        _contexts.erase(context);
+    }
+
     void Game::cleanContexts()
     {
         for (auto& context : _contexts)
