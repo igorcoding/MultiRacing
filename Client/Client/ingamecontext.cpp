@@ -46,6 +46,7 @@ namespace NeonHockey
 
         Player p0(data->currentPlayerName, side0, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
         Player p1(data->opponentName, side1, 0, std::unique_ptr<Paddle>(new Paddle(_rm->getSprite(GfxType::PADDLE))));
+        mover.setPaddle(p0.paddle());
 
         _puck = std::move(std::unique_ptr<Puck>(new Puck(_rm->getSprite(GfxType::PUCK))));
         _players[data->currentPlayerId] = std::move(p0);
@@ -94,11 +95,12 @@ namespace NeonHockey
                 _hge->Input_GetMousePos(&mouse_x, &mouse_y);
                 checkAllowedBounds(mouse_x, mouse_y);
 
-                currentPlayer.paddle()->x = mouse_x;
-                currentPlayer.paddle()->y = mouse_y;
-                Client::getInstance().sendPaddlePos(currentPlayer.paddle()->x, currentPlayer.paddle()->y);
+                mover.moveTo(mouse_x, mouse_y);
                 timeoutTimer.start();
             }
+
+            mover.update(dt);
+
             Client::getInstance().getEnemyPaddlePos(enemyPlayer.paddle()->x, enemyPlayer.paddle()->y);
             Client::getInstance().getPuckPos(_puck->x, _puck->y);
 
@@ -288,6 +290,39 @@ namespace NeonHockey
 #endif
     }
 
+    SmoothMover::SmoothMover()
+    { }
+
+    SmoothMover::SmoothMover(Paddle *p)
+        : _paddle(p)
+    { }
+
+    void SmoothMover::setPaddle(Paddle *p)
+    {
+        _paddle = p;
+    }
+
+    void SmoothMover::moveTo(float x, float y)
+    {
+        _toX = x;
+        _toY = y;
+    }
+
+    void SmoothMover::update(float dt)
+    {
+        float curX = _paddle->x;
+        float curY = _paddle->y;
+
+        float speed = 100.0;
+
+        float dx = (_toX - curX)/speed;
+        float dy = (_toY - curY)/speed;
+
+        _paddle->x += dx;
+        _paddle->y += dy;
+
+        Client::getInstance().sendPaddlePos(_paddle->x, _paddle->y);
+    }
 }
 
 

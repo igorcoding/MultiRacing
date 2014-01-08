@@ -27,6 +27,22 @@ namespace NeonHockey
         std::string opponentName;
     };
 
+    class SmoothMover
+    {
+    public:
+        SmoothMover();
+        SmoothMover(Paddle *p);
+        void setPaddle(Paddle *p);
+        void moveTo(float x, float y);
+        void update(float dt);
+
+    private:
+        Paddle *_paddle = nullptr;
+
+        float _toX = 0;
+        float _toY = 0;
+    };
+
     class InGameContext : public IContext
     {
         using Puck_ptr = std::unique_ptr<Puck>;
@@ -39,7 +55,8 @@ namespace NeonHockey
         void renderFunc();
 
 
-    private:        
+    private:
+        SmoothMover mover;
         std::vector<Player> _players;
         Puck_ptr _puck;
         const int lr_border;
